@@ -176,22 +176,22 @@ internal class RawSubstitution(typeParameterUpperBoundEraser: TypeParameterUpper
         // Raw(Enum<T>) => (Enum<Enum<*>>..Enum<out Enum<*>>)
         // In the last case upper bound is equal to star projection `Enum<*>`,
         // but we want to keep matching tree structure of flexible bounds (at least they should have the same size)
-        JavaTypeFlexibility.FLEXIBLE_LOWER_BOUND -> TypeProjectionImpl(
+        JavaTypeFlexibility.FLEXIBLE_LOWER_BOUND ->
             // T : String -> String
             // in T : String -> String
             // T : Enum<T> -> Enum<*>
-            Variance.INVARIANT, erasedUpperBound
-        )
+            typeParameterUpperBoundEraser.createLazyProjectionForUpperBound(parameter, attr, erasedUpperBound)
         JavaTypeFlexibility.FLEXIBLE_UPPER_BOUND, JavaTypeFlexibility.INFLEXIBLE -> {
-            if (!parameter.variance.allowsOutPosition)
-            // in T -> Comparable<Nothing>
+            if (!parameter.variance.allowsOutPosition) {
+                // in T -> Comparable<Nothing>
                 TypeProjectionImpl(Variance.INVARIANT, parameter.builtIns.nothingType)
-            else if (erasedUpperBound.constructor.parameters.isNotEmpty())
-            // T : Enum<E> -> out Enum<*>
+            } else if (erasedUpperBound.constructor.parameters.isNotEmpty()) {
+                // T : Enum<E> -> out Enum<*>
                 TypeProjectionImpl(Variance.OUT_VARIANCE, erasedUpperBound)
-            else
-            // T : String -> *
+            } else {
+                // T : String -> *
                 makeStarProjection(parameter, attr)
+            }
         }
     }
 

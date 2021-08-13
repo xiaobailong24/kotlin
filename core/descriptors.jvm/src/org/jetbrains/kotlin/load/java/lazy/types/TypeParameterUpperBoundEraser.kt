@@ -126,4 +126,19 @@ internal class TypeParameterUpperBoundEraser(rawSubstitution: RawSubstitution? =
 
         return getDefaultType(typeAttr)
     }
+
+    internal fun createLazyProjectionForUpperBound(
+        parameter: TypeParameterDescriptor,
+        attr: JavaTypeAttributes,
+        erasedUpperBound: KotlinType
+    ): TypeProjection = LazyTypeProjection(storage) {
+        if (erasedUpperBound.unwrap() !== ErrorUtils.ERROR_TYPE_FOR_LOOP_IN_SUPERTYPES) {
+            TypeProjectionImpl(
+                // T : String -> String
+                // in T : String -> String
+                // T : Enum<T> -> Enum<*>
+                Variance.INVARIANT, erasedUpperBound
+            )
+        } else makeStarProjection(parameter, attr)
+    }
 }

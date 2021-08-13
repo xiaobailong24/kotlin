@@ -7,8 +7,8 @@ public open class JSPsiTypeParser</*0*/ T : JavaScriptParser<(raw) JSPsiTypePars
     public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
 }
 
-public open class JavaScriptParser</*0*/ F : JSPsiTypeParser<(raw) JavaScriptParser<*>!>!> {
-    public constructor JavaScriptParser</*0*/ F : JSPsiTypeParser<(raw) JavaScriptParser<*>!>!>()
+public open class JavaScriptParser</*0*/ F : JSPsiTypeParser<(raw) *>!> {
+    public constructor JavaScriptParser</*0*/ F : JSPsiTypeParser<(raw) *>!>()
     public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
     public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
     public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
