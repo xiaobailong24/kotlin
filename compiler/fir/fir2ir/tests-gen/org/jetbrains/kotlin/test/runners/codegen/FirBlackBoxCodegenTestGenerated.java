@@ -18204,12 +18204,6 @@ public class FirBlackBoxCodegenTestGenerated extends AbstractFirBlackBoxCodegenT
             public void testWithoutAnnotation() throws Exception {
                 runTest("compiler/testData/codegen/box/inference/builderInference/withoutAnnotation.kt");
             }
-
-            @Test
-            @TestMetadata("withoutAnnotationDisabledFeature.kt")
-            public void testWithoutAnnotationDisabledFeature() throws Exception {
-                runTest("compiler/testData/codegen/box/inference/builderInference/withoutAnnotationDisabledFeature.kt");
-            }
         }
     }
 

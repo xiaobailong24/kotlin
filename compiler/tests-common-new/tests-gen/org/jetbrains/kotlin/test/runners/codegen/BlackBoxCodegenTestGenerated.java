@@ -18060,6 +18060,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             public void testWithExpectedType() throws Exception {
                 runTest("compiler/testData/codegen/box/inference/builderInference/withExpectedType.kt");
             }
+
+            @Test
+            @TestMetadata("withoutAnnotation.kt")
+            public void testWithoutAnnotation() throws Exception {
+                runTest("compiler/testData/codegen/box/inference/builderInference/withoutAnnotation.kt");
+            }
         }
     }
 
