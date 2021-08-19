@@ -13315,6 +13315,12 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
                 }
 
                 @Test
+                @TestMetadata("changingResolveIfDontUseBuilderInference.kt")
+                public void testChangingResolveIfDontUseBuilderInference() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/inference/builderInference/changingResolveIfDontUseBuilderInference.kt");
+                }
+
+                @Test
                 @TestMetadata("kt47744.kt")
                 public void testKt47744() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/builderInference/kt47744.kt");
@@ -13384,6 +13390,12 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
                 @TestMetadata("specialCallsWithLambdas.kt")
                 public void testSpecialCallsWithLambdas() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/builderInference/specialCallsWithLambdas.kt");
+                }
+
+                @Test
+                @TestMetadata("withoutAnnotationDisabledFeature.kt")
+                public void testWithoutAnnotationDisabledFeature() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/inference/builderInference/withoutAnnotationDisabledFeature.kt");
                 }
 
                 @Nested
