@@ -12929,6 +12929,11 @@ public class IrJsCodegenBoxES6TestGenerated extends AbstractIrJsCodegenBoxES6Tes
                 runTest("compiler/testData/codegen/box/inference/builderInference/capturedTypes.kt");
             }
 
+            @TestMetadata("changingResolveIfDontUseBuilderInferenceDisabledFeature.kt")
+            public void testChangingResolveIfDontUseBuilderInferenceDisabledFeature() throws Exception {
+                runTest("compiler/testData/codegen/box/inference/builderInference/changingResolveIfDontUseBuilderInferenceDisabledFeature.kt");
+            }
+
             @TestMetadata("constraintsBetweenTwoStubVariables.kt")
             public void testConstraintsBetweenTwoStubVariables() throws Exception {
                 runTest("compiler/testData/codegen/box/inference/builderInference/constraintsBetweenTwoStubVariables.kt");
@@ -12992,16 +12997,6 @@ public class IrJsCodegenBoxES6TestGenerated extends AbstractIrJsCodegenBoxES6Tes
             @TestMetadata("specialCallsWithCallableReferences.kt")
             public void testSpecialCallsWithCallableReferences() throws Exception {
                 runTest("compiler/testData/codegen/box/inference/builderInference/specialCallsWithCallableReferences.kt");
-            }
-
-            @TestMetadata("specialCallsWithCallableReferencesDontCareTypeInBlockExpression.kt")
-            public void testSpecialCallsWithCallableReferencesDontCareTypeInBlockExpression() throws Exception {
-                runTest("compiler/testData/codegen/box/inference/builderInference/specialCallsWithCallableReferencesDontCareTypeInBlockExpression.kt");
-            }
-
-            @TestMetadata("specialCallsWithCallableReferencesDontCareTypeInBlockExression.kt")
-            public void testSpecialCallsWithCallableReferencesDontCareTypeInBlockExression() throws Exception {
-                runTest("compiler/testData/codegen/box/inference/builderInference/specialCallsWithCallableReferencesDontCareTypeInBlockExression.kt");
             }
 
             @TestMetadata("specialCallsWithCallableReferencesDontRewriteAtSlice.kt")
