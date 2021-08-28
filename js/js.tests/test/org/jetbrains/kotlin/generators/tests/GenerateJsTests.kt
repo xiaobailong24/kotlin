@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
     generateTestGroupSuite(args) {
         testGroup("js/js.tests/tests-gen", "js/js.translator/testData", testRunnerMethodName = "runTest0") {
             testClass<AbstractBoxJsTest> {
-                model("box/", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.JS)
+                model("box/incremental/", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.JS)
             }
 
             testClass<AbstractIrBoxJsTest> {
@@ -46,19 +46,6 @@ fun main(args: Array<String>) {
                 model("typescript-export/", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.JS_IR_ES6)
             }
 
-            testClass<AbstractLegacyJsTypeScriptExportTest> {
-                model("typescript-export/", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.JS)
-            }
-
-
-            testClass<AbstractSourceMapGenerationSmokeTest> {
-                model("sourcemap/", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.JS)
-            }
-
-            testClass<AbstractOutputPrefixPostfixTest> {
-                model("outputPrefixPostfix/", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.JS)
-            }
-
             testClass<AbstractDceTest> {
                 model("dce/", pattern = "(.+)\\.js", targetBackend = TargetBackend.JS)
             }
@@ -74,10 +61,6 @@ fun main(args: Array<String>) {
                 "testsWithJava15",
                 "testsWithJava17",
             )
-
-            testClass<AbstractJsCodegenBoxTest> {
-                model("codegen/box", targetBackend = TargetBackend.JS, excludeDirs = jvmOnlyBoxTests + "compileKotlinAgainstKotlin")
-            }
 
             testClass<AbstractIrJsCodegenBoxTest> {
                 model("codegen/box", targetBackend = TargetBackend.JS_IR, excludeDirs = jvmOnlyBoxTests + "compileKotlinAgainstKotlin")
@@ -115,20 +98,12 @@ fun main(args: Array<String>) {
                 model("codegen/box", targetBackend = TargetBackend.JS_IR_ES6, excludeDirs = jvmOnlyBoxTests)
             }
 
-            testClass<AbstractJsCodegenInlineTest> {
-                model("codegen/boxInline/", targetBackend = TargetBackend.JS)
-            }
-
             testClass<AbstractIrJsCodegenInlineTest> {
                 model("codegen/boxInline/", targetBackend = TargetBackend.JS_IR)
             }
 
             testClass<AbstractIrJsCodegenInlineES6Test> {
                 model("codegen/boxInline/", targetBackend = TargetBackend.JS_IR_ES6)
-            }
-
-            testClass<AbstractJsLegacyPrimitiveArraysBoxTest> {
-                model("codegen/box/arrays", targetBackend = TargetBackend.JS)
             }
         }
 

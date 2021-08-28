@@ -44,7 +44,7 @@ class ModuleStructureExtractorImpl(
     private val environmentConfigurators: List<EnvironmentConfigurator>
 ) : ModuleStructureExtractor(testServices, additionalSourceProviders, moduleStructureTransformers) {
     companion object {
-        private val allowedExtensionsForFiles = listOf(".kt", ".kts", ".java")
+        private val allowedExtensionsForFiles = listOf(".kt", ".kts", ".java", ".js")
 
         /*
          * ([^()\n]+) module name
@@ -85,9 +85,6 @@ class ModuleStructureExtractorImpl(
 
         private val defaultFileName: String
             get() = currentTestDataFile.name
-
-        private val defaultModuleName: String
-            get() = "main"
 
         private var currentModuleName: String? = null
         private var currentModuleTargetPlatform: TargetPlatform? = null
@@ -317,7 +314,7 @@ class ModuleStructureExtractorImpl(
 
             val targetBackend = currentModuleTargetBackend ?: defaultsProvider.defaultTargetBackend
             currentModuleLanguageVersionSettingsBuilder.configureUsingDirectives(moduleDirectives, environmentConfigurators, targetBackend)
-            val moduleName = currentModuleName ?: defaultModuleName
+            val moduleName = currentModuleName ?: DEFAULT_MODULE_NAME
             val targetPlatform = currentModuleTargetPlatform ?: parseModulePlatformByName(moduleName) ?: defaultsProvider.defaultPlatform
             val testModule = TestModule(
                 name = moduleName,
