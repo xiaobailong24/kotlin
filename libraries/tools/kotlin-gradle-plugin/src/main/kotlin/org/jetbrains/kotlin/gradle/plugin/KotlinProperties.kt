@@ -148,7 +148,7 @@ internal fun PropertiesProvider.mapKotlinDaemonProperties(task: CompileUsingKotl
         set(value) { project.extensions.extraProperties.set("kotlin.internal.mpp.13X.flags.setByPlugin") { "$value" } }
 
     val mppHierarchicalStructureByDefault: Boolean
-        get() = booleanProperty(KOTLIN_MPP_HIERARCHICAL_STRUCTURE_BY_DEFAULT) ?: false
+        get() = booleanProperty(KOTLIN_MPP_HIERARCHICAL_STRUCTURE_BY_DEFAULT) ?: true
 
     val enableCompatibilityMetadataVariant: Boolean
         get() = booleanProperty("kotlin.mpp.enableCompatibilityMetadataVariant") ?: !mppHierarchicalStructureByDefault
