@@ -27257,6 +27257,11 @@ public class IrJsCodegenBoxTestGenerated extends AbstractIrJsCodegenBoxTest {
         public void testSuspendConversionWithReferenceAdaptation() throws Exception {
             runTest("compiler/testData/codegen/box/suspendConversion/suspendConversionWithReferenceAdaptation.kt");
         }
+
+        @TestMetadata("suspendToNonSuspendOfInlineFunction.kt")
+        public void testSuspendToNonSuspendOfInlineFunction() throws Exception {
+            runTest("compiler/testData/codegen/box/suspendConversion/suspendToNonSuspendOfInlineFunction.kt");
+        }
     }
 
     @TestMetadata("compiler/testData/codegen/box/synchronized")

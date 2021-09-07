@@ -1,0 +1,8 @@
+package
+
+public fun box(): kotlin.Unit
+public fun builder(/*0*/ c: suspend () -> kotlin.Unit): kotlin.Unit
+public inline fun go1(/*0*/ crossinline f: () -> kotlin.String): kotlin.String
+public inline fun go2(/*0*/ noinline f: () -> kotlin.String): kotlin.String
+public fun go3(/*0*/ f: () -> kotlin.String): kotlin.String
+public suspend fun kotlin.String.id(): kotlin.String

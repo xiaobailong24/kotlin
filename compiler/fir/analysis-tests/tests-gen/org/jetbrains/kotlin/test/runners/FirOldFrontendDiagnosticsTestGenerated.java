@@ -29454,6 +29454,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             public void testSuspendConversionWithReferenceAdaptation() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/suspendConversion/suspendConversionWithReferenceAdaptation.kt");
             }
+
+            @Test
+            @TestMetadata("suspendToNonSuspendOfInlineFunction.kt")
+            public void testSuspendToNonSuspendOfInlineFunction() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/suspendConversion/suspendToNonSuspendOfInlineFunction.kt");
+            }
         }
 
         @Nested

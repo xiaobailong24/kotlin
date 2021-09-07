@@ -41449,6 +41449,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
         public void testSuspendConversionWithReferenceAdaptation() throws Exception {
             runTest("compiler/testData/codegen/box/suspendConversion/suspendConversionWithReferenceAdaptation.kt");
         }
+
+        @Test
+        @TestMetadata("suspendToNonSuspendOfInlineFunction.kt")
+        public void testSuspendToNonSuspendOfInlineFunction() throws Exception {
+            runTest("compiler/testData/codegen/box/suspendConversion/suspendToNonSuspendOfInlineFunction.kt");
+        }
     }
 
     @Nested

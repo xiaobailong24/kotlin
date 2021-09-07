@@ -6,5 +6,5 @@
 package org.jetbrains.kotlin.resolve.calls.components
 
 enum class SuspendConversionStrategy {
-    SUSPEND_CONVERSION, NO_CONVERSION
+    SUSPEND_CONVERSION, NON_SUSPEND_CONVERSION, NO_CONVERSION
 }

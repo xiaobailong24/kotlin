@@ -394,6 +394,8 @@ class CallableReferencesCandidateFactory(
         val suspendConversionStrategy =
             if (!descriptor.isSuspend && expectedType.isSuspendFunctionType) {
                 SuspendConversionStrategy.SUSPEND_CONVERSION
+            } else if (descriptor.isSuspend && !expectedType.isSuspendFunctionType) {
+                SuspendConversionStrategy.NON_SUSPEND_CONVERSION
             } else {
                 SuspendConversionStrategy.NO_CONVERSION
             }
@@ -526,7 +528,8 @@ class CallableReferencesCandidateFactory(
                 }
 
                 val suspendConversionStrategy = callableReferenceAdaptation?.suspendConversionStrategy
-                val isSuspend = descriptor.isSuspend || suspendConversionStrategy == SuspendConversionStrategy.SUSPEND_CONVERSION
+                val isSuspend = (descriptor.isSuspend && suspendConversionStrategy != SuspendConversionStrategy.NON_SUSPEND_CONVERSION)
+                        || suspendConversionStrategy == SuspendConversionStrategy.SUSPEND_CONVERSION
 
                 callComponents.reflectionTypes.getKFunctionType(
                     Annotations.EMPTY, null, argumentsAndReceivers, null,
