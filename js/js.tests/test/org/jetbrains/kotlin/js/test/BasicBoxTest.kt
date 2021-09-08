@@ -323,7 +323,7 @@ abstract class BasicBoxTest(
                     inputFiles.filter { it.fileName.endsWith(".mjs") }.map { it.fileName } + listOfNotNull(maybeAdditionalMjsFile)
 
                 val allNonEsModuleFiles: List<String> =
-                    additionalFiles + inputJsFilesBefore + globalCommonFiles + localCommonFiles + additionalCommonFiles
+                    additionalFiles + inputJsFilesBefore + globalCommonFiles + localCommonFiles
 
                 fun runIrEsmTests(testOutputDir: File) {
                     val esmOutputDir = testOutputDir.esModulesSubDir

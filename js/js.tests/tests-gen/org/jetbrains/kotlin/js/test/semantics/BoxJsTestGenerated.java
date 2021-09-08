@@ -1046,11 +1046,6 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
             runTest("js/js.translator/testData/box/defaultArguments/funInAbstractClassWithDefArg.kt");
         }
 
-        @TestMetadata("inheritViaAnotherInterface.kt")
-        public void testInheritViaAnotherInterface() throws Exception {
-            runTest("js/js.translator/testData/box/defaultArguments/inheritViaAnotherInterface.kt");
-        }
-
         @TestMetadata("inheritViaAnotherInterfaceIndirectly.kt")
         public void testInheritViaAnotherInterfaceIndirectly() throws Exception {
             runTest("js/js.translator/testData/box/defaultArguments/inheritViaAnotherInterfaceIndirectly.kt");
@@ -3611,9 +3606,19 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
             runTest("js/js.translator/testData/box/incremental/exportedPackage.kt");
         }
 
+        @TestMetadata("forWithoutInit.kt")
+        public void testForWithoutInit() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/forWithoutInit.kt");
+        }
+
         @TestMetadata("functionReferencingClass.kt")
         public void testFunctionReferencingClass() throws Exception {
             runTest("js/js.translator/testData/box/incremental/functionReferencingClass.kt");
+        }
+
+        @TestMetadata("inheritViaAnotherInterface.kt")
+        public void testInheritViaAnotherInterface() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/inheritViaAnotherInterface.kt");
         }
 
         @TestMetadata("inline.kt")
@@ -3636,9 +3641,39 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
             runTest("js/js.translator/testData/box/incremental/inlineSuspendFun.kt");
         }
 
+        @TestMetadata("inlineableAliasForExternalDeclaration.kt")
+        public void testInlineableAliasForExternalDeclaration() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/inlineableAliasForExternalDeclaration.kt");
+        }
+
         @TestMetadata("jsModule.kt")
         public void testJsModule() throws Exception {
             runTest("js/js.translator/testData/box/incremental/jsModule.kt");
+        }
+
+        @TestMetadata("kClassOnReifiedType.kt")
+        public void testKClassOnReifiedType() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/kClassOnReifiedType.kt");
+        }
+
+        @TestMetadata("kClassOnReifiedTypeInLambda-advanced.kt")
+        public void testKClassOnReifiedTypeInLambda_advanced() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/kClassOnReifiedTypeInLambda-advanced.kt");
+        }
+
+        @TestMetadata("kotlinTestIncremental.kt")
+        public void testKotlinTestIncremental() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/kotlinTestIncremental.kt");
+        }
+
+        @TestMetadata("localDeclarationsClash.kt")
+        public void testLocalDeclarationsClash() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/localDeclarationsClash.kt");
+        }
+
+        @TestMetadata("mainIncremental.kt")
+        public void testMainIncremental() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/mainIncremental.kt");
         }
 
         @TestMetadata("multipleExport.kt")
@@ -3654,6 +3689,11 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
         @TestMetadata("packagesWithSameName.kt")
         public void testPackagesWithSameName() throws Exception {
             runTest("js/js.translator/testData/box/incremental/packagesWithSameName.kt");
+        }
+
+        @TestMetadata("repeatedImport.kt")
+        public void testRepeatedImport() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/repeatedImport.kt");
         }
 
         @TestMetadata("simple.kt")
@@ -4166,11 +4206,6 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
         @TestMetadata("lambdaReassignmentWithCapture.kt")
         public void testLambdaReassignmentWithCapture() throws Exception {
             runTest("js/js.translator/testData/box/inline/lambdaReassignmentWithCapture.kt");
-        }
-
-        @TestMetadata("localDeclarationsClash.kt")
-        public void testLocalDeclarationsClash() throws Exception {
-            runTest("js/js.translator/testData/box/inline/localDeclarationsClash.kt");
         }
 
         @TestMetadata("localInlineExtensionFunction.kt")
@@ -4827,11 +4862,6 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
             runTest("js/js.translator/testData/box/inlineMultiModule/inlineMemberFunWithLambda.kt");
         }
 
-        @TestMetadata("inlineableAliasForExternalDeclaration.kt")
-        public void testInlineableAliasForExternalDeclaration() throws Exception {
-            runTest("js/js.translator/testData/box/inlineMultiModule/inlineableAliasForExternalDeclaration.kt");
-        }
-
         @TestMetadata("internalFriend.kt")
         public void testInternalFriend() throws Exception {
             runTest("js/js.translator/testData/box/inlineMultiModule/internalFriend.kt");
@@ -4905,11 +4935,6 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
         @TestMetadata("reexportDuringInline.kt")
         public void testReexportDuringInline() throws Exception {
             runTest("js/js.translator/testData/box/inlineMultiModule/reexportDuringInline.kt");
-        }
-
-        @TestMetadata("repeatedImport.kt")
-        public void testRepeatedImport() throws Exception {
-            runTest("js/js.translator/testData/box/inlineMultiModule/repeatedImport.kt");
         }
 
         @TestMetadata("simple.kt")
@@ -5281,11 +5306,6 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
         @TestMetadata("forIn.kt")
         public void testForIn() throws Exception {
             runTest("js/js.translator/testData/box/jsCode/forIn.kt");
-        }
-
-        @TestMetadata("forWithoutInit.kt")
-        public void testForWithoutInit() throws Exception {
-            runTest("js/js.translator/testData/box/jsCode/forWithoutInit.kt");
         }
 
         @TestMetadata("function.kt")
@@ -5698,11 +5718,6 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
             runTest("js/js.translator/testData/box/kotlin.test/illegalParameters.kt");
         }
 
-        @TestMetadata("incremental.kt")
-        public void testIncremental() throws Exception {
-            runTest("js/js.translator/testData/box/kotlin.test/incremental.kt");
-        }
-
         @TestMetadata("inherited.kt")
         public void testInherited() throws Exception {
             runTest("js/js.translator/testData/box/kotlin.test/inherited.kt");
@@ -5817,11 +5832,6 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
         @TestMetadata("differentMains.kt")
         public void testDifferentMains() throws Exception {
             runTest("js/js.translator/testData/box/main/differentMains.kt");
-        }
-
-        @TestMetadata("incremental.kt")
-        public void testIncremental() throws Exception {
-            runTest("js/js.translator/testData/box/main/incremental.kt");
         }
 
         @TestMetadata("noArgs.kt")
@@ -7334,19 +7344,9 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
             runTest("js/js.translator/testData/box/reflection/kClassIsInstance.kt");
         }
 
-        @TestMetadata("kClassOnReifiedType.kt")
-        public void testKClassOnReifiedType() throws Exception {
-            runTest("js/js.translator/testData/box/reflection/kClassOnReifiedType.kt");
-        }
-
         @TestMetadata("kClassOnReifiedTypeInLambda.kt")
         public void testKClassOnReifiedTypeInLambda() throws Exception {
             runTest("js/js.translator/testData/box/reflection/kClassOnReifiedTypeInLambda.kt");
-        }
-
-        @TestMetadata("kClassOnReifiedTypeInLambda-advanced.kt")
-        public void testKClassOnReifiedTypeInLambda_advanced() throws Exception {
-            runTest("js/js.translator/testData/box/reflection/kClassOnReifiedTypeInLambda-advanced.kt");
         }
 
         @TestMetadata("kClassReifiedWithJsCall.kt")

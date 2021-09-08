@@ -37,11 +37,6 @@ public class JsTranslatorWasmTestGenerated extends AbstractJsTranslatorWasmTest 
             runTest("js/js.translator/testData/box/main/differentMains.kt");
         }
 
-        @TestMetadata("incremental.kt")
-        public void testIncremental() throws Exception {
-            runTest("js/js.translator/testData/box/main/incremental.kt");
-        }
-
         @TestMetadata("noArgs.kt")
         public void testNoArgs() throws Exception {
             runTest("js/js.translator/testData/box/main/noArgs.kt");
@@ -98,11 +93,6 @@ public class JsTranslatorWasmTestGenerated extends AbstractJsTranslatorWasmTest 
         @TestMetadata("illegalParameters.kt")
         public void testIllegalParameters() throws Exception {
             runTest("js/js.translator/testData/box/kotlin.test/illegalParameters.kt");
-        }
-
-        @TestMetadata("incremental.kt")
-        public void testIncremental() throws Exception {
-            runTest("js/js.translator/testData/box/kotlin.test/incremental.kt");
         }
 
         @TestMetadata("inherited.kt")
