@@ -485,8 +485,9 @@ internal object CollectionTypeVariableUsagesInfo : ResolutionPart() {
 
     override fun KotlinResolutionCandidate.process(workIndex: Int) {
         for (variable in resolvedCall.freshVariablesSubstitutor.freshVariables) {
-            if (resolvedCall.candidateDescriptor is ClassConstructorDescriptor) {
-                val typeParameters = resolvedCall.candidateDescriptor.containingDeclaration.declaredTypeParameters
+            val ca = resolvedCall.candidateDescriptor
+            if (ca is ClassConstructorDescriptor) {
+                val typeParameters = ca.containingDeclaration.declaredTypeParameters
 
                 if (isContainedInInvariantOrContravariantPositionsAmongTypeParameters(variable, typeParameters)) {
                     variable.recordInfoAboutTypeVariableUsagesAsInvariantOrContravariantParameter()

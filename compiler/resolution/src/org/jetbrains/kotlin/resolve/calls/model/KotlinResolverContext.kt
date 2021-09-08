@@ -235,6 +235,13 @@ enum class KotlinCallKind(vararg resolutionPart: ResolutionPart) {
         PostponedVariablesInitializerResolutionPart
     ),
     INVOKE(*FUNCTION.resolutionSequence.toTypedArray()),
+    CALLABLE_REFERENCE(
+        CheckVisibility,
+        MapTypeArguments,
+        NoArguments,
+        CreateFreshVariablesSubstitutor,
+        CheckReceivers,
+    ),
     UNSUPPORTED();
 
     val resolutionSequence = resolutionPart.asList()

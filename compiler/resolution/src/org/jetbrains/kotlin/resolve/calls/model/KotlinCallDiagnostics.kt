@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.resolve.calls.inference.model.ConstraintSystemError
 import org.jetbrains.kotlin.resolve.calls.inference.model.NewConstraintWarning
 import org.jetbrains.kotlin.resolve.calls.tower.CandidateApplicability
 import org.jetbrains.kotlin.resolve.calls.tower.CandidateApplicability.*
+import org.jetbrains.kotlin.resolve.calls.tower.ResolutionCandidate
 import org.jetbrains.kotlin.types.TypeConstructor
 import org.jetbrains.kotlin.types.UnwrappedType
 
@@ -98,25 +99,44 @@ class WrongCountOfTypeArguments(
 
 // Callable reference resolution
 class CallableReferenceNotCompatible(
-    override val argument: CallableReferenceKotlinCallArgument,
+    val argument: CallableReferenceResolutionAtom,
     val candidate: CallableMemberDescriptor,
     val expectedType: UnwrappedType?,
     val callableReverenceType: UnwrappedType
-) : InapplicableArgumentDiagnostic()
+) : KotlinCallDiagnostic(INAPPLICABLE) {
+    override fun report(reporter: DiagnosticReporter) {
+        when (argument) {
+            is CallableReferenceCall -> reporter.onCall(this)
+            is CallableReferenceKotlinCallArgument -> reporter.onCallArgument(argument, this)
+        }
+    }
+}
 
 // supported by FE but not supported by BE now
 class CallableReferencesDefaultArgumentUsed(
-    val argument: CallableReferenceKotlinCallArgument,
+    val argument: CallableReferenceResolutionAtom,
     val candidate: CallableDescriptor,
     val defaultsCount: Int
 ) : KotlinCallDiagnostic(IMPOSSIBLE_TO_GENERATE) {
-    override fun report(reporter: DiagnosticReporter) = reporter.onCallArgument(argument, this)
+    override fun report(reporter: DiagnosticReporter) {
+        when (argument) {
+            is CallableReferenceCall -> reporter.onCall(this)
+            is CallableReferenceKotlinCallArgument -> reporter.onCallArgument(argument, this)
+        }
+    }
 }
 
 class NotCallableMemberReference(
-    override val argument: CallableReferenceKotlinCallArgument,
+    val argument: CallableReferenceResolutionAtom,
     val candidate: CallableDescriptor
-) : InapplicableArgumentDiagnostic()
+): KotlinCallDiagnostic(INAPPLICABLE) {
+    override fun report(reporter: DiagnosticReporter) {
+        when (argument) {
+            is CallableReferenceCall -> reporter.onCall(this)
+            is CallableReferenceKotlinCallArgument -> reporter.onCallArgument(argument, this)
+        }
+    }
+}
 
 class NoneCallableReferenceCandidates(override val argument: CallableReferenceKotlinCallArgument) : InapplicableArgumentDiagnostic()
 
@@ -201,7 +221,7 @@ class NoneCandidatesCallDiagnostic(val kotlinCall: KotlinCall) : KotlinCallDiagn
 
 class ManyCandidatesCallDiagnostic(
     val kotlinCall: KotlinCall,
-    val candidates: Collection<KotlinResolutionCandidate>
+    val candidates: Collection<ResolutionCandidate>
 ) : KotlinCallDiagnostic(INAPPLICABLE) {
     override fun report(reporter: DiagnosticReporter) {
         reporter.onCall(this)
@@ -261,12 +281,14 @@ class CompatibilityWarningOnArgument(
 }
 
 class AdaptedCallableReferenceIsUsedWithReflection(
-    val argument: CallableReferenceKotlinCallArgument,
+    val argument: CallableReferenceResolutionAtom,
 ) : KotlinCallDiagnostic(RESOLVED_WITH_ERROR) {
     override fun report(reporter: DiagnosticReporter) {
-        reporter.onCallArgument(argument, this)
+        when (argument) {
+            is CallableReferenceCall -> reporter.onCall(this)
+            is CallableReferenceKotlinCallArgument -> reporter.onCallArgument(argument, this)
+        }
     }
-
 }
 
 class KotlinConstraintSystemDiagnostic(

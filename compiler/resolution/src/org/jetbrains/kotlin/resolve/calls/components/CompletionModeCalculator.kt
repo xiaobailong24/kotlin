@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.resolve.calls.inference.model.Constraint
 import org.jetbrains.kotlin.resolve.calls.inference.model.VariableWithConstraints
 import org.jetbrains.kotlin.resolve.calls.model.KotlinResolutionCandidate
 import org.jetbrains.kotlin.resolve.calls.model.PostponedResolvedAtom
+import org.jetbrains.kotlin.resolve.calls.tower.ResolutionCandidate
 import org.jetbrains.kotlin.types.AbstractTypeChecker
 import org.jetbrains.kotlin.types.UnwrappedType
 import org.jetbrains.kotlin.types.model.*
@@ -24,7 +25,7 @@ typealias CsCompleterContext = ConstraintSystemCompletionContext
 class CompletionModeCalculator {
     companion object {
         fun computeCompletionMode(
-            candidate: KotlinResolutionCandidate,
+            candidate: ResolutionCandidate,
             expectedType: UnwrappedType?,
             returnType: UnwrappedType?,
             trivialConstraintTypeInferenceOracle: TrivialConstraintTypeInferenceOracle,
@@ -42,6 +43,8 @@ class CompletionModeCalculator {
             // This is questionable as null return type can be only for error call
             if (returnType == null) return ConstraintSystemCompletionMode.PARTIAL
 
+            val csBuilder = this.getSystem().getBuilder()
+
             // Full if return type for call has no type variables
             if (csBuilder.isProperType(returnType)) return ConstraintSystemCompletionMode.FULL
 
@@ -53,7 +56,7 @@ class CompletionModeCalculator {
     }
 
     private class CalculatorForNestedCall(
-        private val candidate: KotlinResolutionCandidate,
+        private val candidate: ResolutionCandidate,
         private val returnType: UnwrappedType?,
         private val csCompleterContext: CsCompleterContext,
         private val trivialConstraintTypeInferenceOracle: TrivialConstraintTypeInferenceOracle,

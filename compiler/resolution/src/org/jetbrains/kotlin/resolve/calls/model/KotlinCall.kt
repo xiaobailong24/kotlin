@@ -21,6 +21,11 @@ interface KotlinCall : ResolutionAtom {
 
     val typeArguments: List<TypeArgument>
 
+    val receiverTypeArguments: List<TypeArgument>
+
+    fun computeLhsResult(
+    ): LHSResult = null as LHSResult
+
     val argumentsInParenthesis: List<KotlinCallArgument>
 
     val externalArgument: KotlinCallArgument?

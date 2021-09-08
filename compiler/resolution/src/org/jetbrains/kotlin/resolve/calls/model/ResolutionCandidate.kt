@@ -72,17 +72,28 @@ fun KotlinDiagnosticsHolder.addError(error: ConstraintSystemError) {
  * baseSystem contains all information from arguments, i.e. it is union of all system of arguments
  * Also by convention we suppose that baseSystem has no contradiction
  */
-class KotlinResolutionCandidate(
-    val callComponents: KotlinCallComponents,
+
+//class CallableReferenceCandidate(
+//    val candidate: CallableDescriptor,
+//    val dispatchReceiver: CallableReceiver?,
+//    val extensionReceiver: CallableReceiver?,
+//    val explicitReceiverKind: ExplicitReceiverKind,
+//    val reflectionCandidateType: UnwrappedType,
+//    val callableReferenceAdaptation: CallableReferenceAdaptation?,
+//    initialDiagnostics: List<KotlinCallDiagnostic>
+//) : Candidate {
+
+open class KotlinResolutionCandidate(
+    override val callComponents: KotlinCallComponents,
     val resolutionCallbacks: KotlinResolutionCallbacks,
     val callableReferenceResolver: CallableReferenceResolver,
     val scopeTower: ImplicitScopeTower,
     private val baseSystem: ConstraintStorage,
-    val resolvedCall: MutableResolvedCallAtom,
+    override val resolvedCall: MutableResolvedCallAtom,
     val knownTypeParametersResultingSubstitutor: TypeSubstitutor? = null,
     private val resolutionSequence: List<ResolutionPart> = resolvedCall.atom.callKind.resolutionSequence
-) : Candidate, KotlinDiagnosticsHolder {
-    val diagnosticsFromResolutionParts = arrayListOf<KotlinCallDiagnostic>() // TODO: this is mutable list, take diagnostics only once!
+) : ResolutionCandidate, KotlinDiagnosticsHolder {
+    override val diagnosticsFromResolutionParts = arrayListOf<KotlinCallDiagnostic>() // TODO: this is mutable list, take diagnostics only once!
     private var newSystem: NewConstraintSystemImpl? = null
     private var currentApplicability = CandidateApplicability.RESOLVED
     private var subResolvedAtoms: MutableList<ResolvedAtom> = arrayListOf()
@@ -90,7 +101,7 @@ class KotlinResolutionCandidate(
     private val stepCount = resolutionSequence.sumOf { it.run { workCount() } }
     private var step = 0
 
-    fun getSystem(): NewConstraintSystem {
+    override fun getSystem(): NewConstraintSystem {
         if (newSystem == null) {
             newSystem = NewConstraintSystemImpl(callComponents.constraintInjector, callComponents.builtIns, callComponents.kotlinTypeRefiner)
             newSystem!!.addOtherSystem(baseSystem)
@@ -105,7 +116,7 @@ class KotlinResolutionCandidate(
         currentApplicability = minOf(diagnostic.candidateApplicability, currentApplicability)
     }
 
-    fun getSubResolvedAtoms(): List<ResolvedAtom> = subResolvedAtoms
+    override fun getSubResolvedAtoms(): List<ResolvedAtom> = subResolvedAtoms
 
     fun addResolvedKtPrimitive(resolvedAtom: ResolvedAtom) {
         subResolvedAtoms.add(resolvedAtom)
@@ -262,6 +273,11 @@ fun KotlinResolutionCandidate.markCandidateForCompatibilityResolve() {
 }
 
 fun CallableReferencesCandidateFactory.markCandidateForCompatibilityResolve(diagnostics: SmartList<KotlinCallDiagnostic>) {
+    if (callComponents.languageVersionSettings.supportsFeature(LanguageFeature.DisableCompatibilityModeForNewInference)) return
+    diagnostics.add(LowerPriorityToPreserveCompatibility.asDiagnostic())
+}
+
+fun CallableReferencesCandidateFactory2.markCandidateForCompatibilityResolve(diagnostics: SmartList<KotlinCallDiagnostic>) {
     if (callComponents.languageVersionSettings.supportsFeature(LanguageFeature.DisableCompatibilityModeForNewInference)) return
     diagnostics.add(LowerPriorityToPreserveCompatibility.asDiagnostic())
 }

@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.resolve.calls.model
 
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.calls.components.CallableReferenceCandidate
 import org.jetbrains.kotlin.resolve.calls.components.ReturnArgumentsInfo
 import org.jetbrains.kotlin.resolve.calls.components.TypeArgumentsToParametersMapper
@@ -31,6 +32,15 @@ import org.jetbrains.kotlin.utils.addToStdlib.safeAs
  * Expression with type is also primitive. This is done for simplification. todo
  */
 interface ResolutionAtom
+
+sealed interface CallableReferenceResolutionAtom: ResolutionAtom {
+    val lhsResult: LHSResult
+    val rhsName: Name
+}
+
+class CallableReferenceCall(val call: KotlinCall, override val lhsResult: LHSResult, override val rhsName: Name) : CallableReferenceResolutionAtom {
+
+}
 
 sealed class ResolvedAtom {
     abstract val atom: ResolutionAtom? // CallResolutionResult has no ResolutionAtom

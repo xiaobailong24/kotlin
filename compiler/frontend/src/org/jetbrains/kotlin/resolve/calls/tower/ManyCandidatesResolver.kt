@@ -40,7 +40,7 @@ abstract class ManyCandidatesResolver<D : CallableDescriptor>(
         // do nothing
     }
 
-    override fun shouldRunCompletion(candidate: KotlinResolutionCandidate): Boolean {
+    override fun shouldRunCompletion(candidate: ResolutionCandidate): Boolean {
         return false
     }
 
@@ -168,7 +168,7 @@ abstract class ManyCandidatesResolver<D : CallableDescriptor>(
         return allCandidates
     }
 
-    override fun computeCompletionMode(candidate: KotlinResolutionCandidate) = null
+    override fun computeCompletionMode(candidate: ResolutionCandidate) = null
 
     override fun resolveReceiverIndependently(): Boolean = false
 

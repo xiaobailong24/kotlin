@@ -49,18 +49,24 @@ class TypeArgumentsToParametersMapper {
     }
 
     fun mapTypeArguments(call: KotlinCall, descriptor: CallableDescriptor): TypeArgumentsMapping {
-        if (call.typeArguments.isEmpty()) {
-            return TypeArgumentsMapping.NoExplicitArguments
+        val typeArguments = if (call.callKind == KotlinCallKind.CALLABLE_REFERENCE) {
+            call.receiverTypeArguments
+        } else {
+            if (call.typeArguments.isEmpty()) {
+                return TypeArgumentsMapping.NoExplicitArguments
+            }
+
+            if (call.typeArguments.size != descriptor.typeParameters.size) {
+                return TypeArgumentsMapping.TypeArgumentsMappingImpl(
+                    listOf(WrongCountOfTypeArguments(descriptor, call.typeArguments.size)), emptyMap()
+                )
+            }
+
+            call.typeArguments
         }
 
-        if (call.typeArguments.size != descriptor.typeParameters.size) {
-            return TypeArgumentsMapping.TypeArgumentsMappingImpl(
-                listOf(WrongCountOfTypeArguments(descriptor, call.typeArguments.size)), emptyMap()
-            )
-        } else {
-            val typeParameterToArgumentMap = descriptor.typeParameters.zip(call.typeArguments).associate { it }
-            return TypeArgumentsMapping.TypeArgumentsMappingImpl(listOf(), typeParameterToArgumentMap)
-        }
+        val typeParameterToArgumentMap = descriptor.typeParameters.zip(typeArguments).associate { it }
+        return TypeArgumentsMapping.TypeArgumentsMappingImpl(listOf(), typeParameterToArgumentMap)
     }
 
 }

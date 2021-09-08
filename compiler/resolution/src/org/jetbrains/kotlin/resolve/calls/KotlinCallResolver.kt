@@ -7,10 +7,7 @@ package org.jetbrains.kotlin.resolve.calls
 
 import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.progress.ProgressIndicatorAndCompilationCanceledStatus
-import org.jetbrains.kotlin.resolve.calls.components.CallableReferenceResolver
-import org.jetbrains.kotlin.resolve.calls.components.KotlinCallCompleter
-import org.jetbrains.kotlin.resolve.calls.components.KotlinResolutionCallbacks
-import org.jetbrains.kotlin.resolve.calls.components.NewOverloadingConflictResolver
+import org.jetbrains.kotlin.resolve.calls.components.*
 import org.jetbrains.kotlin.resolve.calls.context.CheckArgumentTypesMode
 import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.resolve.calls.tower.*
@@ -53,6 +50,37 @@ class KotlinCallResolver(
                     createFactoryProviderForInvoke(),
                     kotlinCall.explicitReceiver?.receiver
                 )
+            }
+            KotlinCallKind.CALLABLE_REFERENCE -> {
+                val lhs = resolutionCallbacks.computeLhsResult(kotlinCall)
+                val pp = CallableReferenceCall(kotlinCall, lhs, kotlinCall.name)
+
+                val a = CallableReferencesCandidateFactory2(
+                    pp, callComponents, scopeTower, expectedType, resolutionCallbacks
+                )
+                val processor = createCallableReferenceProcessor2(a)
+                val candidates = towerResolver.runResolve(scopeTower, processor, useOrder = true, name = kotlinCall.name)
+                return kotlinCallCompleter.runCompletion(candidateFactory, candidates, expectedType, resolutionCallbacks)
+
+//                val processor = createCallableReferenceProcessor(
+//                    scopeTower,
+//                    kotlinCall.name,
+//                    SimpleCandidateFactory(
+//                        callComponents, scopeTower, kotlinCall, resolutionCallbacks, callableReferenceResolver
+//                    ),
+////                    CallableReferencesCandidateFactory(
+////                        kotlinCall, callComponents, scopeTower, compatibilityChecker, expectedType, csBuilder, resolutionCallbacks
+////                    ),
+//                    kotlinCall.explicitReceiver?.receiver,
+//                )
+//                val candidates = towerResolver.runResolve(scopeTower, processor, useOrder = true, name = kotlinCall.name)
+//                val cc = this.overloadingConflictResolver.chooseMaximallySpecificCandidates(
+//                    candidates,
+//                    CheckArgumentTypesMode.CHECK_VALUE_ARGUMENTS,
+//                    discriminateGenerics = false // we can't specify generics explicitly for callable references
+//                )
+//
+//                return kotlinCallCompleter.runCompletion(candidateFactory, cc, expectedType, resolutionCallbacks)
             }
             KotlinCallKind.INVOKE -> {
                 createProcessorWithReceiverValueOrEmpty(kotlinCall.explicitReceiver?.receiver) {

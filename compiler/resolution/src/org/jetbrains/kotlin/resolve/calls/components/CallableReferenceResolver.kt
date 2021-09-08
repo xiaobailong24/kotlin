@@ -68,7 +68,7 @@ class CallableReferenceOverloadConflictResolver(
 
 class CallableReferenceResolver(
     private val towerResolver: TowerResolver,
-    private val callableReferenceOverloadConflictResolver: CallableReferenceOverloadConflictResolver,
+    val callableReferenceOverloadConflictResolver: CallableReferenceOverloadConflictResolver,
     private val callComponents: KotlinCallComponents
 ) {
 

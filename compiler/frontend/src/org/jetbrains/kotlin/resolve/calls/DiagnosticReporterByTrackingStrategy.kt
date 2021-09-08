@@ -199,13 +199,13 @@ class DiagnosticReporterByTrackingStrategy(
                     "diagnostic ($diagnostic) should have type CallableReferencesDefaultArgumentUsed"
                 }
 
-                diagnostic.argument.psiExpression?.let {
-                    trace.report(
-                        UNSUPPORTED_FEATURE.on(
-                            it, LanguageFeature.FunctionReferenceWithDefaultValueAsOtherType to context.languageVersionSettings
-                        )
-                    )
-                }
+//                diagnostic.argument.psiExpression?.let {
+//                    trace.report(
+//                        UNSUPPORTED_FEATURE.on(
+//                            it, LanguageFeature.FunctionReferenceWithDefaultValueAsOtherType to context.languageVersionSettings
+//                        )
+//                    )
+//                }
 
             }
 

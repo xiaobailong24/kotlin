@@ -90,4 +90,8 @@ interface KotlinResolutionCallbacks {
     fun convertSignedConstantToUnsigned(argument: KotlinCallArgument): IntegerValueTypeConstant?
 
     fun recordInlinabilityOfLambda(atom: Set<Map.Entry<KotlinResolutionCandidate, ResolvedLambdaAtom>>)
+
+    fun computeLhsResult(
+        call: KotlinCall,
+    ): LHSResult
 }

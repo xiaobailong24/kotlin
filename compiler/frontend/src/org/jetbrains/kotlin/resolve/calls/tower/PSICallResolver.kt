@@ -34,7 +34,7 @@ import org.jetbrains.kotlin.resolve.calls.results.*
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowInfo
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactory
 import org.jetbrains.kotlin.resolve.calls.tasks.DynamicCallableDescriptors
-import org.jetbrains.kotlin.resolve.calls.tasks.ResolutionCandidate
+import org.jetbrains.kotlin.resolve.calls.tasks.OldResolutionCandidate
 import org.jetbrains.kotlin.resolve.calls.tasks.TracingStrategy
 import org.jetbrains.kotlin.resolve.calls.util.CallMaker
 import org.jetbrains.kotlin.resolve.constants.evaluate.ConstantExpressionEvaluator
@@ -80,7 +80,8 @@ class PSICallResolver(
     val defaultResolutionKinds = setOf(
         NewResolutionOldInference.ResolutionKind.Function,
         NewResolutionOldInference.ResolutionKind.Variable,
-        NewResolutionOldInference.ResolutionKind.Invoke
+        NewResolutionOldInference.ResolutionKind.Invoke,
+        NewResolutionOldInference.ResolutionKind.CallableReference
     )
 
     fun <D : CallableDescriptor> runResolutionAndInference(
@@ -121,7 +122,7 @@ class PSICallResolver(
     // actually, `D` is at least FunctionDescriptor, but right now because of CallResolver it isn't possible change upper bound for `D`
     fun <D : CallableDescriptor> runResolutionAndInferenceForGivenCandidates(
         context: BasicCallResolutionContext,
-        resolutionCandidates: Collection<ResolutionCandidate<D>>,
+        resolutionCandidates: Collection<OldResolutionCandidate<D>>,
         tracingStrategy: TracingStrategy
     ): OverloadResolutionResults<D> {
         val dispatchReceiver = resolutionCandidates.firstNotNullOfOrNull { it.dispatchReceiver }
@@ -327,12 +328,12 @@ class PSICallResolver(
     private fun CallResolutionResult.isEmpty(): Boolean =
         diagnostics.firstIsInstanceOrNull<NoneCandidatesCallDiagnostic>() != null
 
-    private fun Collection<KotlinResolutionCandidate>.areAllFailed() =
+    private fun Collection<ResolutionCandidate>.areAllFailed() =
         all {
             !it.resultingApplicability.isSuccess
         }
 
-    private fun Collection<KotlinResolutionCandidate>.areAllFailedWithInapplicableWrongReceiver() =
+    private fun Collection<ResolutionCandidate>.areAllFailedWithInapplicableWrongReceiver() =
         all {
             it.resultingApplicability == CandidateApplicability.INAPPLICABLE_WRONG_RECEIVER
         }
@@ -554,7 +555,7 @@ class PSICallResolver(
             is NewResolutionOldInference.ResolutionKind.Function -> KotlinCallKind.FUNCTION
             is NewResolutionOldInference.ResolutionKind.Variable -> KotlinCallKind.VARIABLE
             is NewResolutionOldInference.ResolutionKind.Invoke -> KotlinCallKind.INVOKE
-            is NewResolutionOldInference.ResolutionKind.CallableReference -> KotlinCallKind.UNSUPPORTED
+            is NewResolutionOldInference.ResolutionKind.CallableReference -> KotlinCallKind.CALLABLE_REFERENCE
             is NewResolutionOldInference.ResolutionKind.GivenCandidates -> KotlinCallKind.UNSUPPORTED
         }
 
@@ -770,25 +771,17 @@ class PSICallResolver(
         return createSimplePSICallArgument(context, valueArgument, typeInfo) ?: createParseErrorElement()
     }
 
-    fun createCallableReferenceKotlinCallArgument(
+    fun computeLhsResult(
         context: BasicCallResolutionContext,
-        ktExpression: KtCallableReferenceExpression,
-        startDataFlowInfo: DataFlowInfo,
-        valueArgument: ValueArgument,
-        argumentName: Name?,
-        outerCallContext: BasicCallResolutionContext
-    ): CallableReferenceKotlinCallArgumentImpl {
-        checkNoSpread(outerCallContext, valueArgument)
-
+        ktExpression: KtCallableReferenceExpression
+    ): Pair<DoubleColonLHS?, LHSResult> {
         val expressionTypingContext = ExpressionTypingContext.newContext(context)
         val lhsResult = if (ktExpression.isEmptyLHS) null else doubleColonExpressionResolver.resolveDoubleColonLHS(
             ktExpression,
             expressionTypingContext
         )
-        val newDataFlowInfo = (lhsResult as? DoubleColonLHS.Expression)?.dataFlowInfo ?: startDataFlowInfo
-        val name = ktExpression.callableReference.getReferencedNameAsName()
 
-        val lhsNewResult = when (lhsResult) {
+        return lhsResult to when (lhsResult) {
             null -> LHSResult.Empty
             is DoubleColonLHS.Expression -> {
                 if (lhsResult.isObjectQualifier) {
@@ -818,6 +811,21 @@ class PSICallResolver(
                 }
             }
         }
+    }
+
+    fun createCallableReferenceKotlinCallArgument(
+        context: BasicCallResolutionContext,
+        ktExpression: KtCallableReferenceExpression,
+        startDataFlowInfo: DataFlowInfo,
+        valueArgument: ValueArgument,
+        argumentName: Name?,
+        outerCallContext: BasicCallResolutionContext
+    ): CallableReferenceKotlinCallArgumentImpl {
+        checkNoSpread(outerCallContext, valueArgument)
+
+        val (lhsResult, lhsNewResult) = computeLhsResult(context, ktExpression)
+        val newDataFlowInfo = (lhsResult as? DoubleColonLHS.Expression)?.dataFlowInfo ?: startDataFlowInfo
+        val name = ktExpression.callableReference.getReferencedNameAsName()
 
         return CallableReferenceKotlinCallArgumentImpl(
             ASTScopeTower(context, ktExpression.callableReference), valueArgument, startDataFlowInfo, newDataFlowInfo,

@@ -18,6 +18,11 @@ package org.jetbrains.kotlin.resolve.calls.tower
 
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.progress.ProgressIndicatorAndCompilationCanceledStatus
+import org.jetbrains.kotlin.resolve.calls.inference.NewConstraintSystem
+import org.jetbrains.kotlin.resolve.calls.model.KotlinCallComponents
+import org.jetbrains.kotlin.resolve.calls.model.KotlinCallDiagnostic
+import org.jetbrains.kotlin.resolve.calls.model.MutableResolvedCallAtom
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedAtom
 import org.jetbrains.kotlin.resolve.calls.tasks.ExplicitReceiverKind
 import org.jetbrains.kotlin.resolve.descriptorUtil.HIDES_MEMBERS_NAME_LIST
 import org.jetbrains.kotlin.resolve.scopes.HierarchicalScope
@@ -38,6 +43,14 @@ interface Candidate {
     val resultingApplicability: CandidateApplicability
 
     fun addCompatibilityWarning(other: Candidate)
+}
+
+interface ResolutionCandidate : Candidate {
+    val resolvedCall: MutableResolvedCallAtom
+    fun getSystem(): NewConstraintSystem
+    val callComponents: KotlinCallComponents
+    val diagnosticsFromResolutionParts: List<KotlinCallDiagnostic>
+    fun getSubResolvedAtoms(): List<ResolvedAtom>
 }
 
 interface CandidateFactory<out C : Candidate> {
