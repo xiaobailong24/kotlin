@@ -91,6 +91,7 @@ interface IrStatementOrigin {
     object OBJECT_LITERAL : IrStatementOriginImpl("OBJECT_LITERAL")
     object ADAPTED_FUNCTION_REFERENCE : IrStatementOriginImpl("ADAPTED_FUNCTION_REFERENCE")
     object SUSPEND_CONVERSION: IrStatementOriginImpl("SUSPEND_CONVERSION")
+    object NON_SUSPEND_CONVERSION: IrStatementOriginImpl("NON_SUSPEND_CONVERSION")
 
     object INITIALIZE_PROPERTY_FROM_PARAMETER : IrStatementOriginImpl("INITIALIZE_PROPERTY_FROM_PARAMETER")
     object INITIALIZE_FIELD : IrStatementOriginImpl("INITIALIZE_FIELD")

@@ -17,7 +17,9 @@
 package org.jetbrains.kotlin.psi2ir.generators
 
 import org.jetbrains.kotlin.builtins.isBuiltinFunctionalType
+import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.builtins.isFunctionTypeOrSubtype
+import org.jetbrains.kotlin.builtins.isSuspendFunctionType
 import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.impl.SyntheticFieldDescriptor
@@ -33,6 +35,8 @@ import org.jetbrains.kotlin.ir.expressions.impl.*
 import org.jetbrains.kotlin.ir.symbols.impl.IrSimpleFunctionSymbolImpl
 import org.jetbrains.kotlin.ir.symbols.impl.IrValueParameterSymbolImpl
 import org.jetbrains.kotlin.ir.types.IrType
+import org.jetbrains.kotlin.ir.types.toKotlinType
+import org.jetbrains.kotlin.ir.util.isSuspend
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
@@ -323,29 +327,57 @@ private fun StatementGenerator.applySuspendConversionForValueArgumentIfRequired(
     val newResolvedCall = resolvedCall as? NewResolvedCallImpl<*>
         ?: return expression
 
-    val suspendConversionType = newResolvedCall.getExpectedTypeForSuspendConvertedArgument(valueArgument)
-        ?: return expression
-
     val valueParameterType = if (valueParameter.isVararg) valueParameter.varargElementType!! else valueParameter.type
 
-    val suspendFunType: KotlinType =
+    val fromType: KotlinType =
         if (context.extensions.samConversion.isSamType(valueParameterType))
             valueParameterType.getSubstitutedFunctionTypeForSamType()
         else
             valueParameterType
 
-    val irAdapterRefType = suspendFunType.toIrType()
-    return IrBlockImpl(expression.startOffset, expression.endOffset, irAdapterRefType, IrStatementOrigin.SUSPEND_CONVERSION)
-        .apply {
-            val irAdapterFunction = createFunctionForSuspendConversion(startOffset, endOffset, suspendConversionType, suspendFunType)
-            // TODO add a bound receiver property to IrFunctionExpressionImpl?
-            val irAdapterRef = IrFunctionReferenceImpl(
-                startOffset, endOffset, irAdapterRefType, irAdapterFunction.symbol, irAdapterFunction.typeParameters.size,
-                irAdapterFunction.valueParameters.size, null, IrStatementOrigin.SUSPEND_CONVERSION
-            )
-            statements.add(irAdapterFunction)
-            statements.add(irAdapterRef.apply { extensionReceiver = expression })
+    val irAdapterRefType = fromType.toIrType()
+
+    val toTypeAsSuspend = newResolvedCall.getExpectedTypeForSuspendConvertedArgument(valueArgument)
+    if (toTypeAsSuspend != null) {
+        return IrBlockImpl(expression.startOffset, expression.endOffset, irAdapterRefType, IrStatementOrigin.SUSPEND_CONVERSION)
+            .apply {
+                val irAdapterFunction = createFunctionForSuspendConversion(startOffset, endOffset, toTypeAsSuspend, fromType)
+                // TODO add a bound receiver property to IrFunctionExpressionImpl?
+                val irAdapterRef = IrFunctionReferenceImpl(
+                    startOffset, endOffset, irAdapterRefType, irAdapterFunction.symbol, irAdapterFunction.typeParameters.size,
+                    irAdapterFunction.valueParameters.size, null, IrStatementOrigin.SUSPEND_CONVERSION
+                )
+                statements.add(irAdapterFunction)
+                statements.add(irAdapterRef.apply { extensionReceiver = expression })
+            }
+    } else {
+        // TODO: Maybe use the same machinery like for suspend conversion - pass info from frontend?
+        if (fromType.isFunctionType &&
+            ((expression as? IrFunctionReference)?.symbol?.owner?.isSuspend == true ||
+                    expression.type.toKotlinType().isSuspendFunctionType)
+        ) {
+            return IrBlockImpl(expression.startOffset, expression.endOffset, irAdapterRefType, IrStatementOrigin.NON_SUSPEND_CONVERSION)
+                .apply {
+                    val fromSuspendType = if (expression is IrFunctionReference) KotlinTypeFactory.simpleType(
+                        baseType = context.moduleDescriptor.builtIns.getKSuspendFunction(fromType.arguments.size - 1).defaultType,
+                        arguments = fromType.arguments
+                    ) else expression.type.toKotlinType()
+
+                    val irAdapterFunction = createFunctionForNonSuspendConversion(
+                        startOffset, endOffset,
+                        fromSuspendType, fromType
+                    )
+                    // TODO add a bound receiver property to IrFunctionExpressionImpl?
+                    val irAdapterRef = IrFunctionReferenceImpl(
+                        startOffset, endOffset, irAdapterRefType, irAdapterFunction.symbol, irAdapterFunction.typeParameters.size,
+                        irAdapterFunction.valueParameters.size, null, IrStatementOrigin.NON_SUSPEND_CONVERSION
+                    )
+                    statements.add(irAdapterFunction)
+                    statements.add(irAdapterRef.apply { extensionReceiver = expression })
+                }
         }
+    }
+    return expression
 }
 
 private fun StatementGenerator.createFunctionForSuspendConversion(
@@ -407,6 +439,82 @@ private fun StatementGenerator.createFunctionForSuspendConversion(
             irAdapteeCall.putValueArgument(irAdapterParameter.index, irGet(irAdapterParameter))
         }
         if (suspendFunType.arguments.last().type.isUnit()) {
+            +irAdapteeCall
+        } else {
+            +IrReturnImpl(
+                startOffset, endOffset,
+                context.irBuiltIns.nothingType,
+                irAdapterFun.symbol,
+                irAdapteeCall
+            )
+        }
+    }
+
+    context.symbolTable.leaveScope(irAdapterFun)
+
+    return irAdapterFun
+}
+
+// Wrap suspend call in non-suspend adapter.
+private fun StatementGenerator.createFunctionForNonSuspendConversion(
+    startOffset: Int,
+    endOffset: Int,
+    suspendFunType: KotlinType,
+    funType: KotlinType
+): IrSimpleFunction {
+    val irFromReturnType = suspendFunType.arguments.last().type.toIrType()
+    val irToReturnType = funType.arguments.last().type.toIrType()
+
+    val irAdapterFun = context.irFactory.createFunction(
+        startOffset, endOffset,
+        IrDeclarationOrigin.ADAPTER_FOR_NON_SUSPEND_CONVERSION,
+        IrSimpleFunctionSymbolImpl(),
+        Name.identifier(scope.inventNameForTemporary("nonSuspendConversion")),
+        DescriptorVisibilities.LOCAL, Modality.FINAL,
+        irToReturnType,
+        isInline = false, isExternal = false, isTailrec = false,
+        isSuspend = false,
+        isOperator = false, isInfix = false, isExpect = false, isFakeOverride = false
+    )
+
+    context.symbolTable.enterScope(irAdapterFun)
+
+    fun createValueParameter(name: String, index: Int, type: IrType): IrValueParameter =
+        context.irFactory.createValueParameter(
+            startOffset, endOffset, IrDeclarationOrigin.ADAPTER_PARAMETER_FOR_NON_SUSPEND_CONVERSION, IrValueParameterSymbolImpl(),
+            Name.identifier(name), index, type, varargElementType = null, isCrossinline = false, isNoinline = false,
+            isHidden = false, isAssignable = false
+        )
+
+    irAdapterFun.extensionReceiverParameter = createValueParameter("callee", -1, suspendFunType.toIrType())
+    irAdapterFun.valueParameters = funType.arguments
+        .take(funType.arguments.size - 1)
+        .mapIndexed { index, typeProjection -> createValueParameter("p$index", index, typeProjection.type.toIrType()) }
+
+    val valueArgumentsCount = irAdapterFun.valueParameters.size
+    val invokeDescriptor = suspendFunType.memberScope
+        .getContributedFunctions(OperatorNameConventions.INVOKE, NoLookupLocation.FROM_BACKEND)
+        .find { it.valueParameters.size == valueArgumentsCount }
+        ?: error("No matching operator fun 'invoke' for suspend conversion: fromType=$suspendFunType, toType=$funType")
+    val invokeSymbol = context.symbolTable.referenceSimpleFunction(invokeDescriptor.original)
+
+    irAdapterFun.body = irBlockBody(startOffset, endOffset) {
+        val irAdapteeCall = IrCallImpl(
+            startOffset, endOffset, irFromReturnType,
+            invokeSymbol,
+            typeArgumentsCount = 0,
+            valueArgumentsCount = valueArgumentsCount
+        )
+
+        irAdapteeCall.dispatchReceiver = irGet(irAdapterFun.extensionReceiverParameter!!)
+
+        this@createFunctionForNonSuspendConversion.context
+            .callToSubstitutedDescriptorMap[irAdapteeCall] = invokeDescriptor
+
+        for (irAdapterParameter in irAdapterFun.valueParameters) {
+            irAdapteeCall.putValueArgument(irAdapterParameter.index, irGet(irAdapterParameter))
+        }
+        if (funType.arguments.last().type.isUnit()) {
             +irAdapteeCall
         } else {
             +IrReturnImpl(

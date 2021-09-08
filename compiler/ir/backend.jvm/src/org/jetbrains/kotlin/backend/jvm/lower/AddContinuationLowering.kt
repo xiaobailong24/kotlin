@@ -478,8 +478,9 @@ private fun <T : IrMemberAccessExpression<IrFunctionSymbol>> T.retargetToSuspend
         }
         if (caller != null) {
             // At this point the only LOCAL_FUNCTION_FOR_LAMBDAs are inline and crossinline lambdas.
-            val continuation = if (caller.originalFunction.origin == IrDeclarationOrigin.LOCAL_FUNCTION_FOR_LAMBDA)
-                context.fakeContinuation
+            val continuation = if (caller.originalFunction.origin == IrDeclarationOrigin.LOCAL_FUNCTION_FOR_LAMBDA ||
+                caller.originalFunction.origin == IrDeclarationOrigin.ADAPTER_FOR_NON_SUSPEND_CONVERSION
+            ) context.fakeContinuation
             else
                 IrGetValueImpl(
                     UNDEFINED_OFFSET, UNDEFINED_OFFSET, caller.continuationParameter()?.symbol

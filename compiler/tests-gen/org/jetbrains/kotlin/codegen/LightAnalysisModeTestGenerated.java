@@ -33299,6 +33299,11 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
             runTest("compiler/testData/codegen/box/suspendConversion/suspendConversionWithFunInterfaces.kt");
         }
 
+        @TestMetadata("suspendToNonSuspendOfInlineFunction.kt")
+        public void ignoreSuspendToNonSuspendOfInlineFunction() throws Exception {
+            runTest("compiler/testData/codegen/box/suspendConversion/suspendToNonSuspendOfInlineFunction.kt");
+        }
+
         private void runTest(String testDataFilePath) throws Exception {
             KotlinTestUtils.runTest(this::doTest, TargetBackend.JVM, testDataFilePath);
         }

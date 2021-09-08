@@ -53,7 +53,8 @@ internal class FunctionReferenceLowering(private val context: JvmBackendContext)
     private val crossinlineLambdas = HashSet<IrSimpleFunction>()
 
     private val IrFunctionReference.isIgnored: Boolean
-        get() = (!type.isFunctionOrKFunction() && !isSuspendFunctionReference()) || ignoredFunctionReferences.contains(this)
+        get() = (!type.isFunctionOrKFunction() && !isSuspendFunctionReference()) || ignoredFunctionReferences.contains(this) ||
+                origin == IrStatementOrigin.NON_SUSPEND_CONVERSION
 
     // `suspend` function references are the same as non-`suspend` ones, just with a `suspend` invoke;
     // however, suspending lambdas require different generation implemented in AddContinuationLowering
