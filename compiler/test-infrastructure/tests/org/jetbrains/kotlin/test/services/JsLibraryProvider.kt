@@ -10,41 +10,42 @@ import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.library.KotlinLibrary
 
 class JsLibraryProvider(private val testServices: TestServices) : TestService {
-    private val descriptorToDependencies = mutableMapOf<ModuleDescriptor, List<KotlinLibrary>>()
     private val descriptorToLibrary = mutableMapOf<ModuleDescriptor, KotlinLibrary>()
-//    private val descriptorToLibrary = mutableMapOf<ModuleDescriptor, KotlinLibrary>()
-//    private val stdlibNameToDescriptor = mutableMapOf<String, ModuleDescriptorImpl>()
-//
-//    fun getKotlinLibrary(moduleDescriptor: ModuleDescriptor): KotlinLibrary {
-//        return descriptorToLibrary[moduleDescriptor] ?: testServices.assertions.fail {
-//            "Library for module ${moduleDescriptor.name} not found"
+    private val stdlibPathToDescriptor = mutableMapOf<String, ModuleDescriptorImpl>()
+
+    fun getDescriptorByPath(path: String): ModuleDescriptorImpl {
+        return stdlibPathToDescriptor[path] ?: testServices.assertions.fail {
+            "There is no library with path $path"
+        }
+    }
+
+    fun getCompiledLibraryBeDescriptor(descriptor: ModuleDescriptor): KotlinLibrary {
+        return descriptorToLibrary[descriptor] ?: testServices.assertions.fail {
+            "There is no library for descriptor ${descriptor.name}"
+        }
+    }
+
+    fun getDescriptorByCompiledLibrary(library: KotlinLibrary): ModuleDescriptor {
+        return descriptorToLibrary.filterValues { it == library }.keys.singleOrNull() ?: testServices.assertions.fail {
+            "There is no descriptor for library ${library.libraryName}"
+        }
+    }
+
+    fun getOrCreateStdlibByPath(path: String, create: (String) -> Pair<ModuleDescriptorImpl, KotlinLibrary>): ModuleDescriptorImpl {
+        return stdlibPathToDescriptor.getOrPut(path) {
+            create(path).let {
+                descriptorToLibrary += it
+                it.first
+            }
+        }
+    }
+
+//    fun getLibraryToDescriptorMapping(): Map<KotlinLibrary, ModuleDescriptor> {
+//        val runtimeKlibsDescriptors = JsEnvironmentConfigurator.getStdlibPathsForModule(module).map {
+//            getDescriptorByPath(it)
 //        }
-//    }
-//
-//    fun getKotlinStdlibLibraryDescriptor(name: String): ModuleDescriptorImpl {
-//        return stdlibNameToDescriptor[name] ?: testServices.assertions.fail {
-//            "Descriptor for library ${name} not found"
-//        }
-//    }
-//
-//    fun getKotlinStdlibLibrary(name: String): KotlinLibrary {
-//        return stdlibNameToDescriptor[name]?.let { descriptorToLibrary[it] } ?: testServices.assertions.fail {
-//            "Library ${name} not found"
-//        }
-//    }
-//
-//    fun getOrCreateKotlinStdlibLibrary(name: String, create: (String) -> Pair<ModuleDescriptorImpl, KotlinLibrary>): ModuleDescriptorImpl {
-//        return stdlibNameToDescriptor.getOrPut(name) {
-//            create(name).let {
-//                descriptorToLibrary += it
-//                it.first
-//            }
-//        }
-//    }
-//
-//    fun replaceKotlinLibraryForModule(moduleDescriptor: ModuleDescriptor, library: KotlinLibrary) {
-//        require(moduleDescriptor is ModuleDescriptorImpl)
-//        descriptorToLibrary[moduleDescriptor] = library
+//        val runtimeKlibsLibraries = runtimeKlibsDescriptors.map { getCompiledLibraryBeDescriptor(it) }
+//        TODO()
 //    }
 }
 

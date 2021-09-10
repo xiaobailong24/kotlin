@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives
 import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives.SOURCE_MAP_EMBED_SOURCES
 import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives.EXPECT_ACTUAL_LINKER
 import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives.TYPED_ARRAYS
+import org.jetbrains.kotlin.test.directives.JvmEnvironmentConfigurationDirectives
 import org.jetbrains.kotlin.test.directives.model.DirectivesContainer
 import org.jetbrains.kotlin.test.model.DependencyDescription
 import org.jetbrains.kotlin.test.model.TestModule
@@ -126,6 +127,14 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
 
         fun getMainModuleName(testServices: TestServices): String {
             return getMainModule(testServices).name
+        }
+
+        fun getStdlibPathsForModule(module: TestModule): List<String> {
+            val needsFullIrRuntime = JsEnvironmentConfigurationDirectives.KJS_WITH_FULL_RUNTIME in module.directives ||
+                    JvmEnvironmentConfigurationDirectives.WITH_STDLIB in module.directives ||
+                    JvmEnvironmentConfigurationDirectives.WITH_RUNTIME in module.directives
+
+            return if (needsFullIrRuntime) listOf("full.stdlib", "kotlin.test") else listOf("reduced.stdlib")
         }
     }
 

@@ -177,6 +177,8 @@ object JsEnvironmentConfigurationDirectives : SimpleDirectivesContainer() {
         applicability = DirectiveApplicability.Global
     )
 
+    // Directives for IR tests
+
     val RUN_IR_DCE by directive(
         description = "Enables dead code elimination on IR",
         applicability = DirectiveApplicability.Global
@@ -184,6 +186,31 @@ object JsEnvironmentConfigurationDirectives : SimpleDirectivesContainer() {
 
     val RUN_IR_PIR by directive(
         description = "Enables pir on IR", // TODO what `pir` stands for?
+        applicability = DirectiveApplicability.Global
+    )
+
+    val RUN_IC by directive(
+        description = "",
+        applicability = DirectiveApplicability.Global
+    )
+
+    val LOWER_PER_MODULE by directive(
+        description = "",
+        applicability = DirectiveApplicability.Global
+    )
+
+    val KLIB_MAIN_MODULE by directive(
+        description = "Specify that main module is actually a klib",
+        applicability = DirectiveApplicability.Global
+    )
+
+    val RUN_ES6_MODE by directive(
+        description = "",
+        applicability = DirectiveApplicability.Global
+    )
+
+    val PER_MODULE by directive(
+        description = "",
         applicability = DirectiveApplicability.Global
     )
 }

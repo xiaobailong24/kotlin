@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.js.testNew
 
 import org.jetbrains.kotlin.js.testNew.converters.JsIrBackendFacade
 import org.jetbrains.kotlin.js.testNew.handlers.*
+import org.jetbrains.kotlin.parsing.parseBoolean
 import org.jetbrains.kotlin.test.Constructor
 import org.jetbrains.kotlin.test.TargetBackend
 import org.jetbrains.kotlin.test.backend.classic.ClassicBackendInput
@@ -20,6 +21,7 @@ import org.jetbrains.kotlin.test.frontend.classic.ClassicFrontendFacade
 import org.jetbrains.kotlin.test.frontend.classic.ClassicFrontendOutputArtifact
 import org.jetbrains.kotlin.test.model.*
 import org.jetbrains.kotlin.test.services.configuration.JsEnvironmentConfigurator
+import java.lang.Boolean.getBoolean
 
 abstract class AbstractJsIrTest(
     pathToTestDir: String,
@@ -39,6 +41,15 @@ abstract class AbstractJsIrTest(
     override fun configure(builder: TestConfigurationBuilder) {
         super.configure(builder)
         with(builder) {
+            defaultDirectives {
+                val runIc = getBoolean("kotlin.js.ir.icMode")
+                if (runIc) +JsEnvironmentConfigurationDirectives.RUN_IC
+                if (runIc || getBoolean("kotlin.js.ir.lowerPerModule")) +JsEnvironmentConfigurationDirectives.LOWER_PER_MODULE
+                if (getBoolean("kotlin.js.ir.klibMainModule")) +JsEnvironmentConfigurationDirectives.KLIB_MAIN_MODULE
+                if (getBoolean("kotlin.js.ir.es6")) +JsEnvironmentConfigurationDirectives.RUN_ES6_MODE
+                if (getBoolean("kotlin.js.ir.perModule")) +JsEnvironmentConfigurationDirectives.PER_MODULE
+            }
+
             configureJsArtifactsHandlersStep {
                 useHandlers(
                     ::JsAstHandler,
