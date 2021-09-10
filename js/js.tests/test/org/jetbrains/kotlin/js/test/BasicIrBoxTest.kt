@@ -147,10 +147,6 @@ abstract class BasicIrBoxTest(
             allKlibPaths += File(klibPath).absolutePath
         }
 
-        val actualOutputFile = outputFile.absolutePath.let {
-            if (!isMainModule) klibPath else it
-        }
-
         if (isMainModule) {
             logger.logFile("Output JS", outputFile)
 
@@ -212,6 +208,7 @@ abstract class BasicIrBoxTest(
                     exportedDeclarations = setOf(FqName.fromSegments(listOfNotNull(testPackage, testFunction))),
                     generateFullJs = true,
                     generateDceJs = runIrDce,
+                    dceDriven = false,
                     es6mode = runEs6Mode,
                     multiModule = splitPerModule || perModule,
                     propertyLazyInitialization = propertyLazyInitialization,
@@ -240,10 +237,13 @@ abstract class BasicIrBoxTest(
                     irFactory = PersistentIrFactory(),
                     mainArguments = mainCallParameters.run { if (shouldBeGenerated()) arguments() else null },
                     exportedDeclarations = setOf(FqName.fromSegments(listOfNotNull(testPackage, testFunction))),
+                    generateFullJs = true,
+                    generateDceJs = false,
                     dceDriven = true,
                     es6mode = runEs6Mode,
                     multiModule = splitPerModule || perModule,
                     propertyLazyInitialization = propertyLazyInitialization,
+                    lowerPerModule = false,
                     safeExternalBoolean = safeExternalBoolean,
                     safeExternalBooleanDiagnostic = safeExternalBooleanDiagnostic,
                     verifySignatures = !skipMangleVerification
@@ -261,7 +261,7 @@ abstract class BasicIrBoxTest(
             generateKLib(
                 module,
                 irFactory = IrFactoryImpl,
-                outputKlibPath = actualOutputFile,
+                outputKlibPath = klibPath,
                 nopack = true,
                 verifySignatures = !skipMangleVerification,
                 abiVersion = abiVersion,
@@ -269,12 +269,12 @@ abstract class BasicIrBoxTest(
             )
 
             if (runIcMode) {
-                icCache[actualOutputFile] = createPirCache(actualOutputFile, allKlibPaths + actualOutputFile, config, icCache)
+                icCache[klibPath] = createPirCache(klibPath, allKlibPaths + klibPath, config, icCache)
             }
 
-            logger.logFile("Output klib", File(actualOutputFile))
+            logger.logFile("Output klib", File(klibPath))
 
-            compilationCache[outputFile.name.replace(".js", ".meta.js")] = actualOutputFile
+            compilationCache[outputFile.name.replace(".js", ".meta.js")] = klibPath
         }
     }
 
