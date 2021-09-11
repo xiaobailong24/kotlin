@@ -37,13 +37,13 @@ import org.jetbrains.kotlin.utils.SmartList
 
 
 abstract class ResolutionPart {
-    abstract fun KotlinResolutionCandidate.process(workIndex: Int)
+    abstract fun ResolutionCandidate.process(workIndex: Int)
 
-    open fun KotlinResolutionCandidate.workCount(): Int = 1
+    open fun ResolutionCandidate.workCount(): Int = 1
 
     // helper functions
-    protected inline val KotlinResolutionCandidate.candidateDescriptor get() = resolvedCall.candidateDescriptor
-    protected inline val KotlinResolutionCandidate.kotlinCall get() = resolvedCall.atom
+    protected inline val ResolutionCandidate.candidateDescriptor get() = resolvedCall.candidateDescriptor
+    protected inline val ResolutionCandidate.kotlinCall get() = resolvedCall.atom
 }
 
 interface KotlinDiagnosticsHolder {
@@ -85,14 +85,14 @@ fun KotlinDiagnosticsHolder.addError(error: ConstraintSystemError) {
 
 open class KotlinResolutionCandidate(
     override val callComponents: KotlinCallComponents,
-    val resolutionCallbacks: KotlinResolutionCallbacks,
-    val callableReferenceResolver: CallableReferenceResolver,
-    val scopeTower: ImplicitScopeTower,
+    override val resolutionCallbacks: KotlinResolutionCallbacks,
+    override val callableReferenceResolver: CallableReferenceResolver,
+    override val scopeTower: ImplicitScopeTower,
     private val baseSystem: ConstraintStorage,
     override val resolvedCall: MutableResolvedCallAtom,
-    val knownTypeParametersResultingSubstitutor: TypeSubstitutor? = null,
-    private val resolutionSequence: List<ResolutionPart> = resolvedCall.atom.callKind.resolutionSequence
-) : ResolutionCandidate, KotlinDiagnosticsHolder {
+    override val knownTypeParametersResultingSubstitutor: TypeSubstitutor? = null,
+    override val resolutionSequence: List<ResolutionPart> = resolvedCall.atom.callKind.resolutionSequence
+) : ResolutionCandidate {
     override val diagnosticsFromResolutionParts = arrayListOf<KotlinCallDiagnostic>() // TODO: this is mutable list, take diagnostics only once!
     private var newSystem: NewConstraintSystemImpl? = null
     private var currentApplicability = CandidateApplicability.RESOLVED
@@ -118,7 +118,7 @@ open class KotlinResolutionCandidate(
 
     override fun getSubResolvedAtoms(): List<ResolvedAtom> = subResolvedAtoms
 
-    fun addResolvedKtPrimitive(resolvedAtom: ResolvedAtom) {
+    override fun addResolvedKtPrimitive(resolvedAtom: ResolvedAtom) {
         subResolvedAtoms.add(resolvedAtom)
     }
 
@@ -162,7 +162,7 @@ open class KotlinResolutionCandidate(
         return false
     }
 
-    val variableCandidateIfInvoke: KotlinResolutionCandidate?
+    override val variableCandidateIfInvoke: KotlinResolutionCandidate?
         get() = callComponents.statelessCallbacks.getVariableCandidateIfInvoke(resolvedCall.atom)
 
     private val variableApplicability
@@ -201,7 +201,9 @@ class MutableResolvedCallAtom(
     override val candidateDescriptor: CallableDescriptor, // original candidate descriptor
     override val explicitReceiverKind: ExplicitReceiverKind,
     override val dispatchReceiverArgument: SimpleKotlinCallArgument?,
-    override val extensionReceiverArgument: SimpleKotlinCallArgument?
+    override val extensionReceiverArgument: SimpleKotlinCallArgument?,
+    val reflectionCandidateType: UnwrappedType? = null,
+    val candidate: CallableReferenceCandidate? = null
 ) : ResolvedCallAtom() {
     override lateinit var typeArgumentMappingByOriginal: TypeArgumentsToParametersMapper.TypeArgumentsMapping
     override lateinit var argumentMappingByOriginal: Map<ValueParameterDescriptor, ResolvedCallArgument>
@@ -267,7 +269,7 @@ class MutableResolvedCallAtom(
     override fun toString(): String = "$atom, candidate = $candidateDescriptor"
 }
 
-fun KotlinResolutionCandidate.markCandidateForCompatibilityResolve() {
+fun ResolutionCandidate.markCandidateForCompatibilityResolve() {
     if (callComponents.languageVersionSettings.supportsFeature(LanguageFeature.DisableCompatibilityModeForNewInference)) return
     addDiagnostic(LowerPriorityToPreserveCompatibility.asDiagnostic())
 }

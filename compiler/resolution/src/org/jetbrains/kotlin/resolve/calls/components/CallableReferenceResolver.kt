@@ -42,7 +42,7 @@ class CallableReferenceOverloadConflictResolver(
     statelessCallbacks: KotlinResolutionStatelessCallbacks,
     constraintInjector: ConstraintInjector,
     kotlinTypeRefiner: KotlinTypeRefiner,
-) : OverloadingConflictResolver<CallableReferenceCandidate>(
+) : OverloadingConflictResolver<CallableCandidate>(
     builtIns,
     module,
     specificityComparator,
@@ -57,7 +57,7 @@ class CallableReferenceOverloadConflictResolver(
     kotlinTypeRefiner,
 ) {
     companion object {
-        private fun createFlatSignature(candidate: CallableReferenceCandidate) =
+        private fun createFlatSignature(candidate: CallableCandidate) =
             FlatSignature.createFromReflectionType(
                 candidate, candidate.candidate, candidate.numDefaults, hasBoundExtensionReceiver = candidate.extensionReceiver != null,
                 candidate.reflectionCandidateType
@@ -76,7 +76,7 @@ class CallableReferenceResolver(
         csBuilder: ConstraintSystemBuilder,
         resolvedAtom: ResolvedCallableReferenceAtom,
         diagnosticsHolder: KotlinDiagnosticsHolder,
-        resolutionCallbacks: KotlinResolutionCallbacks
+        resolutionCallbacks: KotlinResolutionCallbacks,
     ) {
         val argument = resolvedAtom.atom
         val expectedType = resolvedAtom.expectedType?.let { (csBuilder.buildCurrentSubstitutor() as NewTypeSubstitutor).safeSubstitute(it) }
@@ -146,7 +146,7 @@ class CallableReferenceResolver(
         csBuilder: ConstraintSystemBuilder,
         resolutionCallbacks: KotlinResolutionCallbacks,
         compatibilityChecker: ((ConstraintSystemOperation) -> Unit) -> Unit // you can run anything throw this operation and all this operation will be rolled back
-    ): Set<CallableReferenceCandidate> {
+    ): Set<CallableReferenceCandidateForArgument> {
         val factory = CallableReferencesCandidateFactory(
             callableReference, callComponents, scopeTower, compatibilityChecker, expectedType, csBuilder, resolutionCallbacks
         )
@@ -156,7 +156,7 @@ class CallableReferenceResolver(
             candidates,
             CheckArgumentTypesMode.CHECK_VALUE_ARGUMENTS,
             discriminateGenerics = false // we can't specify generics explicitly for callable references
-        )
+        ) as Set<CallableReferenceCandidateForArgument>
     }
 }
 

@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.resolve.calls.tower
 
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
+import org.jetbrains.kotlin.builtins.replaceReturnType
 import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.descriptors.*
@@ -58,6 +59,7 @@ import org.jetbrains.kotlin.types.expressions.DoubleColonExpressionResolver
 import org.jetbrains.kotlin.types.expressions.ExpressionTypingServices
 import org.jetbrains.kotlin.types.expressions.ExpressionTypingUtils
 import org.jetbrains.kotlin.types.model.TypeSystemInferenceExtensionContextDelegate
+import org.jetbrains.kotlin.types.typeUtil.asTypeProjection
 import org.jetbrains.kotlin.types.typeUtil.contains
 import org.jetbrains.kotlin.types.typeUtil.makeNotNullable
 import org.jetbrains.kotlin.types.typeUtil.makeNullable
@@ -348,6 +350,7 @@ class KotlinToResolvedCallTransformer(
         context: BasicCallResolutionContext,
         convertedArgumentType: UnwrappedType?,
         reportErrorForTypeMismatch: Boolean,
+        completer: ResolvedAtomCompleter? = null
     ): KotlinType? {
         val deparenthesized = expression.let {
             KtPsiUtil.getLastElementDeparenthesized(it, context.statementFilter)
@@ -356,7 +359,21 @@ class KotlinToResolvedCallTransformer(
         val recordedType = context.trace.getType(deparenthesized)
         val recordedTypeForParenthesized = context.trace.getType(expression)
 
-        var updatedType = convertedArgumentType ?: getResolvedCallForArgumentExpression(deparenthesized, context)?.run {
+        val ta = deparenthesized
+        val aa = getResolvedCallForArgumentExpression(ta, context)
+
+        if (deparenthesized is KtCallableReferenceExpression && completer != null) {
+            val ta2 = deparenthesized.callableReference
+            val aa = getResolvedCallForArgumentExpression(ta2, context)
+            if (aa is NewResolvedCallImpl<*>) {
+                val tt = completer.completeCallableReference2(aa)
+                val updatedType = updateRecordedTypeForArgument(tt, recordedType, recordedTypeForParenthesized, expression, context)
+                dataFlowAnalyzer.checkType(updatedType, deparenthesized, context, reportErrorForTypeMismatch)
+                return updatedType
+            }
+        }
+
+        var updatedType = convertedArgumentType ?: aa?.run {
             makeNullableTypeIfSafeReceiver(resultingDescriptor.returnType, context)
         } ?: recordedType
 

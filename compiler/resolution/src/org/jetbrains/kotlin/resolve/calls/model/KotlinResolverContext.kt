@@ -241,6 +241,7 @@ enum class KotlinCallKind(vararg resolutionPart: ResolutionPart) {
         NoArguments,
         CreateFreshVariablesSubstitutor,
         CheckReceivers,
+        CheckCallableReferences
     ),
     UNSUPPORTED();
 

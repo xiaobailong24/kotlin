@@ -18,11 +18,10 @@ package org.jetbrains.kotlin.resolve.calls.tower
 
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.progress.ProgressIndicatorAndCompilationCanceledStatus
+import org.jetbrains.kotlin.resolve.calls.components.CallableReferenceResolver
+import org.jetbrains.kotlin.resolve.calls.components.KotlinResolutionCallbacks
 import org.jetbrains.kotlin.resolve.calls.inference.NewConstraintSystem
-import org.jetbrains.kotlin.resolve.calls.model.KotlinCallComponents
-import org.jetbrains.kotlin.resolve.calls.model.KotlinCallDiagnostic
-import org.jetbrains.kotlin.resolve.calls.model.MutableResolvedCallAtom
-import org.jetbrains.kotlin.resolve.calls.model.ResolvedAtom
+import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.resolve.calls.tasks.ExplicitReceiverKind
 import org.jetbrains.kotlin.resolve.descriptorUtil.HIDES_MEMBERS_NAME_LIST
 import org.jetbrains.kotlin.resolve.scopes.HierarchicalScope
@@ -32,6 +31,7 @@ import org.jetbrains.kotlin.resolve.scopes.ResolutionScope
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValueWithSmartCastInfo
 import org.jetbrains.kotlin.resolve.scopes.utils.parentsWithSelf
 import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.TypeSubstitutor
 import org.jetbrains.kotlin.types.isDynamic
 import org.jetbrains.kotlin.util.OperatorNameConventions
 import java.util.*
@@ -45,12 +45,19 @@ interface Candidate {
     fun addCompatibilityWarning(other: Candidate)
 }
 
-interface ResolutionCandidate : Candidate {
+interface ResolutionCandidate : Candidate, KotlinDiagnosticsHolder {
     val resolvedCall: MutableResolvedCallAtom
     fun getSystem(): NewConstraintSystem
     val callComponents: KotlinCallComponents
     val diagnosticsFromResolutionParts: List<KotlinCallDiagnostic>
     fun getSubResolvedAtoms(): List<ResolvedAtom>
+    val resolutionSequence: List<ResolutionPart>
+    fun addResolvedKtPrimitive(resolvedAtom: ResolvedAtom)
+    val variableCandidateIfInvoke: KotlinResolutionCandidate?
+    val scopeTower: ImplicitScopeTower
+    val knownTypeParametersResultingSubstitutor: TypeSubstitutor?
+    val resolutionCallbacks: KotlinResolutionCallbacks
+    val callableReferenceResolver: CallableReferenceResolver
 }
 
 interface CandidateFactory<out C : Candidate> {

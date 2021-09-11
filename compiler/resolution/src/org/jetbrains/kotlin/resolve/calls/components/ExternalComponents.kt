@@ -91,7 +91,7 @@ interface KotlinResolutionCallbacks {
 
     fun recordInlinabilityOfLambda(atom: Set<Map.Entry<KotlinResolutionCandidate, ResolvedLambdaAtom>>)
 
-    fun computeLhsResult(
+    fun transformToLhsResult(
         call: KotlinCall,
     ): LHSResult
 }

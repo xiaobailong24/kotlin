@@ -73,7 +73,9 @@ class PSIKotlinCallImpl(
         val ref = psiCall.callElement as? KtNameReferenceExpression ?: return emptyList()
         val arguments = explicitReceiver?.receiverValue?.type?.arguments ?: return emptyList()
 
-        return ref.lhs?.typeArguments?.mapIndexed { i, it -> SimpleTypeArgumentImpl(it.typeReference!!, arguments[i].type.unwrap()) } ?: emptyList()
+        return ref.lhs?.typeArguments?.mapIndexed { i, it ->
+            SimpleTypeArgumentImpl(it, arguments[i].type.unwrap())
+        } ?: emptyList()
     }
 }
 

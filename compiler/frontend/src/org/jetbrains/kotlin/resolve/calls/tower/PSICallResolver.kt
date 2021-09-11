@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.resolve.calls.components.CallableReferenceResolver
 import org.jetbrains.kotlin.resolve.calls.components.InferenceSession
 import org.jetbrains.kotlin.resolve.calls.components.PostponedArgumentsAnalyzer
 import org.jetbrains.kotlin.resolve.calls.context.BasicCallResolutionContext
+import org.jetbrains.kotlin.resolve.calls.context.CallPosition
 import org.jetbrains.kotlin.resolve.calls.context.ContextDependency
 import org.jetbrains.kotlin.resolve.calls.inference.buildResultingSubstitutor
 import org.jetbrains.kotlin.resolve.calls.inference.components.KotlinConstraintSystemCompleter
@@ -198,10 +199,9 @@ class PSICallResolver(
         val expectedType = context.expectedType.unwrap()
 
         return if (context.contextDependency == ContextDependency.DEPENDENT) {
-            assert(TypeUtils.noExpectedType(expectedType)) {
-                "Should have no expected type, got: $expectedType"
-            }
-            null
+            if (TypeUtils.noExpectedType(expectedType)) {
+                null
+            } else expectedType
         } else {
             if (expectedType.isError) TypeUtils.NO_EXPECTED_TYPE else expectedType
         }
@@ -693,7 +693,7 @@ class PSICallResolver(
             }
             ModifierCheckerCore.check(projection, context.trace, null, languageVersionSettings)
 
-            resolveType(context, projection.typeReference, typeResolver)?.let { SimpleTypeArgumentImpl(projection.typeReference!!, it) }
+            resolveType(context, projection.typeReference, typeResolver)?.let { SimpleTypeArgumentImpl(projection, it) }
                 ?: TypeArgumentPlaceholder
         }
 
@@ -771,21 +771,21 @@ class PSICallResolver(
         return createSimplePSICallArgument(context, valueArgument, typeInfo) ?: createParseErrorElement()
     }
 
-    fun computeLhsResult(
+    fun transformToLhsResult(
         context: BasicCallResolutionContext,
         ktExpression: KtCallableReferenceExpression
     ): Pair<DoubleColonLHS?, LHSResult> {
         val expressionTypingContext = ExpressionTypingContext.newContext(context)
-        val lhsResult = if (ktExpression.isEmptyLHS) null else doubleColonExpressionResolver.resolveDoubleColonLHS(
+        val doubleColonLHS = if (ktExpression.isEmptyLHS) null else ((context.callPosition as? CallPosition.CallableReference)?.lhs ?: doubleColonExpressionResolver.resolveDoubleColonLHS(
             ktExpression,
             expressionTypingContext
-        )
+        ))
 
-        return lhsResult to when (lhsResult) {
+        return doubleColonLHS to when (doubleColonLHS) {
             null -> LHSResult.Empty
             is DoubleColonLHS.Expression -> {
-                if (lhsResult.isObjectQualifier) {
-                    val classifier = lhsResult.type.constructor.declarationDescriptor
+                if (doubleColonLHS.isObjectQualifier) {
+                    val classifier = doubleColonLHS.type.constructor.declarationDescriptor
                     val calleeExpression = ktExpression.receiverExpression?.getCalleeExpressionIfAny()
                     if (calleeExpression is KtSimpleNameExpression && classifier is ClassDescriptor) {
                         LHSResult.Object(ClassQualifier(calleeExpression, classifier))
@@ -795,19 +795,19 @@ class PSICallResolver(
                 } else {
                     val fakeArgument = FakeValueArgumentForLeftCallableReference(ktExpression)
 
-                    val kotlinCallArgument = createSimplePSICallArgument(context, fakeArgument, lhsResult.typeInfo)
+                    val kotlinCallArgument = createSimplePSICallArgument(context, fakeArgument, doubleColonLHS.typeInfo)
                     kotlinCallArgument?.let { LHSResult.Expression(it as SimpleKotlinCallArgument) } ?: LHSResult.Error
                 }
             }
             is DoubleColonLHS.Type -> {
                 val qualifiedExpression = ktExpression.receiverExpression!!
                 val qualifier = expressionTypingContext.trace.get(BindingContext.QUALIFIER, qualifiedExpression)
-                val classifier = lhsResult.type.constructor.declarationDescriptor
+                val classifier = doubleColonLHS.type.constructor.declarationDescriptor
                 if (classifier !is ClassDescriptor) {
                     expressionTypingContext.trace.report(Errors.CALLABLE_REFERENCE_LHS_NOT_A_CLASS.on(ktExpression))
                     LHSResult.Error
                 } else {
-                    LHSResult.Type(qualifier, lhsResult.type.unwrap())
+                    LHSResult.Type(qualifier, doubleColonLHS.type.unwrap())
                 }
             }
         }
@@ -823,7 +823,7 @@ class PSICallResolver(
     ): CallableReferenceKotlinCallArgumentImpl {
         checkNoSpread(outerCallContext, valueArgument)
 
-        val (lhsResult, lhsNewResult) = computeLhsResult(context, ktExpression)
+        val (lhsResult, lhsNewResult) = transformToLhsResult(context, ktExpression)
         val newDataFlowInfo = (lhsResult as? DoubleColonLHS.Expression)?.dataFlowInfo ?: startDataFlowInfo
         val name = ktExpression.callableReference.getReferencedNameAsName()
 

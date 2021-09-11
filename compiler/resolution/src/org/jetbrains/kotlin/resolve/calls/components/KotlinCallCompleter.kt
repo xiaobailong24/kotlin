@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.resolve.calls.inference.components.TrivialConstraint
 import org.jetbrains.kotlin.resolve.calls.inference.model.ConstraintStorage.Empty.hasContradiction
 import org.jetbrains.kotlin.resolve.calls.inference.model.ExpectedTypeConstraintPositionImpl
 import org.jetbrains.kotlin.resolve.calls.model.*
+import org.jetbrains.kotlin.resolve.calls.tasks.ExplicitReceiverKind
 import org.jetbrains.kotlin.resolve.calls.tower.ResolutionCandidate
 import org.jetbrains.kotlin.resolve.calls.tower.forceResolution
 import org.jetbrains.kotlin.types.ErrorUtils
@@ -44,15 +45,25 @@ class KotlinCallCompleter(
         }
 
         val candidate = prepareCandidateForCompletion(factory, candidates, resolutionCallbacks)
-        val returnType = candidate.substitutedReturnType()
 
-        candidate.addExpectedTypeConstraint(returnType, expectedType)
-        candidate.addExpectedTypeFromCastConstraint(returnType, resolutionCallbacks)
-        candidate.checkSamWithVararg(diagnosticHolder)
+        val resul = if (candidate is CallableReferenceCandidate) {
+//            val csBuilder = candidate.getSystem().getBuilder()
+//            val (toFreshSubstitutor, diagnostic) = csBuilder.checkCallableReference2(candidate.resolvedCall,
+//                candidate.dispatchReceiver, candidate.extensionReceiver, candidate.candidate,
+//                candidate.reflectionCandidateType, expectedType, candidate.scopeTower.lexicalScope.ownerDescriptor
+//            )
+            expectedType
+        } else {
+            val returnType = candidate.substitutedReturnType()
+            candidate.addExpectedTypeConstraint(returnType, expectedType)
+            candidate.addExpectedTypeFromCastConstraint(returnType, resolutionCallbacks)
+            candidate.checkSamWithVararg(diagnosticHolder)
+            returnType
+        }
 
         val completionMode =
             CompletionModeCalculator.computeCompletionMode(
-                candidate, expectedType, returnType, trivialConstraintTypeInferenceOracle, resolutionCallbacks.inferenceSession
+                candidate, expectedType, resul, trivialConstraintTypeInferenceOracle, resolutionCallbacks.inferenceSession
             )
 
         return when (completionMode) {

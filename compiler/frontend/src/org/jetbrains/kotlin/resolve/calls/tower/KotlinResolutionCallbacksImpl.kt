@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.resolve.*
 import org.jetbrains.kotlin.resolve.calls.ArgumentTypeResolver
 import org.jetbrains.kotlin.resolve.calls.components.*
 import org.jetbrains.kotlin.resolve.calls.context.BasicCallResolutionContext
+import org.jetbrains.kotlin.resolve.calls.context.CallPosition
 import org.jetbrains.kotlin.resolve.calls.context.ContextDependency
 import org.jetbrains.kotlin.resolve.calls.inference.BuilderInferenceSession
 import org.jetbrains.kotlin.resolve.calls.inference.components.KotlinConstraintSystemCompleter
@@ -320,9 +321,9 @@ class KotlinResolutionCallbacksImpl(
         trace.record(BindingContext.NEW_INFERENCE_IS_LAMBDA_FOR_OVERLOAD_RESOLUTION_INLINE, literal, isLambdaInline)
     }
 
-    override fun computeLhsResult(call: KotlinCall): LHSResult {
+    override fun transformToLhsResult(call: KotlinCall): LHSResult {
         val ex = (call as PSIKotlinCall).psiCall.callElement.parent as KtCallableReferenceExpression
-        return this.psiCallResolver.computeLhsResult(this.topLevelCallContext, ex).second
+        return this.psiCallResolver.transformToLhsResult(this.topLevelCallContext, ex).second
     }
 
     private fun convertSignedConstantToUnsigned(expression: KtExpression): IntegerValueTypeConstant? {

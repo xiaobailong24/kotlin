@@ -8,7 +8,6 @@ package org.jetbrains.kotlin.resolve.calls
 import org.jetbrains.kotlin.builtins.UnsignedTypes
 import org.jetbrains.kotlin.builtins.functions.FunctionInvokeDescriptor
 import org.jetbrains.kotlin.builtins.isExtensionFunctionType
-import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.diagnostics.Errors.*
 import org.jetbrains.kotlin.diagnostics.Errors.BadNamedArgumentsTarget.*
 import org.jetbrains.kotlin.diagnostics.reportDiagnosticOnce
@@ -406,9 +405,9 @@ class DiagnosticReporterByTrackingStrategy(
         }
 
         (position as? ExplicitTypeParameterConstraintPositionImpl)?.let {
-            val typeArgumentReference = (it.typeArgument as SimpleTypeArgumentImpl).typeReference
+            val typeArgumentProjection = (it.typeArgument as SimpleTypeArgumentImpl).typeProjection.typeReference ?: return@let
             val diagnosticFactory = if (isWarning) UPPER_BOUND_VIOLATED_WARNING else UPPER_BOUND_VIOLATED
-            report(diagnosticFactory.on(typeArgumentReference, error.upperKotlinType, error.lowerKotlinType))
+            report(diagnosticFactory.on(typeArgumentProjection, error.upperKotlinType, error.lowerKotlinType))
         }
 
         (position as? FixVariableConstraintPositionImpl)?.let {

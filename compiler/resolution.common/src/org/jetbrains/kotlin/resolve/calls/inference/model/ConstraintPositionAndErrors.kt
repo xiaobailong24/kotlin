@@ -41,8 +41,8 @@ abstract class ArgumentConstraintPosition<out T>(val argument: T) : ConstraintPo
     override fun toString(): String = "Argument $argument"
 }
 
-abstract class CallableReferenceConstraintPosition<out T>(val argument: T) : ConstraintPosition(), OnlyInputTypeConstraintPosition {
-    override fun toString(): String = "Callable reference $argument"
+abstract class CallableReferenceConstraintPosition<out T>() : ConstraintPosition(), OnlyInputTypeConstraintPosition {
+    override fun toString(): String = "Callable reference"
 }
 
 abstract class ReceiverConstraintPosition<T>(val argument: T) : ConstraintPosition(), OnlyInputTypeConstraintPosition {

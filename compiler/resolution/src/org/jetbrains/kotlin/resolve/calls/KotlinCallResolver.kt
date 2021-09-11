@@ -52,15 +52,21 @@ class KotlinCallResolver(
                 )
             }
             KotlinCallKind.CALLABLE_REFERENCE -> {
-                val lhs = resolutionCallbacks.computeLhsResult(kotlinCall)
+                val lhs = resolutionCallbacks.transformToLhsResult(kotlinCall)
                 val pp = CallableReferenceCall(kotlinCall, lhs, kotlinCall.name)
 
                 val a = CallableReferencesCandidateFactory2(
-                    pp, callComponents, scopeTower, expectedType, resolutionCallbacks
+                    pp, callComponents, scopeTower, expectedType, resolutionCallbacks, callableReferenceResolver
                 )
                 val processor = createCallableReferenceProcessor2(a)
                 val candidates = towerResolver.runResolve(scopeTower, processor, useOrder = true, name = kotlinCall.name)
-                return kotlinCallCompleter.runCompletion(candidateFactory, candidates, expectedType, resolutionCallbacks)
+
+                val ca2 = this.callableReferenceResolver.callableReferenceOverloadConflictResolver.chooseMaximallySpecificCandidates(
+                    candidates,
+                    CheckArgumentTypesMode.CHECK_VALUE_ARGUMENTS,
+                    discriminateGenerics = false // we can't specify generics explicitly for callable references
+                ) as Set<CallableReferenceCandidate>
+                return kotlinCallCompleter.runCompletion(candidateFactory, ca2, expectedType, resolutionCallbacks)
 
 //                val processor = createCallableReferenceProcessor(
 //                    scopeTower,

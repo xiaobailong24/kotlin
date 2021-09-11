@@ -8,10 +8,7 @@ package org.jetbrains.kotlin.resolve.calls.model
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.resolve.calls.components.CallableReferenceCandidate
-import org.jetbrains.kotlin.resolve.calls.components.ReturnArgumentsInfo
-import org.jetbrains.kotlin.resolve.calls.components.TypeArgumentsToParametersMapper
-import org.jetbrains.kotlin.resolve.calls.components.extractInputOutputTypesFromCallableReferenceExpectedType
+import org.jetbrains.kotlin.resolve.calls.components.*
 import org.jetbrains.kotlin.resolve.calls.inference.components.FreshVariableNewTypeSubstitutor
 import org.jetbrains.kotlin.resolve.calls.inference.components.NewTypeSubstitutor
 import org.jetbrains.kotlin.resolve.calls.inference.model.*
@@ -177,13 +174,13 @@ abstract class ResolvedCallableReferenceAtom(
     override val atom: CallableReferenceKotlinCallArgument,
     override val expectedType: UnwrappedType?
 ) : PostponedResolvedAtom() {
-    var candidate: CallableReferenceCandidate? = null
+    var candidate: CallableCandidate? = null
         private set
 
     var completed: Boolean = false
 
     fun setAnalyzedResults(
-        candidate: CallableReferenceCandidate?,
+        candidate: CallableCandidate?,
         subResolvedAtoms: List<ResolvedAtom>
     ) {
         this.candidate = candidate
