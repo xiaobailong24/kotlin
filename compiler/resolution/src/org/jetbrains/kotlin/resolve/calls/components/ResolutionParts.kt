@@ -31,6 +31,7 @@ import org.jetbrains.kotlin.types.typeUtil.contains
 import org.jetbrains.kotlin.types.typeUtil.makeNotNullable
 import org.jetbrains.kotlin.types.typeUtil.makeNullable
 import org.jetbrains.kotlin.utils.SmartList
+import org.jetbrains.kotlin.utils.addIfNotNull
 import org.jetbrains.kotlin.utils.addToStdlib.cast
 import org.jetbrains.kotlin.utils.addToStdlib.compactIfPossible
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
@@ -727,11 +728,15 @@ internal object EagerResolveOfCallableReferences : ResolutionPart() {
 internal object CheckCallableReferences : ResolutionPart() {
     override fun ResolutionCandidate.process(workIndex: Int) {
         this as CallableReferenceCandidate
-        getSystem().getBuilder().checkCallableReference2(
+        val (_, visibilityError) = getSystem().getBuilder().checkCallableReference2(
             resolvedCall.freshVariablesSubstitutor,
             dispatchReceiver, extensionReceiver, candidate,
             reflectionCandidateType, if (expectedType != null && !TypeUtils.noExpectedType(expectedType)) expectedType else null, scopeTower.lexicalScope.ownerDescriptor
         )
+
+        if (visibilityError != null) {
+            addDiagnostic(visibilityError)
+        }
     }
 }
 

@@ -70,7 +70,7 @@ class CallableReferenceCandidateForArgument(
     override val resultingApplicability = getResultApplicability(diagnostics)
 
     override fun addCompatibilityWarning(other: Candidate) {
-        if (this !== other && other is CallableReferenceCandidate) {
+        if (this !== other && other is CallableReferenceCandidateForArgument) {
             mutableDiagnostics.add(CompatibilityWarning(other.candidate))
         }
     }
@@ -123,8 +123,8 @@ class CallableReferenceCandidate(
                 kotlinCall.call,
                 candidate,
                 explicitReceiverKind,
-                null,
-                null,
+                if (dispatchReceiver != null) ReceiverExpressionKotlinCallArgument(dispatchReceiver.receiver) else null,
+                if (extensionReceiver != null) ReceiverExpressionKotlinCallArgument(extensionReceiver.receiver) else null,
                 reflectionCandidateType,
                 this
             ).apply { this.setEmptyAnalyzedResults() }
@@ -200,14 +200,15 @@ class CallableReferenceCandidate(
     override val isSuccessful: Boolean
         get() {
             processParts(stopOnFirstError = true)
-            return getResultApplicability(getSystem().errors).isSuccess && !getSystem().hasContradiction
+            val z = listOf(getResultApplicability(diagnostics + diagnosticsFromResolutionParts), getResultApplicability(getSystem().errors)).minOrNull()!!.isSuccess
+            return z && !getSystem().hasContradiction
         }
 
     override val resultingApplicability: CandidateApplicability
         get() {
             processParts(stopOnFirstError = false)
 
-            return getResultApplicability(getSystem().errors)
+            return listOf(getResultApplicability(diagnostics + diagnosticsFromResolutionParts), getResultApplicability(getSystem().errors)).minOrNull()!!
         }
 
     override var freshSubstitutor: FreshVariableNewTypeSubstitutor? = null
@@ -411,8 +412,8 @@ class CallableReferencesCandidateFactory2(
                 kotlinCall, callComponents, scopeTower, resolutionCallbacks, callableReferenceResolver, expectedType, resolvedAtom
             )
 
-        if (kotlinCall is KotlinCall) {
-            if (callComponents.statelessCallbacks.isHiddenInResolution(candidateDescriptor, kotlinCall, resolutionCallbacks)) {
+        if (kotlinCall is CallableReferenceCall) {
+            if (callComponents.statelessCallbacks.isHiddenInResolution(candidateDescriptor, kotlinCall.call, resolutionCallbacks)) {
                 diagnostics.add(HiddenDescriptor)
                 return createReferenceCandidate()
             }
