@@ -261,16 +261,12 @@ abstract class AbstractKotlinCompilation<T : KotlinCommonOptions>(
                 project.files(Callable { other.output.classesDirs })
             )
 
-            configurations.named(compileOnlyConfigurationName).configure {
-                it.extendsFrom(configurations.findByName(other.compileDependencyConfigurationName))
-            }
+            compileDependencyFiles += project.configurations.getByName(other.compileDependencyConfigurationName)
 
             if (this@AbstractKotlinCompilation is KotlinCompilationToRunnableFiles<*>) {
                 dependencies.add(runtimeOnlyConfigurationName, project.files(Callable { other.output.allOutputs }))
                 if (other is KotlinCompilationToRunnableFiles<*>) {
-                    configurations.named(runtimeOnlyConfigurationName).configure {
-                        it.extendsFrom(configurations.findByName(other.runtimeDependencyConfigurationName))
-                    }
+                    runtimeDependencyFiles += project.configurations.getByName(other.runtimeDependencyConfigurationName)
                 }
             }
         }
