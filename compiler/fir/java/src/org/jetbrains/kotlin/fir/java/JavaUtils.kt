@@ -152,7 +152,7 @@ private fun fillAnnotationArgumentMapping(
         ?.declarations
         ?.firstIsInstanceOrNull<FirConstructor>()
     annotationArguments.associateTo(destination) { argument ->
-        val name = argument.name ?: JavaClassConverter.VALUE_METHOD_NAME
+        val name = argument.name ?: FirJavaFacade.VALUE_METHOD_NAME
         val parameter = annotationConstructor?.valueParameters?.find { it.name == name }
         name to argument.toFirExpression(session, javaTypeParameterStack, parameter?.returnTypeRef)
     }

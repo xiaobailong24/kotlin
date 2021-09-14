@@ -27,7 +27,7 @@ import org.jetbrains.kotlin.fir.backend.jvm.FirJvmTypeMapper
 import org.jetbrains.kotlin.fir.caches.FirCachesFactory
 import org.jetbrains.kotlin.fir.checkers.registerExtendedCommonCheckers
 import org.jetbrains.kotlin.fir.declarations.SealedClassInheritorsProvider
-import org.jetbrains.kotlin.fir.java.JavaClassConverter
+import org.jetbrains.kotlin.fir.java.FirJavaFacade
 import org.jetbrains.kotlin.fir.java.JavaSymbolProvider
 import org.jetbrains.kotlin.fir.java.deserialization.KotlinDeserializedJvmSymbolsProvider
 import org.jetbrains.kotlin.fir.resolve.providers.FirDependenciesSymbolProvider
@@ -142,7 +142,7 @@ internal object FirIdeSessionFactory {
                         provider.symbolProvider,
                         JavaSymbolProvider(
                             this,
-                            JavaClassConverter(
+                            FirJavaFacade(
                                 this, moduleData, project.createJavaClassFinder(searchScope)
                             )
                         ),
@@ -193,7 +193,7 @@ internal object FirIdeSessionFactory {
                 kotlinScopeProvider = FirKotlinScopeProvider(::wrapScopeWithJvmMapped),
                 packagePartProvider = project.stateConfigurator.createPackagePartsProvider(mainModuleInfo, searchScope),
                 kotlinClassFinder = VirtualFileFinderFactory.getInstance(project).create(searchScope),
-                javaClassConverter = JavaClassConverter(
+                javaFacade = FirJavaFacade(
                     this@session, mainModuleData, project.createJavaClassFinder(searchScope)
                 )
             )
