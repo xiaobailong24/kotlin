@@ -6,6 +6,17 @@
 package org.jetbrains.kotlin.analysis.low.level.api.fir.sessions
 
 import com.intellij.openapi.project.Project
+import org.jetbrains.kotlin.analysis.low.level.api.fir.FirPhaseRunner
+import org.jetbrains.kotlin.analysis.low.level.api.fir.IdeFirPhaseManager
+import org.jetbrains.kotlin.analysis.low.level.api.fir.IdeSessionComponents
+import org.jetbrains.kotlin.analysis.low.level.api.fir.api.FirModuleResolveStateConfigurator
+import org.jetbrains.kotlin.analysis.low.level.api.fir.api.stateConfigurator
+import org.jetbrains.kotlin.analysis.low.level.api.fir.file.builder.FirFileBuilder
+import org.jetbrains.kotlin.analysis.low.level.api.fir.file.builder.ModuleFileCacheImpl
+import org.jetbrains.kotlin.analysis.low.level.api.fir.fir.caches.FirThreadSafeCachesFactory
+import org.jetbrains.kotlin.analysis.low.level.api.fir.lazy.resolve.FirLazyDeclarationResolver
+import org.jetbrains.kotlin.analysis.low.level.api.fir.providers.*
+import org.jetbrains.kotlin.analysis.low.level.api.fir.util.checkCanceled
 import org.jetbrains.kotlin.analysis.providers.createDeclarationProvider
 import org.jetbrains.kotlin.analysis.providers.createPackageProvider
 import org.jetbrains.kotlin.analyzer.ModuleSourceInfoBase
@@ -16,6 +27,7 @@ import org.jetbrains.kotlin.fir.backend.jvm.FirJvmTypeMapper
 import org.jetbrains.kotlin.fir.caches.FirCachesFactory
 import org.jetbrains.kotlin.fir.checkers.registerExtendedCommonCheckers
 import org.jetbrains.kotlin.fir.declarations.SealedClassInheritorsProvider
+import org.jetbrains.kotlin.fir.java.JavaClassConverter
 import org.jetbrains.kotlin.fir.java.JavaSymbolProvider
 import org.jetbrains.kotlin.fir.java.deserialization.KotlinDeserializedJvmSymbolsProvider
 import org.jetbrains.kotlin.fir.resolve.providers.FirDependenciesSymbolProvider
@@ -26,24 +38,9 @@ import org.jetbrains.kotlin.fir.resolve.providers.impl.FirCompositeSymbolProvide
 import org.jetbrains.kotlin.fir.resolve.scopes.wrapScopeWithJvmMapped
 import org.jetbrains.kotlin.fir.resolve.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.transformers.FirPhaseCheckingPhaseManager
-import org.jetbrains.kotlin.fir.symbols.FirPhaseManager
 import org.jetbrains.kotlin.fir.scopes.FirKotlinScopeProvider
 import org.jetbrains.kotlin.fir.session.*
-import org.jetbrains.kotlin.analysis.low.level.api.fir.*
-import org.jetbrains.kotlin.analysis.low.level.api.fir.FirPhaseRunner
-import org.jetbrains.kotlin.analysis.low.level.api.fir.IdeFirPhaseManager
-import org.jetbrains.kotlin.analysis.low.level.api.fir.api.FirModuleResolveStateConfigurator
-import org.jetbrains.kotlin.analysis.low.level.api.fir.api.stateConfigurator
-import org.jetbrains.kotlin.analysis.low.level.api.fir.file.builder.FirFileBuilder
-import org.jetbrains.kotlin.analysis.low.level.api.fir.file.builder.ModuleFileCacheImpl
-import org.jetbrains.kotlin.analysis.low.level.api.fir.fir.caches.FirThreadSafeCachesFactory
-import org.jetbrains.kotlin.analysis.low.level.api.fir.lazy.resolve.FirLazyDeclarationResolver
-import org.jetbrains.kotlin.analysis.low.level.api.fir.providers.*
-import org.jetbrains.kotlin.analysis.low.level.api.fir.providers.FirIdeBuiltinsAndCloneableSessionProvider
-import org.jetbrains.kotlin.analysis.low.level.api.fir.providers.FirIdeLibrariesSessionProvider
-import org.jetbrains.kotlin.analysis.low.level.api.fir.providers.FirIdeProvider
-import org.jetbrains.kotlin.analysis.low.level.api.fir.providers.FirModuleWithDependenciesSymbolProvider
-import org.jetbrains.kotlin.analysis.low.level.api.fir.util.checkCanceled
+import org.jetbrains.kotlin.fir.symbols.FirPhaseManager
 import org.jetbrains.kotlin.load.java.createJavaClassFinder
 import org.jetbrains.kotlin.load.kotlin.VirtualFileFinderFactory
 import org.jetbrains.kotlin.name.Name
@@ -143,7 +140,12 @@ internal object FirIdeSessionFactory {
                     this,
                     providers = listOf(
                         provider.symbolProvider,
-                        JavaSymbolProvider(this, moduleData, project.createJavaClassFinder(searchScope)),
+                        JavaSymbolProvider(
+                            this,
+                            JavaClassConverter(
+                                this, moduleData, project.createJavaClassFinder(searchScope)
+                            )
+                        ),
                     ),
                     dependencyProvider
                 )
@@ -182,6 +184,8 @@ internal object FirIdeSessionFactory {
             registerCommonJavaComponents(JavaModuleResolver.getInstance(project))
             registerJavaSpecificResolveComponents()
 
+            val mainModuleData = FirModuleInfoBasedModuleData(mainModuleInfo).apply { bindSession(this@session) }
+
             val kotlinSymbolProvider = KotlinDeserializedJvmSymbolsProvider(
                 this@session,
                 moduleDataProvider = project.stateConfigurator.createModuleDataProvider(mainModuleInfo).apply {
@@ -190,7 +194,9 @@ internal object FirIdeSessionFactory {
                 kotlinScopeProvider = FirKotlinScopeProvider(::wrapScopeWithJvmMapped),
                 packagePartProvider = project.stateConfigurator.createPackagePartsProvider(mainModuleInfo, searchScope),
                 kotlinClassFinder = VirtualFileFinderFactory.getInstance(project).create(searchScope),
-                javaClassFinder = project.createJavaClassFinder(searchScope)
+                javaClassConverter = JavaClassConverter(
+                    this@session, mainModuleData, project.createJavaClassFinder(searchScope)
+                )
             )
             val symbolProvider = FirCompositeSymbolProvider(this, listOf(kotlinSymbolProvider, builtinsAndCloneableSession.symbolProvider))
             register(FirProvider::class, FirIdeLibrariesSessionProvider(symbolProvider))
