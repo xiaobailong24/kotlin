@@ -47,12 +47,11 @@ class KotlinCallCompleter(
         val candidate = prepareCandidateForCompletion(factory, candidates, resolutionCallbacks)
 
         val resul = if (candidate is CallableReferenceCandidate) {
-//            val csBuilder = candidate.getSystem().getBuilder()
-//            val (toFreshSubstitutor, diagnostic) = csBuilder.checkCallableReference2(candidate.resolvedCall,
-//                candidate.dispatchReceiver, candidate.extensionReceiver, candidate.candidate,
-//                candidate.reflectionCandidateType, expectedType, candidate.scopeTower.lexicalScope.ownerDescriptor
-//            )
-            expectedType
+            val returnType = candidate.substitutedKReturnType()
+//            candidate.addExpectedTypeConstraint(returnType, expectedType)
+//            candidate.addExpectedTypeFromCastConstraint(returnType, resolutionCallbacks)
+//            candidate.checkSamWithVararg(diagnosticHolder)
+            returnType
         } else {
             val returnType = candidate.substitutedReturnType()
             candidate.addExpectedTypeConstraint(returnType, expectedType)
@@ -276,6 +275,11 @@ class KotlinCallCompleter(
     private fun ResolutionCandidate.substitutedReturnType(): UnwrappedType? {
         val returnType = resolvedCall.candidateDescriptor.returnType?.unwrap() ?: return null
         return resolvedCall.freshVariablesSubstitutor.safeSubstitute(returnType)
+    }
+
+    private fun ResolutionCandidate.substitutedKReturnType(): UnwrappedType? {
+        this as CallableReferenceCandidate
+        return resolvedCall.freshVariablesSubstitutor.safeSubstitute(this.reflectionCandidateType)
     }
 
     private fun ResolutionCandidate.addExpectedTypeConstraint(

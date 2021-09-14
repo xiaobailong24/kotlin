@@ -83,7 +83,7 @@ fun KotlinDiagnosticsHolder.addError(error: ConstraintSystemError) {
 //    initialDiagnostics: List<KotlinCallDiagnostic>
 //) : Candidate {
 
-open class KotlinResolutionCandidate(
+class KotlinResolutionCandidate(
     override val callComponents: KotlinCallComponents,
     override val resolutionCallbacks: KotlinResolutionCallbacks,
     override val callableReferenceResolver: CallableReferenceResolver,

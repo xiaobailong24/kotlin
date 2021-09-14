@@ -67,26 +67,6 @@ class KotlinCallResolver(
                     discriminateGenerics = false // we can't specify generics explicitly for callable references
                 ) as Set<CallableReferenceCandidate>
                 return kotlinCallCompleter.runCompletion(candidateFactory, ca2, expectedType, resolutionCallbacks)
-
-//                val processor = createCallableReferenceProcessor(
-//                    scopeTower,
-//                    kotlinCall.name,
-//                    SimpleCandidateFactory(
-//                        callComponents, scopeTower, kotlinCall, resolutionCallbacks, callableReferenceResolver
-//                    ),
-////                    CallableReferencesCandidateFactory(
-////                        kotlinCall, callComponents, scopeTower, compatibilityChecker, expectedType, csBuilder, resolutionCallbacks
-////                    ),
-//                    kotlinCall.explicitReceiver?.receiver,
-//                )
-//                val candidates = towerResolver.runResolve(scopeTower, processor, useOrder = true, name = kotlinCall.name)
-//                val cc = this.overloadingConflictResolver.chooseMaximallySpecificCandidates(
-//                    candidates,
-//                    CheckArgumentTypesMode.CHECK_VALUE_ARGUMENTS,
-//                    discriminateGenerics = false // we can't specify generics explicitly for callable references
-//                )
-//
-//                return kotlinCallCompleter.runCompletion(candidateFactory, cc, expectedType, resolutionCallbacks)
             }
             KotlinCallKind.INVOKE -> {
                 createProcessorWithReceiverValueOrEmpty(kotlinCall.explicitReceiver?.receiver) {

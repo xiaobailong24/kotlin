@@ -606,9 +606,26 @@ class NewCallableReferenceResolvedCall<D : CallableDescriptor>(
 
     override fun getExplicitReceiverKind(): ExplicitReceiverKind = resolvedCallAtom.candidate!!.explicitReceiverKind
 
-    override fun getValueArguments(): MutableMap<ValueParameterDescriptor, ResolvedValueArgument> = mutableMapOf()
+    override fun getValueArguments(): Map<ValueParameterDescriptor, ResolvedValueArgument> = _valueArguments
 
-    override fun getValueArgumentsByIndex(): MutableList<ResolvedValueArgument>? = mutableListOf()
+    override fun getValueArgumentsByIndex(): List<ResolvedValueArgument>? {
+        val arguments = ArrayList<ResolvedValueArgument?>(candidateDescriptor.valueParameters.size)
+        for (i in 0..candidateDescriptor.valueParameters.size - 1) {
+            arguments.add(null)
+        }
+
+        for ((parameterDescriptor, value) in valueArguments) {
+            val oldValue = arguments.set(parameterDescriptor.index, value)
+            if (oldValue != null) {
+                return null
+            }
+        }
+
+        if (arguments.any { it == null }) return null
+
+        @Suppress("UNCHECKED_CAST")
+        return arguments as List<ResolvedValueArgument>
+    }
 
     override fun getArgumentMapping(valueArgument: ValueArgument): ArgumentMapping  = ArgumentUnmapped
 
@@ -721,7 +738,7 @@ class NewCallableReferenceResolvedCall<D : CallableDescriptor>(
             .substituteAndApproximateTypes(inferredTypeVariablesSubstitutor, if (shouldApproximate) typeApproximator else null, true)
     }
 
-    protected var _valueArguments: Map<ValueParameterDescriptor, ResolvedValueArgument>? = null
+    protected var _valueArguments: Map<ValueParameterDescriptor, ResolvedValueArgument> = mutableMapOf()
 
     fun setValueArguments(m: Map<ValueParameterDescriptor, ResolvedValueArgument>) {
         _valueArguments = m
