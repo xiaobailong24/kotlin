@@ -18017,6 +18017,12 @@ public class IrBlackBoxCodegenTestGenerated extends AbstractIrBlackBoxCodegenTes
         }
 
         @Test
+        @TestMetadata("topLevelCallableReferenceThroughNewInference.kt")
+        public void testTopLevelCallableReferenceThroughNewInference() throws Exception {
+            runTest("compiler/testData/codegen/box/inference/topLevelCallableReferenceThroughNewInference.kt");
+        }
+
+        @Test
         @TestMetadata("unsafeVarianceCodegen.kt")
         public void testUnsafeVarianceCodegen() throws Exception {
             runTest("compiler/testData/codegen/box/inference/unsafeVarianceCodegen.kt");

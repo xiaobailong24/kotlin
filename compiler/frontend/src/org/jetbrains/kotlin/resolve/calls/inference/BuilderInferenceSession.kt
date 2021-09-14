@@ -80,7 +80,7 @@ class BuilderInferenceSession(
 
     override val parentSession = topLevelCallContext.inferenceSession
 
-    override fun shouldRunCompletion(candidate: KotlinResolutionCandidate): Boolean {
+    override fun shouldRunCompletion(candidate: ResolutionCandidate): Boolean {
         val system = candidate.getSystem() as NewConstraintSystemImpl
 
         if (system.hasContradiction) return true

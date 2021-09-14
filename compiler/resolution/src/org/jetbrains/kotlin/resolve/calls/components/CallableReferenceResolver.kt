@@ -18,6 +18,7 @@ package org.jetbrains.kotlin.resolve.calls.components
 
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
+import org.jetbrains.kotlin.resolve.calls.KotlinCallResolver
 import org.jetbrains.kotlin.resolve.calls.context.CheckArgumentTypesMode
 import org.jetbrains.kotlin.resolve.calls.inference.ConstraintSystemBuilder
 import org.jetbrains.kotlin.resolve.calls.inference.ConstraintSystemOperation
@@ -42,7 +43,7 @@ class CallableReferenceOverloadConflictResolver(
     statelessCallbacks: KotlinResolutionStatelessCallbacks,
     constraintInjector: ConstraintInjector,
     kotlinTypeRefiner: KotlinTypeRefiner,
-) : OverloadingConflictResolver<CallableReferenceCandidate>(
+) : OverloadingConflictResolver<CallableCandidate>(
     builtIns,
     module,
     specificityComparator,
@@ -57,7 +58,7 @@ class CallableReferenceOverloadConflictResolver(
     kotlinTypeRefiner,
 ) {
     companion object {
-        private fun createFlatSignature(candidate: CallableReferenceCandidate) =
+        private fun createFlatSignature(candidate: CallableCandidate) =
             FlatSignature.createFromReflectionType(
                 candidate, candidate.candidate, candidate.numDefaults, hasBoundExtensionReceiver = candidate.extensionReceiver != null,
                 candidate.reflectionCandidateType
@@ -68,7 +69,7 @@ class CallableReferenceOverloadConflictResolver(
 
 class CallableReferenceResolver(
     private val towerResolver: TowerResolver,
-    private val callableReferenceOverloadConflictResolver: CallableReferenceOverloadConflictResolver,
+    val callableReferenceOverloadConflictResolver: CallableReferenceOverloadConflictResolver,
     private val callComponents: KotlinCallComponents
 ) {
 
@@ -76,15 +77,24 @@ class CallableReferenceResolver(
         csBuilder: ConstraintSystemBuilder,
         resolvedAtom: ResolvedCallableReferenceAtom,
         diagnosticsHolder: KotlinDiagnosticsHolder,
-        resolutionCallbacks: KotlinResolutionCallbacks
+        resolutionCallbacks: KotlinResolutionCallbacks,
     ) {
         val argument = resolvedAtom.atom
         val expectedType = resolvedAtom.expectedType?.let { (csBuilder.buildCurrentSubstitutor() as NewTypeSubstitutor).safeSubstitute(it) }
 
         val scopeTower = callComponents.statelessCallbacks.getScopeTowerForCallableReferenceArgument(argument)
-        val candidates = runRHSResolution(scopeTower, argument, expectedType, csBuilder, resolutionCallbacks) { checkCallableReference ->
-            csBuilder.runTransaction { checkCallableReference(this); false }
-        }
+
+        val (a, candidates) = resolutionCallbacks.resolveCallableReference(
+            scopeTower,
+            resolvedAtom.atom.kotlinCall,
+            expectedType,
+            csBuilder,
+            argument = resolvedAtom.atom
+        )
+//
+//        val candidates = runRHSResolution(scopeTower, argument, expectedType, csBuilder, resolutionCallbacks) { checkCallableReference ->
+//            csBuilder.runTransaction { checkCallableReference(); false }
+//        }
 
         if (candidates.size > 1 && resolvedAtom is EagerCallableReferenceAtom) {
             if (candidates.all { it.resultingApplicability.isInapplicable }) {
@@ -137,26 +147,6 @@ class CallableReferenceResolver(
             is ExpressionKotlinCallArgument -> ResolvedExpressionAtom(lshCallArgument)
             else -> unexpectedArgument(lshCallArgument)
         }
-    }
-
-    private fun runRHSResolution(
-        scopeTower: ImplicitScopeTower,
-        callableReference: CallableReferenceKotlinCallArgument,
-        expectedType: UnwrappedType?, // this type can have not fixed type variable inside
-        csBuilder: ConstraintSystemBuilder,
-        resolutionCallbacks: KotlinResolutionCallbacks,
-        compatibilityChecker: ((ConstraintSystemOperation) -> Unit) -> Unit // you can run anything throw this operation and all this operation will be rolled back
-    ): Set<CallableReferenceCandidate> {
-        val factory = CallableReferencesCandidateFactory(
-            callableReference, callComponents, scopeTower, compatibilityChecker, expectedType, csBuilder, resolutionCallbacks
-        )
-        val processor = createCallableReferenceProcessor(factory)
-        val candidates = towerResolver.runResolve(scopeTower, processor, useOrder = true, name = callableReference.rhsName)
-        return callableReferenceOverloadConflictResolver.chooseMaximallySpecificCandidates(
-            candidates,
-            CheckArgumentTypesMode.CHECK_VALUE_ARGUMENTS,
-            discriminateGenerics = false // we can't specify generics explicitly for callable references
-        )
     }
 }
 

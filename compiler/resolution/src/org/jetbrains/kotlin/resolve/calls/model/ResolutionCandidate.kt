@@ -37,13 +37,13 @@ import org.jetbrains.kotlin.utils.SmartList
 
 
 abstract class ResolutionPart {
-    abstract fun KotlinResolutionCandidate.process(workIndex: Int)
+    abstract fun ResolutionCandidate.process(workIndex: Int)
 
-    open fun KotlinResolutionCandidate.workCount(): Int = 1
+    open fun ResolutionCandidate.workCount(): Int = 1
 
     // helper functions
-    protected inline val KotlinResolutionCandidate.candidateDescriptor get() = resolvedCall.candidateDescriptor
-    protected inline val KotlinResolutionCandidate.kotlinCall get() = resolvedCall.atom
+    protected inline val ResolutionCandidate.candidateDescriptor get() = resolvedCall.candidateDescriptor
+    protected inline val ResolutionCandidate.kotlinCall get() = resolvedCall.atom
 }
 
 interface KotlinDiagnosticsHolder {
@@ -72,17 +72,28 @@ fun KotlinDiagnosticsHolder.addError(error: ConstraintSystemError) {
  * baseSystem contains all information from arguments, i.e. it is union of all system of arguments
  * Also by convention we suppose that baseSystem has no contradiction
  */
+
+//class CallableReferenceCandidate(
+//    val candidate: CallableDescriptor,
+//    val dispatchReceiver: CallableReceiver?,
+//    val extensionReceiver: CallableReceiver?,
+//    val explicitReceiverKind: ExplicitReceiverKind,
+//    val reflectionCandidateType: UnwrappedType,
+//    val callableReferenceAdaptation: CallableReferenceAdaptation?,
+//    initialDiagnostics: List<KotlinCallDiagnostic>
+//) : Candidate {
+
 class KotlinResolutionCandidate(
-    val callComponents: KotlinCallComponents,
-    val resolutionCallbacks: KotlinResolutionCallbacks,
-    val callableReferenceResolver: CallableReferenceResolver,
-    val scopeTower: ImplicitScopeTower,
+    override val callComponents: KotlinCallComponents,
+    override val resolutionCallbacks: KotlinResolutionCallbacks,
+    override val callableReferenceResolver: CallableReferenceResolver,
+    override val scopeTower: ImplicitScopeTower,
     private val baseSystem: ConstraintStorage,
-    val resolvedCall: MutableResolvedCallAtom,
-    val knownTypeParametersResultingSubstitutor: TypeSubstitutor? = null,
-    private val resolutionSequence: List<ResolutionPart> = resolvedCall.atom.callKind.resolutionSequence
-) : Candidate, KotlinDiagnosticsHolder {
-    val diagnosticsFromResolutionParts = arrayListOf<KotlinCallDiagnostic>() // TODO: this is mutable list, take diagnostics only once!
+    override val resolvedCall: MutableResolvedCallAtom,
+    override val knownTypeParametersResultingSubstitutor: TypeSubstitutor? = null,
+    override val resolutionSequence: List<ResolutionPart> = resolvedCall.atom.callKind.resolutionSequence
+) : ResolutionCandidate {
+    override val diagnosticsFromResolutionParts = arrayListOf<KotlinCallDiagnostic>() // TODO: this is mutable list, take diagnostics only once!
     private var newSystem: NewConstraintSystemImpl? = null
     private var currentApplicability = CandidateApplicability.RESOLVED
     private var subResolvedAtoms: MutableList<ResolvedAtom> = arrayListOf()
@@ -90,7 +101,7 @@ class KotlinResolutionCandidate(
     private val stepCount = resolutionSequence.sumOf { it.run { workCount() } }
     private var step = 0
 
-    fun getSystem(): NewConstraintSystem {
+    override fun getSystem(): NewConstraintSystem {
         if (newSystem == null) {
             newSystem = NewConstraintSystemImpl(callComponents.constraintInjector, callComponents.builtIns, callComponents.kotlinTypeRefiner)
             newSystem!!.addOtherSystem(baseSystem)
@@ -105,9 +116,9 @@ class KotlinResolutionCandidate(
         currentApplicability = minOf(diagnostic.candidateApplicability, currentApplicability)
     }
 
-    fun getSubResolvedAtoms(): List<ResolvedAtom> = subResolvedAtoms
+    override fun getSubResolvedAtoms(): List<ResolvedAtom> = subResolvedAtoms
 
-    fun addResolvedKtPrimitive(resolvedAtom: ResolvedAtom) {
+    override fun addResolvedKtPrimitive(resolvedAtom: ResolvedAtom) {
         subResolvedAtoms.add(resolvedAtom)
     }
 
@@ -151,7 +162,7 @@ class KotlinResolutionCandidate(
         return false
     }
 
-    val variableCandidateIfInvoke: KotlinResolutionCandidate?
+    override val variableCandidateIfInvoke: ResolutionCandidate?
         get() = callComponents.statelessCallbacks.getVariableCandidateIfInvoke(resolvedCall.atom)
 
     private val variableApplicability
@@ -190,7 +201,9 @@ class MutableResolvedCallAtom(
     override val candidateDescriptor: CallableDescriptor, // original candidate descriptor
     override val explicitReceiverKind: ExplicitReceiverKind,
     override val dispatchReceiverArgument: SimpleKotlinCallArgument?,
-    override val extensionReceiverArgument: SimpleKotlinCallArgument?
+    override val extensionReceiverArgument: SimpleKotlinCallArgument?,
+    val reflectionCandidateType: UnwrappedType? = null,
+    val candidate: CallableReferenceCandidate? = null
 ) : ResolvedCallAtom() {
     override lateinit var typeArgumentMappingByOriginal: TypeArgumentsToParametersMapper.TypeArgumentsMapping
     override lateinit var argumentMappingByOriginal: Map<ValueParameterDescriptor, ResolvedCallArgument>
@@ -256,12 +269,12 @@ class MutableResolvedCallAtom(
     override fun toString(): String = "$atom, candidate = $candidateDescriptor"
 }
 
-fun KotlinResolutionCandidate.markCandidateForCompatibilityResolve() {
+fun ResolutionCandidate.markCandidateForCompatibilityResolve() {
     if (callComponents.languageVersionSettings.supportsFeature(LanguageFeature.DisableCompatibilityModeForNewInference)) return
     addDiagnostic(LowerPriorityToPreserveCompatibility.asDiagnostic())
 }
 
-fun CallableReferencesCandidateFactory.markCandidateForCompatibilityResolve(diagnostics: SmartList<KotlinCallDiagnostic>) {
+fun CallableReferencesCandidateFactory2.markCandidateForCompatibilityResolve(diagnostics: SmartList<KotlinCallDiagnostic>) {
     if (callComponents.languageVersionSettings.supportsFeature(LanguageFeature.DisableCompatibilityModeForNewInference)) return
     diagnostics.add(LowerPriorityToPreserveCompatibility.asDiagnostic())
 }

@@ -183,7 +183,7 @@ class SimpleCandidateFactory(
         return candidate
     }
 
-    fun createErrorCandidate(): KotlinResolutionCandidate {
+    override fun createErrorCandidate(): KotlinResolutionCandidate {
         val errorScope = ErrorUtils.createErrorScope("Error resolution candidate for call $kotlinCall")
         val errorDescriptor = if (kotlinCall.callKind == KotlinCallKind.VARIABLE) {
             errorScope.getContributedVariables(kotlinCall.name, scopeTower.location)
@@ -235,6 +235,14 @@ enum class KotlinCallKind(vararg resolutionPart: ResolutionPart) {
         PostponedVariablesInitializerResolutionPart
     ),
     INVOKE(*FUNCTION.resolutionSequence.toTypedArray()),
+    CALLABLE_REFERENCE(
+        CheckVisibility,
+        MapTypeArguments,
+        NoArguments,
+        CreateFreshVariablesSubstitutor,
+        CheckReceivers,
+        CheckCallableReferences
+    ),
     UNSUPPORTED();
 
     val resolutionSequence = resolutionPart.asList()

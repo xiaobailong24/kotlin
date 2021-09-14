@@ -11,11 +11,15 @@ import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.descriptors.annotations.Annotations
+import org.jetbrains.kotlin.resolve.calls.inference.ConstraintSystemBuilder
 import org.jetbrains.kotlin.resolve.calls.inference.components.ConstraintInjector
 import org.jetbrains.kotlin.resolve.calls.inference.model.NewTypeVariable
 import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.resolve.calls.results.SimpleConstraintSystem
+import org.jetbrains.kotlin.resolve.calls.tower.CandidateFactory
+import org.jetbrains.kotlin.resolve.calls.tower.CandidateFactoryProviderForInvoke
 import org.jetbrains.kotlin.resolve.calls.tower.ImplicitScopeTower
+import org.jetbrains.kotlin.resolve.calls.tower.ResolutionCandidate
 import org.jetbrains.kotlin.resolve.constants.IntegerValueTypeConstant
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.StubTypeForBuilderInference
@@ -37,7 +41,7 @@ interface KotlinResolutionStatelessCallbacks {
 
     fun isSuperExpression(receiver: SimpleKotlinCallArgument?): Boolean
     fun getScopeTowerForCallableReferenceArgument(argument: CallableReferenceKotlinCallArgument): ImplicitScopeTower
-    fun getVariableCandidateIfInvoke(functionCall: KotlinCall): KotlinResolutionCandidate?
+    fun getVariableCandidateIfInvoke(functionCall: KotlinCall): ResolutionCandidate?
     fun isBuilderInferenceCall(argument: KotlinCallArgument, parameter: ValueParameterDescriptor): Boolean
     fun isApplicableCallForBuilderInference(descriptor: CallableDescriptor, languageVersionSettings: LanguageVersionSettings): Boolean
 
@@ -77,6 +81,14 @@ interface KotlinResolutionCallbacks {
         stubsForPostponedVariables: Map<NewTypeVariable, StubTypeForBuilderInference>,
     ): ReturnArgumentsAnalysisResult
 
+    fun resolveCallableReference(
+        scopeTower: ImplicitScopeTower,
+        kotlinCall: KotlinCall,
+        expectedType: UnwrappedType?,
+        csBuilder: ConstraintSystemBuilder,
+        argument: CallableReferenceKotlinCallArgument?
+    ): Pair<CandidateFactory<CallableReferenceCandidate>, Set<CallableReferenceCandidate>>
+
     fun bindStubResolvedCallForCandidate(candidate: ResolvedCallAtom)
 
     fun isCompileTimeConstant(resolvedAtom: ResolvedCallAtom, expectedType: UnwrappedType): Boolean
@@ -90,4 +102,8 @@ interface KotlinResolutionCallbacks {
     fun convertSignedConstantToUnsigned(argument: KotlinCallArgument): IntegerValueTypeConstant?
 
     fun recordInlinabilityOfLambda(atom: Set<Map.Entry<KotlinResolutionCandidate, ResolvedLambdaAtom>>)
+
+    fun transformToLhsResult(
+        call: KotlinCall,
+    ): LHSResult
 }
