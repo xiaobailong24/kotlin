@@ -64,6 +64,7 @@ fun ResolutionContext<*>.reportTypeMismatchDueToTypeProjection(
             resolvedCall to { f: CallableDescriptor -> (f as? PropertyDescriptor)?.setter?.valueParameters?.get(0)?.type }
         }
         is CallPosition.Unknown -> return false
+        is CallPosition.CallableReference -> return false
     }
 
     val receiverType = resolvedCall.smartCastDispatchReceiverType

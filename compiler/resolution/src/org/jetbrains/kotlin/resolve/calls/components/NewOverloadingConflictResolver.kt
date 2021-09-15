@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.resolve.calls.model.KotlinCallArgument
 import org.jetbrains.kotlin.resolve.calls.model.KotlinResolutionCandidate
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCallArgument
 import org.jetbrains.kotlin.resolve.calls.results.*
+import org.jetbrains.kotlin.resolve.calls.tower.ResolutionCandidate
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.checker.KotlinTypeRefiner
 import org.jetbrains.kotlin.util.CancellationChecker
@@ -37,7 +38,7 @@ class NewOverloadingConflictResolver(
     statelessCallbacks: KotlinResolutionStatelessCallbacks,
     constraintInjector: ConstraintInjector,
     kotlinTypeRefiner: KotlinTypeRefiner,
-) : OverloadingConflictResolver<KotlinResolutionCandidate>(
+) : OverloadingConflictResolver<ResolutionCandidate>(
     builtIns,
     module,
     specificityComparator,
@@ -56,7 +57,7 @@ class NewOverloadingConflictResolver(
 ) {
 
     companion object {
-        private fun createFlatSignature(candidate: KotlinResolutionCandidate): FlatSignature<KotlinResolutionCandidate> {
+        private fun createFlatSignature(candidate: ResolutionCandidate): FlatSignature<ResolutionCandidate> {
 
             val resolvedCall = candidate.resolvedCall
             val originalDescriptor = resolvedCall.candidateDescriptor.original

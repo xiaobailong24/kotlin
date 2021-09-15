@@ -31,6 +31,8 @@ class KtNameReferenceExpression : KtExpressionImplStub<KotlinNameReferenceExpres
 
     constructor(stub: KotlinNameReferenceExpressionStub) : super(stub, KtStubElementTypes.REFERENCE_EXPRESSION)
 
+    val lhs: KtCallElement? get() = (parent as? KtCallableReferenceExpression)?.lhs as? KtCallElement
+
     override fun getReferencedName(): String {
         val stub = stub
         if (stub != null) {

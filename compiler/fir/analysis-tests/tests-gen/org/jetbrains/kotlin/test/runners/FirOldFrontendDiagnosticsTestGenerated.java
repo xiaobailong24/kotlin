@@ -13318,6 +13318,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("topLevelCallableReferenceThroughNewInference.kt")
+            public void testTopLevelCallableReferenceThroughNewInference() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/topLevelCallableReferenceThroughNewInference.kt");
+            }
+
+            @Test
             @TestMetadata("topLevelIntersection.kt")
             public void testTopLevelIntersection() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/topLevelIntersection.kt");

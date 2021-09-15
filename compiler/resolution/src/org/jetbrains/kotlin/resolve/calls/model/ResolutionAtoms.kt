@@ -7,14 +7,13 @@ package org.jetbrains.kotlin.resolve.calls.model
 
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
-import org.jetbrains.kotlin.resolve.calls.components.CallableReferenceCandidate
-import org.jetbrains.kotlin.resolve.calls.components.ReturnArgumentsInfo
-import org.jetbrains.kotlin.resolve.calls.components.TypeArgumentsToParametersMapper
-import org.jetbrains.kotlin.resolve.calls.components.extractInputOutputTypesFromCallableReferenceExpectedType
+import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.resolve.calls.components.*
 import org.jetbrains.kotlin.resolve.calls.inference.components.FreshVariableNewTypeSubstitutor
 import org.jetbrains.kotlin.resolve.calls.inference.components.NewTypeSubstitutor
 import org.jetbrains.kotlin.resolve.calls.inference.model.*
 import org.jetbrains.kotlin.resolve.calls.tasks.ExplicitReceiverKind
+import org.jetbrains.kotlin.resolve.calls.tower.ResolutionCandidate
 import org.jetbrains.kotlin.resolve.constants.IntegerValueTypeConstant
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.TypeConstructor
@@ -31,6 +30,15 @@ import org.jetbrains.kotlin.utils.addToStdlib.safeAs
  * Expression with type is also primitive. This is done for simplification. todo
  */
 interface ResolutionAtom
+
+sealed interface CallableReferenceResolutionAtom: ResolutionAtom {
+    val lhsResult: LHSResult
+    val rhsName: Name
+}
+
+class CallableReferenceCall(val call: KotlinCall, override val lhsResult: LHSResult, override val rhsName: Name) : CallableReferenceResolutionAtom {
+
+}
 
 sealed class ResolvedAtom {
     abstract val atom: ResolutionAtom? // CallResolutionResult has no ResolutionAtom
@@ -167,13 +175,13 @@ abstract class ResolvedCallableReferenceAtom(
     override val atom: CallableReferenceKotlinCallArgument,
     override val expectedType: UnwrappedType?
 ) : PostponedResolvedAtom() {
-    var candidate: CallableReferenceCandidate? = null
+    var candidate: CallableCandidate? = null
         private set
 
     var completed: Boolean = false
 
     fun setAnalyzedResults(
-        candidate: CallableReferenceCandidate?,
+        candidate: CallableCandidate?,
         subResolvedAtoms: List<ResolvedAtom>
     ) {
         this.candidate = candidate
@@ -292,7 +300,7 @@ class AllCandidatesResolutionResult(
     val allCandidates: Collection<CandidateWithDiagnostics>
 ) : CallResolutionResult(null, emptyList(), ConstraintStorage.Empty)
 
-data class CandidateWithDiagnostics(val candidate: KotlinResolutionCandidate, val diagnostics: List<KotlinCallDiagnostic>)
+data class CandidateWithDiagnostics(val candidate: ResolutionCandidate, val diagnostics: List<KotlinCallDiagnostic>)
 
 fun CallResolutionResult.resultCallAtom(): ResolvedCallAtom? =
     if (this is SingleCallResolutionResult) resultCallAtom else null

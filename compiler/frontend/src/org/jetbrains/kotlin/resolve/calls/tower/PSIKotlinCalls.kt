@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.resolve.calls.tower
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.Call
+import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.resolve.BindingTrace
 import org.jetbrains.kotlin.resolve.calls.CallTransformer
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
@@ -67,7 +68,16 @@ class PSIKotlinCallImpl(
     override val resultDataFlowInfo: DataFlowInfo,
     override val dataFlowInfoForArguments: DataFlowInfoForArguments,
     override val isForImplicitInvoke: Boolean
-) : PSIKotlinCall()
+) : PSIKotlinCall() {
+    override val receiverTypeArguments: List<TypeArgument> get() {
+        val ref = psiCall.callElement as? KtNameReferenceExpression ?: return emptyList()
+        val arguments = explicitReceiver?.receiverValue?.type?.arguments ?: return emptyList()
+
+        return ref.lhs?.typeArguments?.mapIndexed { i, it ->
+            SimpleTypeArgumentImpl(it, arguments[i].type.unwrap())
+        } ?: emptyList()
+    }
+}
 
 class PSIKotlinCallForVariable(
     val baseCall: PSIKotlinCallImpl,
@@ -76,6 +86,7 @@ class PSIKotlinCallForVariable(
 ) : PSIKotlinCall() {
     override val callKind: KotlinCallKind get() = KotlinCallKind.VARIABLE
     override val typeArguments: List<TypeArgument> get() = emptyList()
+    override val receiverTypeArguments: List<TypeArgument> get() = emptyList()
     override val argumentsInParenthesis: List<KotlinCallArgument> get() = emptyList()
     override val externalArgument: KotlinCallArgument? get() = null
 
@@ -93,13 +104,14 @@ class PSIKotlinCallForVariable(
 
 class PSIKotlinCallForInvoke(
     val baseCall: PSIKotlinCallImpl,
-    val variableCall: KotlinResolutionCandidate,
+    val variableCall: ResolutionCandidate,
     override val explicitReceiver: ReceiverKotlinCallArgument,
     override val dispatchReceiverForInvokeExtension: SimpleKotlinCallArgument?
 ) : PSIKotlinCall() {
     override val callKind: KotlinCallKind get() = KotlinCallKind.FUNCTION
     override val name: Name get() = OperatorNameConventions.INVOKE
     override val typeArguments: List<TypeArgument> get() = baseCall.typeArguments
+    override val receiverTypeArguments: List<TypeArgument> get() = baseCall.receiverTypeArguments
     override val argumentsInParenthesis: List<KotlinCallArgument> get() = baseCall.argumentsInParenthesis
     override val externalArgument: KotlinCallArgument? get() = baseCall.externalArgument
 

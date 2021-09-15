@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.resolve.calls.tower.ManyCandidatesResolver
 import org.jetbrains.kotlin.resolve.calls.tower.PSICallResolver
 import org.jetbrains.kotlin.resolve.calls.tower.PSIPartialCallInfo
+import org.jetbrains.kotlin.resolve.calls.tower.ResolutionCandidate
 import org.jetbrains.kotlin.types.ErrorUtils
 import org.jetbrains.kotlin.types.TypeConstructor
 import org.jetbrains.kotlin.types.UnwrappedType
@@ -112,7 +113,7 @@ class InferenceSessionForExistingCandidates(
     private val resolveReceiverIndependently: Boolean,
     override val parentSession: InferenceSession?
 ) : InferenceSession {
-    override fun shouldRunCompletion(candidate: KotlinResolutionCandidate): Boolean {
+    override fun shouldRunCompletion(candidate: ResolutionCandidate): Boolean {
         return !ErrorUtils.isError(candidate.resolvedCall.candidateDescriptor)
     }
 
@@ -135,7 +136,7 @@ class InferenceSessionForExistingCandidates(
     }
 
     override fun computeCompletionMode(
-        candidate: KotlinResolutionCandidate
+        candidate: ResolutionCandidate
     ): ConstraintSystemCompletionMode? = null
 
     override fun resolveReceiverIndependently(): Boolean = resolveReceiverIndependently
