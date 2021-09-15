@@ -29,7 +29,7 @@ import org.jetbrains.kotlin.fir.checkers.registerExtendedCommonCheckers
 import org.jetbrains.kotlin.fir.declarations.SealedClassInheritorsProvider
 import org.jetbrains.kotlin.fir.java.FirJavaFacade
 import org.jetbrains.kotlin.fir.java.JavaSymbolProvider
-import org.jetbrains.kotlin.fir.java.deserialization.KotlinDeserializedJvmSymbolsProvider
+import org.jetbrains.kotlin.fir.java.deserialization.JvmClassFileBasedSymbolProvider
 import org.jetbrains.kotlin.fir.resolve.providers.FirDependenciesSymbolProvider
 import org.jetbrains.kotlin.fir.resolve.providers.FirProvider
 import org.jetbrains.kotlin.fir.resolve.providers.FirSymbolProvider
@@ -186,7 +186,7 @@ internal object FirIdeSessionFactory {
 
             val mainModuleData = FirModuleInfoBasedModuleData(mainModuleInfo).apply { bindSession(this@session) }
 
-            val kotlinSymbolProvider = KotlinDeserializedJvmSymbolsProvider(
+            val classFileBasedSymbolProvider = JvmClassFileBasedSymbolProvider(
                 this@session,
                 moduleDataProvider = project.stateConfigurator.createModuleDataProvider(mainModuleInfo).apply {
                     allModuleData.forEach { it.bindSession(this@session) }
@@ -198,7 +198,8 @@ internal object FirIdeSessionFactory {
                     this@session, mainModuleData, project.createJavaClassFinder(searchScope)
                 )
             )
-            val symbolProvider = FirCompositeSymbolProvider(this, listOf(kotlinSymbolProvider, builtinsAndCloneableSession.symbolProvider))
+            val symbolProvider =
+                FirCompositeSymbolProvider(this, listOf(classFileBasedSymbolProvider, builtinsAndCloneableSession.symbolProvider))
             register(FirProvider::class, FirIdeLibrariesSessionProvider(symbolProvider))
             register(FirSymbolProvider::class, symbolProvider)
             register(FirJvmTypeMapper::class, FirJvmTypeMapper(this))
