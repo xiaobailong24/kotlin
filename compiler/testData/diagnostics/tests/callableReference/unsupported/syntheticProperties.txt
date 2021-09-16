@@ -1,6 +1,8 @@
 package
 
 public val customerName: kotlin.reflect.KMutableProperty1<Customer, kotlin.String!>
+public fun </*0*/ K> id(/*0*/ x: K): K
+public fun main(): kotlin.Unit
 
 public open class Customer {
     public constructor Customer(/*0*/ name: kotlin.String!)

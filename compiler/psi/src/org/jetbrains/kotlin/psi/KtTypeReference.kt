@@ -38,6 +38,8 @@ class KtTypeReference : KtModifierListOwnerStub<KotlinPlaceHolderStub<KtTypeRefe
         return visitor.visitTypeReference(this, data)
     }
 
+    val typeProjection get() = parent as KtTypeProjection
+
     val typeElement: KtTypeElement?
         get() = KtStubbedPsiUtil.getStubOrPsiChild(this, KtStubElementTypes.TYPE_ELEMENT_TYPES, KtTypeElement.ARRAY_FACTORY)
 

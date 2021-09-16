@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.psi.psiUtil.getBinaryWithTypeParent
 import org.jetbrains.kotlin.psi.psiUtil.lastBlockStatementOrThis
 import org.jetbrains.kotlin.resolve.*
 import org.jetbrains.kotlin.resolve.calls.ArgumentTypeResolver
+import org.jetbrains.kotlin.resolve.calls.KotlinCallResolver
 import org.jetbrains.kotlin.resolve.calls.components.*
 import org.jetbrains.kotlin.resolve.calls.context.BasicCallResolutionContext
 import org.jetbrains.kotlin.resolve.calls.context.ContextDependency
@@ -29,6 +30,7 @@ import org.jetbrains.kotlin.resolve.calls.inference.model.NewTypeVariable
 import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowInfo
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactory
+import org.jetbrains.kotlin.resolve.calls.tasks.TracingStrategyImpl
 import org.jetbrains.kotlin.resolve.calls.util.CallMaker
 import org.jetbrains.kotlin.resolve.constants.CompileTimeConstant
 import org.jetbrains.kotlin.resolve.constants.IntegerValueTypeConstant
@@ -41,7 +43,6 @@ import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.expressions.DoubleColonExpressionResolver
 import org.jetbrains.kotlin.types.expressions.ExpressionTypingServices
 import org.jetbrains.kotlin.types.expressions.KotlinTypeInfo
-import org.jetbrains.kotlin.types.TypeRefinement
 import org.jetbrains.kotlin.types.typeUtil.isUnit
 import org.jetbrains.kotlin.types.typeUtil.makeNullable
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
@@ -72,7 +73,8 @@ class KotlinResolutionCallbacksImpl(
     private val deprecationResolver: DeprecationResolver,
     private val moduleDescriptor: ModuleDescriptor,
     private val topLevelCallContext: BasicCallResolutionContext,
-    private val missingSupertypesResolver: MissingSupertypesResolver
+    private val missingSupertypesResolver: MissingSupertypesResolver,
+    private val kotlinCallResolver: KotlinCallResolver
 ) : KotlinResolutionCallbacks {
     class LambdaInfo(val expectedType: UnwrappedType, val contextDependency: ContextDependency) {
         val returnStatements = ArrayList<Pair<KtReturnExpression, LambdaContextInfo?>>()
@@ -82,6 +84,20 @@ class KotlinResolutionCallbacksImpl(
             val STUB_EMPTY = LambdaInfo(TypeUtils.NO_EXPECTED_TYPE, ContextDependency.INDEPENDENT)
         }
     }
+
+    override fun resolveCallableReference(
+        scopeTower: ImplicitScopeTower,
+        kotlinCall: KotlinCall,
+        expectedType: UnwrappedType?,
+        baseCallContext: KotlinCallResolver.BaseCallContext,
+    ): Collection<CallableReferenceCandidate> {
+        return kotlinCallResolver.resolveCall(scopeTower, this, kotlinCall, expectedType, false, baseCallContext)
+    }
+
+    override fun getCandidateFactoryForInvoke(
+        scopeTower: ImplicitScopeTower,
+        kotlinCall: KotlinCall
+    ): PSICallResolver.FactoryProviderForInvoke = psiCallResolver.FactoryProviderForInvoke(topLevelCallContext, scopeTower, kotlinCall)
 
     override fun analyzeAndGetLambdaReturnArguments(
         lambdaArgument: LambdaKotlinCallArgument,
@@ -119,7 +135,8 @@ class KotlinResolutionCallbacksImpl(
                     newContext, deparenthesizedExpression, DataFlowInfo.EMPTY,
                     CallMaker.makeExternalValueArgument(deparenthesizedExpression),
                     argumentName = null,
-                    outerCallContext
+                    outerCallContext,
+                    tracingStrategy = TracingStrategyImpl.create(deparenthesizedExpression.callableReference, newContext.call)
                 )
             }
 
@@ -309,7 +326,7 @@ class KotlinResolutionCallbacksImpl(
         return convertSignedConstantToUnsigned(argumentExpression)
     }
 
-    override fun recordInlinabilityOfLambda(atom: Set<Map.Entry<KotlinResolutionCandidate, ResolvedLambdaAtom>>) {
+    override fun recordInlinabilityOfLambda(atom: Set<Map.Entry<RegularCallCandidate, ResolvedLambdaAtom>>) {
         val call = atom.first().value.atom.psiCallArgument.valueArgument as? KtLambdaArgument ?: return
         val literal = call.getLambdaExpression()?.functionLiteral ?: return
         val isLambdaInline = atom.all { (candidate, atom) ->
@@ -318,6 +335,13 @@ class KotlinResolutionCallbacksImpl(
             InlineUtil.isInlineParameter(valueParameterDescriptor)
         }.takeIf { it }
         trace.record(BindingContext.NEW_INFERENCE_IS_LAMBDA_FOR_OVERLOAD_RESOLUTION_INLINE, literal, isLambdaInline)
+    }
+
+    override fun getLhsResult(call: KotlinCall): LHSResult {
+        val callableReferenceExpression = (call as PSIKotlinCall).psiCall.callElement.parent as? KtCallableReferenceExpression
+            ?: throw IllegalStateException("Parent of callable reference's RHS PSI element must be entire callable reference expression")
+        val (_, lhsResult) = psiCallResolver.getLhsResult(topLevelCallContext, callableReferenceExpression)
+        return lhsResult
     }
 
     private fun convertSignedConstantToUnsigned(expression: KtExpression): IntegerValueTypeConstant? {

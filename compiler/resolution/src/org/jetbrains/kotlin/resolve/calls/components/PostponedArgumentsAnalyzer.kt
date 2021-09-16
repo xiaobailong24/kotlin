@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.descriptors.annotations.Annotations
 import org.jetbrains.kotlin.descriptors.annotations.FilteredAnnotations
+import org.jetbrains.kotlin.resolve.calls.inference.NewConstraintSystem
 import org.jetbrains.kotlin.resolve.calls.inference.addSubsystemFromArgument
 import org.jetbrains.kotlin.resolve.calls.inference.components.ConstraintSystemCompletionMode
 import org.jetbrains.kotlin.resolve.calls.inference.model.BuilderInferencePosition
@@ -50,7 +51,7 @@ class PostponedArgumentsAnalyzer(
                 )
 
             is ResolvedCallableReferenceAtom ->
-                callableReferenceResolver.processCallableReferenceArgument(c.getBuilder(), argument, diagnosticsHolder, resolutionCallbacks)
+                callableReferenceResolver.processCallableReferenceArgument(c as NewConstraintSystem, argument, diagnosticsHolder, resolutionCallbacks)
 
             is ResolvedCollectionLiteralAtom -> TODO("Not supported")
 

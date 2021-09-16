@@ -17,3 +17,9 @@ public class Customer {
 
 // FILE: test.kt
 val customerName = Customer::<!UNSUPPORTED!>name<!>
+
+fun <K> id(x: K) = x
+
+fun main() {
+    val customerName = id(Customer::<!UNSUPPORTED!>name<!>)
+}

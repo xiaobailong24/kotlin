@@ -21,6 +21,8 @@ interface KotlinCall : ResolutionAtom {
 
     val typeArguments: List<TypeArgument>
 
+    val receiverTypeArguments: List<TypeArgument>
+
     val argumentsInParenthesis: List<KotlinCallArgument>
 
     val externalArgument: KotlinCallArgument?

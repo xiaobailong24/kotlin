@@ -11,11 +11,14 @@ import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.descriptors.annotations.Annotations
+import org.jetbrains.kotlin.resolve.calls.KotlinCallResolver
 import org.jetbrains.kotlin.resolve.calls.inference.components.ConstraintInjector
 import org.jetbrains.kotlin.resolve.calls.inference.model.NewTypeVariable
 import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.resolve.calls.results.SimpleConstraintSystem
+import org.jetbrains.kotlin.resolve.calls.tower.CandidateFactoryProviderForInvoke
 import org.jetbrains.kotlin.resolve.calls.tower.ImplicitScopeTower
+import org.jetbrains.kotlin.resolve.calls.tower.KotlinResolutionCandidate
 import org.jetbrains.kotlin.resolve.constants.IntegerValueTypeConstant
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.StubTypeForBuilderInference
@@ -77,6 +80,15 @@ interface KotlinResolutionCallbacks {
         stubsForPostponedVariables: Map<NewTypeVariable, StubTypeForBuilderInference>,
     ): ReturnArgumentsAnalysisResult
 
+    fun getCandidateFactoryForInvoke(scopeTower: ImplicitScopeTower, kotlinCall: KotlinCall): CandidateFactoryProviderForInvoke<KotlinResolutionCandidate>
+
+    fun resolveCallableReference(
+        scopeTower: ImplicitScopeTower,
+        kotlinCall: KotlinCall,
+        expectedType: UnwrappedType?,
+        baseCallContext: KotlinCallResolver.BaseCallContext,
+    ): Collection<CallableReferenceCandidate>
+
     fun bindStubResolvedCallForCandidate(candidate: ResolvedCallAtom)
 
     fun isCompileTimeConstant(resolvedAtom: ResolvedCallAtom, expectedType: UnwrappedType): Boolean
@@ -89,5 +101,7 @@ interface KotlinResolutionCallbacks {
 
     fun convertSignedConstantToUnsigned(argument: KotlinCallArgument): IntegerValueTypeConstant?
 
-    fun recordInlinabilityOfLambda(atom: Set<Map.Entry<KotlinResolutionCandidate, ResolvedLambdaAtom>>)
+    fun recordInlinabilityOfLambda(atom: Set<Map.Entry<RegularCallCandidate, ResolvedLambdaAtom>>)
+
+    fun getLhsResult(call: KotlinCall): LHSResult
 }

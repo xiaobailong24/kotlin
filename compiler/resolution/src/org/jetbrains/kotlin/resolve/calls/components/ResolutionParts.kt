@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.resolve.calls.smartcasts.getReceiverValueWithSmartCa
 import org.jetbrains.kotlin.resolve.calls.tasks.ExplicitReceiverKind.*
 import org.jetbrains.kotlin.resolve.calls.tower.InfixCallNoInfixModifier
 import org.jetbrains.kotlin.resolve.calls.tower.InvokeConventionCallNoOperatorModifier
+import org.jetbrains.kotlin.resolve.calls.tower.KotlinResolutionCandidate
 import org.jetbrains.kotlin.resolve.calls.tower.VisibilityError
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.model.KotlinTypeMarker
@@ -63,10 +64,14 @@ internal object CheckVisibility : ResolutionPart() {
 
 internal object MapTypeArguments : ResolutionPart() {
     override fun KotlinResolutionCandidate.process(workIndex: Int) {
-        resolvedCall.typeArgumentMappingByOriginal =
+        if (this is CallableReferenceCandidate) {
+            resolvedCall.typeArgumentMappingByOriginal = NoExplicitArguments
+        } else {
+            resolvedCall.typeArgumentMappingByOriginal =
                 callComponents.typeArgumentsToParametersMapper.mapTypeArguments(kotlinCall, candidateDescriptor.original).also {
                     it.diagnostics.forEach(this@process::addDiagnostic)
                 }
+        }
     }
 }
 
@@ -117,14 +122,16 @@ internal object NoArguments : ResolutionPart() {
 
 internal object CreateFreshVariablesSubstitutor : ResolutionPart() {
     override fun KotlinResolutionCandidate.process(workIndex: Int) {
+        val csBuilder = this.getSystem().getBuilder()
         val toFreshVariables =
             if (candidateDescriptor.typeParameters.isEmpty())
                 FreshVariableNewTypeSubstitutor.Empty
             else
                 createToFreshVariableSubstitutorAndAddInitialConstraints(candidateDescriptor, csBuilder)
 
-        val knownTypeParametersSubstitutor = knownTypeParametersResultingSubstitutor?.let {
-            createKnownParametersFromFreshVariablesSubstitutor(toFreshVariables, knownTypeParametersResultingSubstitutor)
+        val aa = knownTypeParametersResultingSubstitutor
+        val knownTypeParametersSubstitutor = aa?.let {
+            createKnownParametersFromFreshVariablesSubstitutor(toFreshVariables, aa)
         } ?: EmptySubstitutor
 
         resolvedCall.freshVariablesSubstitutor = toFreshVariables
@@ -273,6 +280,7 @@ internal object CreateFreshVariablesSubstitutor : ResolutionPart() {
 
 internal object PostponedVariablesInitializerResolutionPart : ResolutionPart() {
     override fun KotlinResolutionCandidate.process(workIndex: Int) {
+        val csBuilder = getSystem().getBuilder()
         for ((argument, parameter) in resolvedCall.argumentToCandidateParameter) {
             if (!callComponents.statelessCallbacks.isBuilderInferenceCall(argument, parameter)) continue
             val receiverType = parameter.type.getReceiverTypeFromFunctionType() ?: continue
@@ -300,6 +308,7 @@ internal object PostponedVariablesInitializerResolutionPart : ResolutionPart() {
 
 internal object CompatibilityOfTypeVariableAsIntersectionTypePart : ResolutionPart() {
     override fun KotlinResolutionCandidate.process(workIndex: Int) {
+        val csBuilder = getSystem().getBuilder()
         for ((_, variableWithConstraints) in csBuilder.currentStorage().notFixedTypeVariables) {
             val constraints = variableWithConstraints.constraints.filter { csBuilder.isProperType(it.type) }
 
@@ -485,8 +494,9 @@ internal object CollectionTypeVariableUsagesInfo : ResolutionPart() {
 
     override fun KotlinResolutionCandidate.process(workIndex: Int) {
         for (variable in resolvedCall.freshVariablesSubstitutor.freshVariables) {
-            if (resolvedCall.candidateDescriptor is ClassConstructorDescriptor) {
-                val typeParameters = resolvedCall.candidateDescriptor.containingDeclaration.declaredTypeParameters
+            val ca = resolvedCall.candidateDescriptor
+            if (ca is ClassConstructorDescriptor) {
+                val typeParameters = ca.containingDeclaration.declaredTypeParameters
 
                 if (isContainedInInvariantOrContravariantPositionsAmongTypeParameters(variable, typeParameters)) {
                     variable.recordInfoAboutTypeVariableUsagesAsInvariantOrContravariantParameter()
@@ -503,6 +513,7 @@ private fun KotlinResolutionCandidate.resolveKotlinArgument(
     candidateParameter: ParameterDescriptor?,
     receiverInfo: ReceiverInfo
 ) {
+    val csBuilder = this.getSystem().getBuilder()
     val candidateExpectedType = candidateParameter?.let { argument.getExpectedType(it, callComponents.languageVersionSettings) }
 
     val isReceiver = receiverInfo.isReceiver
@@ -600,6 +611,7 @@ private fun KotlinResolutionCandidate.resolveKotlinArgument(
 
 private fun KotlinResolutionCandidate.shouldRunConversionForConstants(expectedType: UnwrappedType): Boolean {
     if (UnsignedTypes.isUnsignedType(expectedType)) return true
+    val csBuilder = this.getSystem().getBuilder()
     if (csBuilder.isTypeVariable(expectedType)) {
         val variableWithConstraints = csBuilder.currentStorage().notFixedTypeVariables[expectedType.constructor] ?: return false
         return variableWithConstraints.constraints.any {
@@ -648,9 +660,9 @@ internal object CheckReceivers : ResolutionPart() {
         receiverParameter: ReceiverParameterDescriptor?,
         shouldCheckImplicitInvoke: Boolean,
     ) {
-        if ((receiverArgument == null) != (receiverParameter == null)) {
-            error("Inconsistency receiver state for call $kotlinCall and candidate descriptor: $candidateDescriptor")
-        }
+//        if ((receiverArgument == null) != (receiverParameter == null)) {
+//            error("Inconsistency receiver state for call $kotlinCall and candidate descriptor: $candidateDescriptor")
+//        }
         if (receiverArgument == null || receiverParameter == null) return
 
         val implicitInvokeState = if (shouldCheckImplicitInvoke) {
@@ -707,8 +719,21 @@ internal object EagerResolveOfCallableReferences : ResolutionPart() {
         getSubResolvedAtoms()
             .filterIsInstance<EagerCallableReferenceAtom>()
             .forEach {
-                callableReferenceResolver.processCallableReferenceArgument(csBuilder, it, this, resolutionCallbacks)
+                callableReferenceResolver.processCallableReferenceArgument(getSystem(), it, this, resolutionCallbacks)
             }
+    }
+}
+
+internal object CheckCallableReference : ResolutionPart() {
+    override fun KotlinResolutionCandidate.process(workIndex: Int) {
+        if (this !is CallableReferenceCandidate) {
+            error("`CheckCallableReferences` resolution part is applicable only to callable reference calls")
+        }
+
+        val cs = getSystem()
+        if (cs.hasContradiction) return
+
+        addConstraints(cs.getBuilder(), resolvedCall.freshVariablesSubstitutor, kotlinCall)
     }
 }
 
