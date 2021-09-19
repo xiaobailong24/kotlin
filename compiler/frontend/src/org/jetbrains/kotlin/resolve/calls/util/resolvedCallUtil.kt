@@ -1,21 +1,11 @@
 /*
- * Copyright 2010-2016 JetBrains s.r.o.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright 2010-2021 JetBrains s.r.o. and Kotlin Programming Language contributors.
+ * Use of this source code is governed by the Apache 2.0 license that can be found in the license/LICENSE.txt file.
  */
 
-package org.jetbrains.kotlin.resolve.calls.resolvedCallUtil
+package org.jetbrains.kotlin.resolve.calls.util
 
+import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.psi.KtCallElement
 import org.jetbrains.kotlin.psi.KtPsiUtil
@@ -26,16 +16,20 @@ import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 import org.jetbrains.kotlin.resolve.calls.callUtil.isSafeCall
 import org.jetbrains.kotlin.resolve.calls.context.CallResolutionContext
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.results.ResolutionStatus
 import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowValueFactory
 import org.jetbrains.kotlin.resolve.calls.smartcasts.getReceiverValueWithSmartCast
 import org.jetbrains.kotlin.resolve.calls.tasks.ExplicitReceiverKind
+import org.jetbrains.kotlin.resolve.calls.tower.*
+import org.jetbrains.kotlin.resolve.constants.IntegerLiteralTypeConstructor
 import org.jetbrains.kotlin.resolve.descriptorUtil.getOwnerForEffectiveDispatchReceiverParameter
 import org.jetbrains.kotlin.resolve.scopes.receivers.ClassValueReceiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExpressionReceiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.ImplicitReceiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue
-import org.jetbrains.kotlin.types.KotlinType
-import org.jetbrains.kotlin.types.TypeUtils
+import org.jetbrains.kotlin.types.*
+import org.jetbrains.kotlin.types.checker.NewCapturedType
+import org.jetbrains.kotlin.types.typeUtil.contains
 
 // it returns true if call has no dispatch receiver (e.g. resulting descriptor is top-level function or local variable)
 // or call receiver is effectively `this` instance (explicitly or implicitly) of resulting descriptor
@@ -106,4 +100,33 @@ fun KtCallElement.getArgumentByParameterIndex(index: Int, context: BindingContex
     val resolvedCall = getResolvedCall(context) ?: return emptyList()
     val parameterToProcess = resolvedCall.resultingDescriptor.valueParameters.getOrNull(index) ?: return emptyList()
     return resolvedCall.valueArguments[parameterToProcess]?.arguments ?: emptyList()
+}
+fun CallableMemberDescriptor.isNotSimpleCall(): Boolean =
+    typeParameters.isNotEmpty() ||
+            (returnType?.let { type ->
+                type.contains {
+                    it is NewCapturedType ||
+                            it.constructor is IntegerLiteralTypeConstructor ||
+                            it is DefinitelyNotNullType ||
+                            it is StubTypeForBuilderInference
+                }
+            } ?: false)
+
+fun ResolvedCall<*>.isNewNotCompleted(): Boolean = if (this is NewAbstractResolvedCall) !isCompleted else false
+
+fun ResolvedCall<*>.hasInferredReturnType(): Boolean {
+    if (isNewNotCompleted()) return false
+
+    val returnType = this.resultingDescriptor.returnType ?: return false
+    return !returnType.contains { ErrorUtils.isUninferredParameter(it) }
+}
+
+fun CandidateApplicability.toResolutionStatus(): ResolutionStatus = when (this) {
+    CandidateApplicability.RESOLVED,
+    CandidateApplicability.RESOLVED_LOW_PRIORITY,
+    CandidateApplicability.RESOLVED_WITH_ERROR,
+    CandidateApplicability.RESOLVED_NEED_PRESERVE_COMPATIBILITY -> ResolutionStatus.SUCCESS
+    CandidateApplicability.INAPPLICABLE_WRONG_RECEIVER -> ResolutionStatus.RECEIVER_TYPE_ERROR
+    CandidateApplicability.UNSAFE_CALL -> ResolutionStatus.UNSAFE_CALL_ERROR
+    else -> ResolutionStatus.OTHER_ERROR
 }

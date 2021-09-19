@@ -7,7 +7,7 @@ package org.jetbrains.kotlin.resolve.calls.components
 
 import org.jetbrains.kotlin.descriptors.ParameterDescriptor
 import org.jetbrains.kotlin.resolve.calls.model.KotlinCallArgument
-import org.jetbrains.kotlin.resolve.calls.model.KotlinResolutionCandidate
+import org.jetbrains.kotlin.resolve.calls.tower.KotlinResolutionCandidate
 import org.jetbrains.kotlin.types.UnwrappedType
 
 interface ParameterTypeConversion {

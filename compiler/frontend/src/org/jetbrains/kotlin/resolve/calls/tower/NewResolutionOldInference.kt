@@ -225,7 +225,7 @@ class NewResolutionOldInference(
     fun <D : CallableDescriptor> runResolutionForGivenCandidates(
         basicCallContext: BasicCallResolutionContext,
         tracing: TracingStrategy,
-        candidates: Collection<ResolutionCandidate<D>>
+        candidates: Collection<OldResolutionCandidate<D>>
     ): OverloadResolutionResultsImpl<D> {
         val resolvedCandidates = candidates.map { candidate ->
             val candidateTrace = TemporaryBindingTrace.create(basicCallContext.trace, "Context for resolve candidate")
@@ -485,6 +485,10 @@ class NewResolutionOldInference(
                 candidateCall.performRemainingTasks()
                 createDiagnosticsForCandidate(towerCandidate, candidateCall)
             }
+        }
+
+        override fun createErrorCandidate(): MyCandidate {
+            throw IllegalStateException("Not supported creating error candidate for the old type inference candidate factory")
         }
 
         private fun createDiagnosticsForCandidate(

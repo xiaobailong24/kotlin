@@ -22,5 +22,9 @@ val x by j1::value
 fun box(): String {
     val j2: J<String> = Impl("K")
     val y by j2::value
+    val y2 by (j2::value)
+    val y3 by (j2)::value
+    val y4 by ((j2)::value)
+    val y5 by (((j2)::value))
     return x + y
 }

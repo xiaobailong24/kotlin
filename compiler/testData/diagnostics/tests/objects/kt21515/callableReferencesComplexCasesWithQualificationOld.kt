@@ -48,7 +48,7 @@ object C {
     }
 
     class Derived : Base() {
-        val a = C.Base.Companion.FromBaseCompanion::<!UNRESOLVED_REFERENCE!>foo<!>
+        val a = C.Base.Companion.FromBaseCompanion::foo
     }
 }
 

@@ -120,13 +120,13 @@ sealed class LHSResult {
     object Error : LHSResult()
 }
 
-interface CallableReferenceKotlinCallArgument : PostponableKotlinCallArgument {
+interface CallableReferenceKotlinCallArgument : PostponableKotlinCallArgument, CallableReferenceResolutionAtom {
     override val isSpread: Boolean
         get() = false
 
-    val lhsResult: LHSResult
+    override val lhsResult: LHSResult
 
-    val rhsName: Name
+    val kotlinCall: KotlinCall
 }
 
 interface CollectionLiteralKotlinCallArgument : PostponableKotlinCallArgument

@@ -282,7 +282,7 @@ class KotlinConstraintSystemCompleter(
 
     fun prepareLambdaAtomForFactoryPattern(
         atom: ResolvedLambdaAtom,
-        candidate: KotlinResolutionCandidate,
+        candidate: RegularCallCandidate,
         diagnosticsHolder: KotlinDiagnosticsHolder,
     ): ResolvedLambdaAtom {
         val returnVariable = TypeVariableForLambdaReturnType(candidate.callComponents.builtIns, "_R")
@@ -422,7 +422,7 @@ class KotlinConstraintSystemCompleter(
                 is PostponedCallableReferenceAtom ->
                     getVariablesFromRevisedExpectedType(revisedExpectedType).orEmpty() +
                             candidate?.freshSubstitutor?.freshVariables?.map { it.freshTypeConstructor }.orEmpty()
-                is ResolvedCallableReferenceAtom -> candidate?.freshSubstitutor?.freshVariables?.map { it.freshTypeConstructor }.orEmpty()
+                is CallableReferenceResolvedArgumentAtom -> candidate?.freshSubstitutor?.freshVariables?.map { it.freshTypeConstructor }.orEmpty()
                 is ResolvedLambdaAtom -> listOfNotNull(typeVariableForLambdaReturnType?.freshTypeConstructor)
                 else -> emptyList()
             }
@@ -493,7 +493,7 @@ class KotlinConstraintSystemCompleter(
             fun ResolvedAtom.check(): ResolvedAtom? {
                 val suitableCall = when (this) {
                     is ResolvedCallAtom -> typeVariable in freshVariablesSubstitutor.freshVariables
-                    is ResolvedCallableReferenceAtom -> candidate?.freshSubstitutor?.freshVariables?.let { typeVariable in it } ?: false
+                    is CallableReferenceResolvedArgumentAtom -> candidate?.freshSubstitutor?.freshVariables?.let { typeVariable in it } ?: false
                     is ResolvedLambdaAtom -> typeVariable == typeVariableForLambdaReturnType
                     else -> false
                 }

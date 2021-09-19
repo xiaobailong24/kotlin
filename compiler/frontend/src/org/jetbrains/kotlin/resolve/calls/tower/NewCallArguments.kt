@@ -31,7 +31,7 @@ import org.jetbrains.kotlin.types.expressions.KotlinTypeInfo
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 class SimpleTypeArgumentImpl(
-    val typeReference: KtTypeReference,
+    val typeProjection: KtTypeProjection,
     override val type: UnwrappedType
 ) : SimpleTypeArgument
 
@@ -139,7 +139,8 @@ class CallableReferenceKotlinCallArgumentImpl(
     val ktCallableReferenceExpression: KtCallableReferenceExpression,
     override val argumentName: Name?,
     override val lhsResult: LHSResult,
-    override val rhsName: Name
+    override val rhsName: Name,
+    override val kotlinCall: KotlinCall
 ) : CallableReferenceKotlinCallArgument, PSIKotlinCallArgument()
 
 class CollectionLiteralKotlinCallArgumentImpl(
@@ -323,9 +324,11 @@ internal fun createSimplePSICallArgument(
     dataFlowValueFactory: DataFlowValueFactory,
     call: Call
 ): SimplePSIKotlinCallArgument? {
-
     val ktExpression = KtPsiUtil.getLastElementDeparenthesized(valueArgument.getArgumentExpression(), statementFilter) ?: return null
-    val partiallyResolvedCall = ktExpression.getCall(bindingContext)?.let {
+    val ktExpressionToExtractResolvedCall =
+        if (ktExpression is KtCallableReferenceExpression) ktExpression.callableReference else ktExpression
+
+    val partiallyResolvedCall = ktExpressionToExtractResolvedCall.getCall(bindingContext)?.let {
         bindingContext.get(BindingContext.ONLY_RESOLVED_CALL, it)?.result
     }
     // todo hack for if expression: sometimes we not write properly type information for branches
