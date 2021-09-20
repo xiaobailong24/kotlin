@@ -95,6 +95,9 @@ fun PsiElement.nextLeaf(filter: (PsiElement) -> Boolean): PsiElement? {
     return leaf
 }
 
+fun PsiElement.getParentIgnoringParentheses(): PsiElement =
+    if (parent is KtParenthesizedExpression) parent.getParentIgnoringParentheses() else parent
+
 fun <T : PsiElement> PsiElement.getParentOfTypes(strict: Boolean = false, vararg parentClasses: Class<out T>): T? {
     return getParentOfTypesAndPredicate(strict, *parentClasses) { true }
 }
