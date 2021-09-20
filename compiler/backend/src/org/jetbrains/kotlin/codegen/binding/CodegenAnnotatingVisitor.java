@@ -47,6 +47,7 @@ import org.jetbrains.kotlin.resolve.DescriptorToSourceUtils;
 import org.jetbrains.kotlin.resolve.DescriptorUtils;
 import org.jetbrains.kotlin.resolve.calls.callUtil.CallUtilKt;
 import org.jetbrains.kotlin.resolve.calls.model.*;
+import org.jetbrains.kotlin.resolve.calls.tower.NewAbstractResolvedCall;
 import org.jetbrains.kotlin.resolve.calls.tower.NewResolvedCallImpl;
 import org.jetbrains.kotlin.resolve.calls.tower.NewVariableAsFunctionResolvedCallImpl;
 import org.jetbrains.kotlin.resolve.constants.ConstantValue;
@@ -55,7 +56,6 @@ import org.jetbrains.kotlin.resolve.constants.NullValue;
 import org.jetbrains.kotlin.resolve.descriptorUtil.DescriptorUtilsKt;
 import org.jetbrains.kotlin.resolve.jvm.RuntimeAssertionsOnDeclarationBodyChecker;
 import org.jetbrains.kotlin.resolve.sam.SamConstructorDescriptor;
-import org.jetbrains.kotlin.resolve.scopes.receivers.ExpressionReceiver;
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue;
 import org.jetbrains.kotlin.resolve.scopes.receivers.TransientReceiver;
 import org.jetbrains.kotlin.types.KotlinType;
@@ -776,21 +776,21 @@ class CodegenAnnotatingVisitor extends KtVisitorVoid {
     }
 
     private void recordSamValuesForNewInference(@NotNull ResolvedCall<?> call) {
-        NewResolvedCallImpl<?> newResolvedCall = getNewResolvedCallForCallWithPossibleSamConversions(call);
-        if (newResolvedCall == null) return;
+        NewAbstractResolvedCall<?> newResolvedCall = getNewResolvedCallForCallWithPossibleSamConversions(call);
+        if (!(newResolvedCall instanceof NewResolvedCallImpl<?>)) return;
 
         Map<ValueParameterDescriptor, ResolvedValueArgument> arguments = newResolvedCall.getValueArguments();
         for (ValueParameterDescriptor valueParameter : arguments.keySet()) {
             ResolvedValueArgument argument = arguments.get(valueParameter);
             if (argument instanceof ExpressionValueArgument) {
                 ValueArgument valueArgument = ((ExpressionValueArgument) argument).getValueArgument();
-                if (valueArgument != null && newResolvedCall.getExpectedTypeForSamConvertedArgument(valueArgument) != null) {
+                if (valueArgument != null && ((NewResolvedCallImpl<?>)newResolvedCall).getExpectedTypeForSamConvertedArgument(valueArgument) != null) {
                     recordSamTypeOnArgumentExpression(valueParameter, valueArgument);
                 }
             } else if (argument instanceof VarargValueArgument) {
                 VarargValueArgument varargValueArgument = (VarargValueArgument) argument;
                 for (ValueArgument valueArgument : varargValueArgument.getArguments()) {
-                    if (valueArgument != null && newResolvedCall.getExpectedTypeForSamConvertedArgument(valueArgument) != null) {
+                    if (valueArgument != null && ((NewResolvedCallImpl<?>)newResolvedCall).getExpectedTypeForSamConvertedArgument(valueArgument) != null) {
                         recordSamTypeOnArgumentExpression(valueParameter, valueArgument);
                     }
                 }
@@ -799,7 +799,7 @@ class CodegenAnnotatingVisitor extends KtVisitorVoid {
     }
 
     @Nullable
-    private static NewResolvedCallImpl<?> getNewResolvedCallForCallWithPossibleSamConversions(@NotNull ResolvedCall<?> call) {
+    private static NewAbstractResolvedCall<?> getNewResolvedCallForCallWithPossibleSamConversions(@NotNull ResolvedCall<?> call) {
         if (call instanceof NewVariableAsFunctionResolvedCallImpl) {
             return ((NewVariableAsFunctionResolvedCallImpl) call).getFunctionCall();
         }

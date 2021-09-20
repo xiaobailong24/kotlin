@@ -27,13 +27,12 @@ import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor;
 import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor;
 import org.jetbrains.kotlin.psi.Call;
 import org.jetbrains.kotlin.psi.ValueArgument;
-import org.jetbrains.kotlin.renderer.DescriptorRenderer;
 import org.jetbrains.kotlin.resolve.DelegatingBindingTrace;
 import org.jetbrains.kotlin.resolve.calls.callResolverUtil.CallResolverUtilKt;
 import org.jetbrains.kotlin.resolve.calls.inference.ConstraintSystem;
 import org.jetbrains.kotlin.resolve.calls.results.ResolutionStatus;
 import org.jetbrains.kotlin.resolve.calls.tasks.ExplicitReceiverKind;
-import org.jetbrains.kotlin.resolve.calls.tasks.ResolutionCandidate;
+import org.jetbrains.kotlin.resolve.calls.tasks.OldResolutionCandidate;
 import org.jetbrains.kotlin.resolve.calls.tasks.TracingStrategy;
 import org.jetbrains.kotlin.resolve.descriptorUtil.DescriptorUtilsKt;
 import org.jetbrains.kotlin.resolve.scopes.receivers.*;
@@ -53,7 +52,7 @@ public class ResolvedCallImpl<D extends CallableDescriptor> implements MutableRe
 
     @NotNull
     public static <D extends CallableDescriptor> ResolvedCallImpl<D> create(
-            @NotNull ResolutionCandidate<D> candidate,
+            @NotNull OldResolutionCandidate<D> candidate,
             @NotNull DelegatingBindingTrace trace,
             @NotNull TracingStrategy tracing,
             @NotNull MutableDataFlowInfoForArguments dataFlowInfoForArguments
@@ -87,7 +86,7 @@ public class ResolvedCallImpl<D extends CallableDescriptor> implements MutableRe
     private Queue<Function0<Unit>> remainingTasks = null;
 
     private ResolvedCallImpl(
-            @NotNull ResolutionCandidate<D> candidate,
+            @NotNull OldResolutionCandidate<D> candidate,
             @NotNull DelegatingBindingTrace trace,
             @NotNull TracingStrategy tracing,
             @NotNull MutableDataFlowInfoForArguments dataFlowInfoForArguments

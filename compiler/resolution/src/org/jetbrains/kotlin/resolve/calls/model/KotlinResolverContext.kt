@@ -23,6 +23,8 @@ import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.resolve.calls.components.*
+import org.jetbrains.kotlin.resolve.calls.components.candidate.RegularCallCandidate
+import org.jetbrains.kotlin.resolve.calls.components.candidate.RegularErrorCallCandidate
 import org.jetbrains.kotlin.resolve.calls.inference.addSubsystemFromArgument
 import org.jetbrains.kotlin.resolve.calls.inference.components.ConstraintInjector
 import org.jetbrains.kotlin.resolve.calls.inference.model.ConstraintStorage
@@ -52,6 +54,7 @@ class KotlinCallComponents(
     val kotlinTypeChecker: NewKotlinTypeChecker,
     val lookupTracker: LookupTracker,
     val kotlinTypeRefiner: KotlinTypeRefiner,
+    val callableReferenceArgumentResolver: CallableReferenceArgumentResolver
 )
 
 class SimpleCandidateFactory(
@@ -59,8 +62,7 @@ class SimpleCandidateFactory(
     val scopeTower: ImplicitScopeTower,
     val kotlinCall: KotlinCall,
     val resolutionCallbacks: KotlinResolutionCallbacks,
-    val callableReferenceResolver: CallableReferenceResolver
-) : CandidateFactory<KotlinResolutionCandidate> {
+) : CandidateFactory<RegularCallCandidate> {
     val inferenceSession: InferenceSession = resolutionCallbacks.inferenceSession
 
     val baseSystem: ConstraintStorage
@@ -102,7 +104,7 @@ class SimpleCandidateFactory(
         else -> null
     }
 
-    fun createCandidate(givenCandidate: GivenCandidate): KotlinResolutionCandidate {
+    fun createCandidate(givenCandidate: GivenCandidate): RegularCallCandidate {
         val isSafeCall = (kotlinCall.explicitReceiver as? SimpleKotlinCallArgument)?.isSafeCall ?: false
 
         val explicitReceiverKind =
@@ -120,7 +122,7 @@ class SimpleCandidateFactory(
         towerCandidate: CandidateWithBoundDispatchReceiver,
         explicitReceiverKind: ExplicitReceiverKind,
         extensionReceiver: ReceiverValueWithSmartCastInfo?
-    ): KotlinResolutionCandidate {
+    ): RegularCallCandidate {
         val dispatchArgumentReceiver = createReceiverArgument(
             kotlinCall.getExplicitDispatchReceiver(explicitReceiverKind),
             towerCandidate.dispatchReceiver
@@ -141,28 +143,17 @@ class SimpleCandidateFactory(
         extensionArgumentReceiver: SimpleKotlinCallArgument?,
         initialDiagnostics: Collection<KotlinCallDiagnostic>,
         knownSubstitutor: TypeSubstitutor?
-    ): KotlinResolutionCandidate {
+    ): RegularCallCandidate {
         val resolvedKtCall = MutableResolvedCallAtom(
             kotlinCall, descriptor, explicitReceiverKind,
             dispatchArgumentReceiver, extensionArgumentReceiver
         )
 
         if (ErrorUtils.isError(descriptor)) {
-            return KotlinResolutionCandidate(
-                callComponents,
-                resolutionCallbacks,
-                callableReferenceResolver,
-                scopeTower,
-                baseSystem,
-                resolvedKtCall,
-                knownSubstitutor,
-                listOf(ErrorDescriptorResolutionPart)
-            )
+            return RegularErrorCallCandidate(callComponents, resolutionCallbacks, scopeTower, baseSystem, resolvedKtCall)
         }
 
-        val candidate = KotlinResolutionCandidate(
-            callComponents, resolutionCallbacks, callableReferenceResolver, scopeTower, baseSystem, resolvedKtCall, knownSubstitutor
-        )
+        val candidate = RegularCallCandidate(callComponents, resolutionCallbacks, scopeTower, baseSystem, resolvedKtCall, knownSubstitutor)
 
         initialDiagnostics.forEach(candidate::addDiagnostic)
 
@@ -183,7 +174,7 @@ class SimpleCandidateFactory(
         return candidate
     }
 
-    fun createErrorCandidate(): KotlinResolutionCandidate {
+    override fun createErrorCandidate(): RegularCallCandidate {
         val errorScope = ErrorUtils.createErrorScope("Error resolution candidate for call $kotlinCall")
         val errorDescriptor = if (kotlinCall.callKind == KotlinCallKind.VARIABLE) {
             errorScope.getContributedVariables(kotlinCall.name, scopeTower.location)
@@ -235,6 +226,16 @@ enum class KotlinCallKind(vararg resolutionPart: ResolutionPart) {
         PostponedVariablesInitializerResolutionPart
     ),
     INVOKE(*FUNCTION.resolutionSequence.toTypedArray()),
+    CALLABLE_REFERENCE(
+        CheckVisibility,
+        NoTypeArguments,
+        NoArguments,
+        CreateFreshVariablesSubstitutor,
+        CollectionTypeVariableUsagesInfo,
+        CheckReceivers,
+        CheckCallableReference,
+        CompatibilityOfTypeVariableAsIntersectionTypePart
+    ),
     UNSUPPORTED();
 
     val resolutionSequence = resolutionPart.asList()

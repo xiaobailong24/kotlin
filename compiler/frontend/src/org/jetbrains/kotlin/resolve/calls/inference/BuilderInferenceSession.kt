@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.resolve.calls.ArgumentTypeResolver
 import org.jetbrains.kotlin.resolve.calls.callUtil.shouldBeSubstituteWithStubTypes
 import org.jetbrains.kotlin.resolve.calls.callUtil.toOldSubstitution
 import org.jetbrains.kotlin.resolve.calls.components.*
+import org.jetbrains.kotlin.resolve.calls.components.candidate.CallCandidate
 import org.jetbrains.kotlin.resolve.calls.context.BasicCallResolutionContext
 import org.jetbrains.kotlin.resolve.calls.inference.components.*
 import org.jetbrains.kotlin.resolve.calls.inference.model.*
@@ -80,7 +81,7 @@ class BuilderInferenceSession(
 
     override val parentSession = topLevelCallContext.inferenceSession
 
-    override fun shouldRunCompletion(candidate: KotlinResolutionCandidate): Boolean {
+    override fun shouldRunCompletion(candidate: CallCandidate): Boolean {
         val system = candidate.getSystem() as NewConstraintSystemImpl
 
         if (system.hasContradiction) return true
@@ -446,11 +447,11 @@ class BuilderInferenceSession(
         return commonSystem.notFixedTypeVariables.all { it.value.constraints.isEmpty() }
     }
 
-    private fun reportErrors(completedCall: CallInfo, resolvedCall: ResolvedCall<*>, errors: List<ConstraintSystemError>) {
+    private fun reportErrors(completedCall: CallInfo, resolvedCall: NewAbstractResolvedCall<*>, errors: List<ConstraintSystemError>) {
         kotlinToResolvedCallTransformer.reportCallDiagnostic(
             completedCall.context,
             trace,
-            completedCall.callResolutionResult.resultCallAtom,
+            resolvedCall,
             resolvedCall.resultingDescriptor,
             errors.asDiagnostics()
         )
@@ -527,7 +528,7 @@ class BuilderInferenceSession(
     private fun completeCall(
         callInfo: CallInfo,
         atomCompleter: ResolvedAtomCompleter
-    ): ResolvedCall<*>? {
+    ): NewAbstractResolvedCall<*>? {
         val resultCallAtom = callInfo.callResolutionResult.resultCallAtom
         resultCallAtom.subResolvedAtoms?.forEach { subResolvedAtom ->
             atomCompleter.completeAll(subResolvedAtom)

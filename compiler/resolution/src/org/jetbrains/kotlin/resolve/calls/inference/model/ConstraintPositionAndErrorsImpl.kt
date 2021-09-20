@@ -33,6 +33,8 @@ class DeclaredUpperBoundConstraintPositionImpl(
 }
 
 class ArgumentConstraintPositionImpl(argument: KotlinCallArgument) : ArgumentConstraintPosition<KotlinCallArgument>(argument)
+class CallableReferenceConstraintPositionImpl(val callableReferenceCall: CallableReferenceKotlinCall) :
+    CallableReferenceConstraintPosition<CallableReferenceResolutionAtom>(callableReferenceCall)
 
 class ReceiverConstraintPositionImpl(argument: KotlinCallArgument) : ReceiverConstraintPosition<KotlinCallArgument>(argument)
 
