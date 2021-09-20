@@ -12428,6 +12428,11 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
             runTest("compiler/testData/codegen/box/inference/suspendExtensionRecevierFromConstraint.kt");
         }
 
+        @TestMetadata("topLevelCallableReferenceThroughNewInference.kt")
+        public void testTopLevelCallableReferenceThroughNewInference() throws Exception {
+            runTest("compiler/testData/codegen/box/inference/topLevelCallableReferenceThroughNewInference.kt");
+        }
+
         @TestMetadata("unsafeVarianceCodegen.kt")
         public void testUnsafeVarianceCodegen() throws Exception {
             runTest("compiler/testData/codegen/box/inference/unsafeVarianceCodegen.kt");

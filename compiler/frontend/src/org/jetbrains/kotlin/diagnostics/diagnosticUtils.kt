@@ -35,7 +35,6 @@ import org.jetbrains.kotlin.resolve.calls.context.CallPosition
 import org.jetbrains.kotlin.resolve.calls.context.ResolutionContext
 import org.jetbrains.kotlin.resolve.calls.inference.isCaptured
 import org.jetbrains.kotlin.resolve.calls.inference.wrapWithCapturingSubstitution
-import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.TypeConstructorSubstitution
@@ -63,7 +62,7 @@ fun ResolutionContext<*>.reportTypeMismatchDueToTypeProjection(
             val resolvedCall = callPosition.leftPart.getResolvedCall(trace.bindingContext) ?: return false
             resolvedCall to { f: CallableDescriptor -> (f as? PropertyDescriptor)?.setter?.valueParameters?.get(0)?.type }
         }
-        is CallPosition.Unknown -> return false
+        is CallPosition.Unknown, is CallPosition.CallableReferenceRhs -> return false
     }
 
     val receiverType = resolvedCall.smartCastDispatchReceiverType

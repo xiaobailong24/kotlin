@@ -18,16 +18,15 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.*
 import org.jetbrains.kotlin.resolve.calls.ArgumentTypeResolver
 import org.jetbrains.kotlin.resolve.calls.NewCommonSuperTypeCalculator
-import org.jetbrains.kotlin.resolve.calls.callUtil.toOldSubstitution
 import org.jetbrains.kotlin.resolve.calls.checkers.CallCheckerContext
 import org.jetbrains.kotlin.resolve.calls.commonSuperType
-import org.jetbrains.kotlin.resolve.calls.components.CallableReferenceAdaptation
-import org.jetbrains.kotlin.resolve.calls.components.CallableReferenceCandidate
-import org.jetbrains.kotlin.resolve.calls.components.SuspendConversionStrategy
-import org.jetbrains.kotlin.resolve.calls.components.isVararg
+import org.jetbrains.kotlin.resolve.calls.components.*
+import org.jetbrains.kotlin.resolve.calls.components.candidate.CallableReferenceResolutionCandidate
 import org.jetbrains.kotlin.resolve.calls.context.BasicCallResolutionContext
 import org.jetbrains.kotlin.resolve.calls.context.ContextDependency
 import org.jetbrains.kotlin.resolve.calls.inference.BuilderInferenceSession
+import org.jetbrains.kotlin.resolve.calls.inference.ComposedSubstitutor
+import org.jetbrains.kotlin.resolve.calls.inference.components.EmptySubstitutor
 import org.jetbrains.kotlin.resolve.calls.inference.components.NewTypeSubstitutor
 import org.jetbrains.kotlin.resolve.calls.inference.components.NewTypeSubstitutorByConstructorMap
 import org.jetbrains.kotlin.resolve.calls.model.*
@@ -71,7 +70,7 @@ class ResolvedAtomCompleter(
         val dispatchReceiver: ReceiverValue?,
         val extensionReceiver: ReceiverValue?,
         val explicitReceiver: ReceiverValue?,
-        val substitutor: TypeSubstitutor,
+        val substitutor: NewTypeSubstitutor,
         val resultType: KotlinType
     )
 
@@ -82,7 +81,7 @@ class ResolvedAtomCompleter(
 
         when (resolvedAtom) {
             is ResolvedCollectionLiteralAtom -> completeCollectionLiteralCalls(resolvedAtom)
-            is ResolvedCallableReferenceAtom -> completeCallableReference(resolvedAtom)
+            is ResolvedCallableReferenceArgumentAtom -> completeCallableReferenceArgument(resolvedAtom)
             is ResolvedLambdaAtom -> completeLambda(resolvedAtom)
             is ResolvedCallAtom -> completeResolvedCall(resolvedAtom, emptyList())
             is ResolvedSubCallArgument -> completeSubCallArgument(resolvedAtom)
@@ -112,18 +111,32 @@ class ResolvedAtomCompleter(
         complete(resolvedAtom)
     }
 
-    fun completeSubCallArgument(resolvedSubCallArgument: ResolvedSubCallArgument) {
-        val contextWithoutExpectedType = topLevelCallContext.replaceExpectedType(TypeUtils.NO_EXPECTED_TYPE)
-        kotlinToResolvedCallTransformer.updateRecordedType(
-            resolvedSubCallArgument.atom.psiExpression ?: return,
-            parameter = null,
-            context = contextWithoutExpectedType,
-            reportErrorForTypeMismatch = true,
-            convertedArgumentType = null
-        )
+    private fun completeSubCallArgument(resolvedSubCallArgument: ResolvedSubCallArgument) {
+        val deparenthesizedExpression =
+            KtPsiUtil.getLastElementDeparenthesized(resolvedSubCallArgument.atom.psiExpression, topLevelCallContext.statementFilter)
+
+        if (deparenthesizedExpression is KtCallableReferenceExpression) {
+            val callableReferenceResolvedCall = kotlinToResolvedCallTransformer.getResolvedCallForArgumentExpression(
+                deparenthesizedExpression.callableReference, topLevelCallContext
+            ) as? NewCallableReferenceResolvedCall<*>
+            if (callableReferenceResolvedCall != null) {
+                completeCallableReferenceCall(callableReferenceResolvedCall)
+            }
+        } else {
+            kotlinToResolvedCallTransformer.updateRecordedType(
+                resolvedSubCallArgument.atom.psiExpression ?: return,
+                parameter = null,
+                context = topLevelCallContext.replaceExpectedType(TypeUtils.NO_EXPECTED_TYPE),
+                reportErrorForTypeMismatch = true,
+                convertedArgumentType = null
+            )
+        }
     }
 
-    fun completeResolvedCall(resolvedCallAtom: ResolvedCallAtom, diagnostics: Collection<KotlinCallDiagnostic>): ResolvedCall<*>? {
+    fun completeResolvedCall(
+        resolvedCallAtom: ResolvedCallAtom,
+        diagnostics: Collection<KotlinCallDiagnostic>
+    ): NewAbstractResolvedCall<*>? {
         val diagnosticsFromPartiallyResolvedCall = extractDiagnosticsFromPartiallyResolvedCall(resolvedCallAtom)
 
         clearPartiallyResolvedCall(resolvedCallAtom)
@@ -140,9 +153,11 @@ class ResolvedAtomCompleter(
             allDiagnostics
         )
 
-        val lastCall = if (resolvedCall is VariableAsFunctionResolvedCall) resolvedCall.functionCall else resolvedCall
+        val lastCall = if (resolvedCall is VariableAsFunctionResolvedCall) {
+            resolvedCall.functionCall as NewAbstractResolvedCall<*>
+        } else resolvedCall
         if (ErrorUtils.isError(resolvedCall.candidateDescriptor)) {
-            kotlinToResolvedCallTransformer.runArgumentsChecks(topLevelCallContext, lastCall as NewResolvedCallImpl<*>)
+            kotlinToResolvedCallTransformer.runArgumentsChecks(topLevelCallContext, lastCall)
             checkMissingReceiverSupertypes(resolvedCall, missingSupertypesResolver, topLevelTrace)
             return resolvedCall
         }
@@ -176,7 +191,7 @@ class ResolvedAtomCompleter(
 
         kotlinToResolvedCallTransformer.bind(topLevelTrace, resolvedCall)
 
-        kotlinToResolvedCallTransformer.runArgumentsChecks(topLevelCallContext, lastCall as NewResolvedCallImpl<*>)
+        kotlinToResolvedCallTransformer.runArgumentsChecks(topLevelCallContext, lastCall)
         kotlinToResolvedCallTransformer.runCallCheckers(resolvedCall, callCheckerContext)
         kotlinToResolvedCallTransformer.runAdditionalReceiversCheckers(resolvedCall, topLevelCallContext)
 
@@ -343,25 +358,20 @@ class ResolvedAtomCompleter(
         }
     }
 
-    private fun updateCallableReferenceResultType(
-        callableCandidate: CallableReferenceCandidate,
-        callableReferenceExpression: KtCallableReferenceExpression
-    ): CallableReferenceResultTypeInfo {
-        val resultTypeParameters =
-            callableCandidate.freshSubstitutor!!.freshVariables.map { resultSubstitutor.safeSubstitute(it.defaultType) }
-
+    private fun updateCallableReferenceResultType(callableCandidate: CallableReferenceResolutionCandidate): CallableReferenceResultTypeInfo? {
+        val callableReferenceExpression =
+            callableCandidate.resolvedCall.atom.psiKotlinCall.psiCall.callElement.parent as? KtCallableReferenceExpression ?: return null
+        val freshSubstitutor = callableCandidate.freshVariablesSubstitutor ?: return null
+        val resultTypeParameters = freshSubstitutor.freshVariables.map { resultSubstitutor.safeSubstitute(it.defaultType) }
         val typeParametersSubstitutor = NewTypeSubstitutorByConstructorMap(
-            (callableCandidate.candidate.typeParameters.map { it.typeConstructor } zip resultTypeParameters).toMap()
+            callableCandidate.candidate.typeParameters.map { it.typeConstructor }.zip(resultTypeParameters).toMap()
         )
-
         val resultSubstitutor = if (callableCandidate.candidate.isSupportedForCallableReference()) {
-            val firstSubstitution = typeParametersSubstitutor.toOldSubstitution()
-            val secondSubstitution = resultSubstitutor.toOldSubstitution()
-            TypeSubstitutor.createChainedSubstitutor(firstSubstitution, secondSubstitution)
-        } else TypeSubstitutor.EMPTY
+            ComposedSubstitutor(typeParametersSubstitutor, resultSubstitutor)
+        } else EmptySubstitutor
 
         // write down type for callable reference expression
-        val resultType = resultSubstitutor.safeSubstitute(callableCandidate.reflectionCandidateType, Variance.INVARIANT)
+        val resultType = resultSubstitutor.safeSubstitute(callableCandidate.reflectionCandidateType)
 
         argumentTypeResolver.updateResultArgumentTypeIfNotDenotable(
             topLevelTrace, expressionTypingServices.statementFilter, resultType, callableReferenceExpression
@@ -401,24 +411,24 @@ class ResolvedAtomCompleter(
     }
 
     private fun extractCallableReferenceResultTypeInfoFromDescriptor(
-        callableCandidate: CallableReferenceCandidate,
+        callableCandidate: CallableReferenceResolutionCandidate,
         recordedDescriptor: CallableDescriptor
     ): CallableReferenceResultTypeInfo {
         val dispatchReceiver = recordedDescriptor.dispatchReceiverParameter?.value
             ?: callableCandidate.dispatchReceiver?.receiver?.receiverValue
         val extensionReceiver = recordedDescriptor.extensionReceiverParameter?.value
             ?: callableCandidate.extensionReceiver?.receiver?.receiverValue
-
         val explicitCallableReceiver = when (callableCandidate.explicitReceiverKind) {
             ExplicitReceiverKind.DISPATCH_RECEIVER -> dispatchReceiver
             ExplicitReceiverKind.EXTENSION_RECEIVER -> extensionReceiver
             else -> null
         }
+
         return CallableReferenceResultTypeInfo(
             dispatchReceiver,
             extensionReceiver,
             explicitCallableReceiver,
-            TypeSubstitutor.EMPTY,
+            EmptySubstitutor,
             callableCandidate.reflectionCandidateType.replaceFunctionTypeArgumentsByDescriptor(recordedDescriptor)
         )
     }
@@ -440,82 +450,98 @@ class ResolvedAtomCompleter(
             else -> this
         }
 
-    private fun completeCallableReference(resolvedAtom: ResolvedCallableReferenceAtom) {
+    fun completeCallableReferenceCall(resolvedCall: NewCallableReferenceResolvedCall<*>): KotlinType? {
+        val candidate = resolvedCall.resolvedCallAtom?.candidate ?: return null
+        return completeCallableReference(candidate, resolvedCall.resultingDescriptor, resolvedCall)
+    }
+
+    fun completeCallableReferenceArgument(resolvedAtom: ResolvedCallableReferenceArgumentAtom): KotlinType? {
+        if (resolvedAtom.completed) return null
+
         val psiCallArgument = resolvedAtom.atom.psiCallArgument as CallableReferenceKotlinCallArgumentImpl
-        val callableReferenceExpression = psiCallArgument.ktCallableReferenceExpression
-        val callableCandidate = resolvedAtom.candidate
-        if (callableCandidate == null || resolvedAtom.completed) {
-            // todo report meanfull diagnostic here
-            return
-        }
-        val recorderDescriptor = when (callableCandidate.candidate) {
-            is FunctionDescriptor -> topLevelCallContext.trace.get(BindingContext.FUNCTION, callableReferenceExpression)
-            is PropertyDescriptor -> topLevelCallContext.trace.get(BindingContext.VARIABLE, callableReferenceExpression)
+        val CallableReferenceCallCandidate = resolvedAtom.candidate ?: return null
+        val descriptor = when (CallableReferenceCallCandidate.candidate) {
+            is FunctionDescriptor -> topLevelCallContext.trace.get(BindingContext.FUNCTION, psiCallArgument.ktCallableReferenceExpression)
+            is PropertyDescriptor -> topLevelCallContext.trace.get(BindingContext.VARIABLE, psiCallArgument.ktCallableReferenceExpression)
             else -> null
         }
+        val dataFlowInfo = resolvedAtom.atom.psiCallArgument.dataFlowInfoAfterThisArgument
+        val resolvedCall = NewCallableReferenceResolvedCall<CallableDescriptor>(resolvedAtom, typeApproximator, null)
 
+        return completeCallableReference(CallableReferenceCallCandidate, descriptor, resolvedCall, dataFlowInfo)
+            .also { resolvedAtom.completed = true }
+    }
+
+    private fun completeCallableReference(
+        callableCandidate: CallableReferenceResolutionCandidate,
+        recordedDescriptor: CallableDescriptor?,
+        resolvedCall: NewAbstractResolvedCall<*>,
+        additionalDataFlowInfo: DataFlowInfo? = null,
+    ): KotlinType? {
         val rawExtensionReceiver = callableCandidate.extensionReceiver
-
         val unrestrictedBuilderInferenceSupported =
             topLevelCallContext.languageVersionSettings.supportsFeature(LanguageFeature.UnrestrictedBuilderInference)
+        val callableReferenceExpression =
+            callableCandidate.resolvedCall.atom.psiKotlinCall.psiCall.callElement.parent as KtCallableReferenceExpression
 
         if (rawExtensionReceiver != null && !unrestrictedBuilderInferenceSupported && rawExtensionReceiver.receiver.receiverValue.type.contains { it is StubTypeForBuilderInference }) {
             topLevelTrace.reportDiagnosticOnce(Errors.TYPE_INFERENCE_POSTPONED_VARIABLE_IN_RECEIVER_TYPE.on(callableReferenceExpression))
-            return
+            return null
         }
 
-        // For some callable references we can already have recorder descriptor (see `DoubleColonExpressionResolver.getCallableReferenceType`)
-        val resultTypeInfo = if (recorderDescriptor != null) {
-            extractCallableReferenceResultTypeInfoFromDescriptor(callableCandidate, recorderDescriptor)
+        val resultTypeInfo = if (recordedDescriptor != null) {
+            extractCallableReferenceResultTypeInfoFromDescriptor(callableCandidate, recordedDescriptor)
         } else {
-            updateCallableReferenceResultType(callableCandidate, psiCallArgument.ktCallableReferenceExpression)
+            updateCallableReferenceResultType(callableCandidate)
         }
 
-        val reference = callableReferenceExpression.callableReference
-        val psiCall = CallMaker.makeCall(reference, resultTypeInfo.explicitReceiver, null, reference, emptyList())
+        if (resultTypeInfo == null) return null
 
-        val tracing = TracingStrategyImpl.create(reference, psiCall)
-        val temporaryTrace = TemporaryBindingTrace.create(topLevelTrace, "callable reference fake call")
-
-        val resolvedCall = ResolvedCallImpl(
-            psiCall, callableCandidate.candidate, resultTypeInfo.dispatchReceiver,
-            resultTypeInfo.extensionReceiver, callableCandidate.explicitReceiverKind,
-            null, temporaryTrace, tracing, MutableDataFlowInfoForArguments.WithoutArgumentsCheck(DataFlowInfo.EMPTY)
-        )
-
-        resolvedCall.setSubstitutor(resultTypeInfo.substitutor)
+        resolvedCall.setResultingSubstitutor(resultTypeInfo.substitutor)
 
         recordArgumentAdaptationForCallableReference(resolvedCall, callableCandidate.callableReferenceAdaptation)
+
+        val psiCall = CallMaker.makeCall(
+            callableReferenceExpression.callableReference,
+            resultTypeInfo.explicitReceiver,
+            null,
+            callableReferenceExpression.callableReference,
+            emptyList()
+        )
+        val tracing = TracingStrategyImpl.create(callableReferenceExpression.callableReference, psiCall)
 
         tracing.bindCall(topLevelTrace, psiCall)
         tracing.bindReference(topLevelTrace, resolvedCall)
         tracing.bindResolvedCall(topLevelTrace, resolvedCall)
 
-        resolvedCall.setStatusToSuccess()
-        resolvedCall.markCallAsCompleted()
-
         // TODO: probably we should also record key 'DATA_FLOW_INFO_BEFORE', see ExpressionTypingVisitorDispatcher.getTypeInfo
-        val typeInfo = createTypeInfo(resultTypeInfo.resultType, resolvedAtom.atom.psiCallArgument.dataFlowInfoAfterThisArgument)
+        val typeInfo = if (additionalDataFlowInfo != null) {
+            createTypeInfo(resultTypeInfo.resultType, additionalDataFlowInfo)
+        } else {
+            createTypeInfo(resultTypeInfo.resultType)
+        }
 
         topLevelTrace.record(BindingContext.EXPRESSION_TYPE_INFO, callableReferenceExpression, typeInfo)
         topLevelTrace.record(BindingContext.PROCESSED, callableReferenceExpression)
 
         kotlinToResolvedCallTransformer.runCallCheckers(resolvedCall, topLevelCallCheckerContext)
-        resolvedAtom.completed = true
+
+        return resultTypeInfo.resultType
     }
 
-    private fun ReceiverValue.updateReceiverValue(substitutor: TypeSubstitutor): ReceiverValue {
-        val newType = substitutor.safeSubstitute(type, Variance.INVARIANT).let {
+    private fun ReceiverValue.updateReceiverValue(substitutor: NewTypeSubstitutor): ReceiverValue {
+        val newType = substitutor.safeSubstitute(type.unwrap()).let {
             typeApproximator.approximateToSuperType(it, TypeApproximatorConfiguration.FinalApproximationAfterResolutionAndInference) ?: it
         }
         return if (type != newType) replaceType(newType as KotlinType) else this
     }
 
     private fun recordArgumentAdaptationForCallableReference(
-        resolvedCall: ResolvedCallImpl<CallableDescriptor>,
+        resolvedCall: NewAbstractResolvedCall<*>,
         callableReferenceAdaptation: CallableReferenceAdaptation?
     ) {
         if (callableReferenceAdaptation == null) return
+
         val callElement = resolvedCall.call.callElement
         val isUnboundReference = resolvedCall.dispatchReceiver is TransientReceiver
 
@@ -562,14 +588,12 @@ class ResolvedAtomCompleter(
             mappedArguments.add(valueParameter to resolvedValueArgument)
         }
         if (hasNonTrivialMapping || isCallableReferenceWithImplicitConversion(resolvedCall, callableReferenceAdaptation)) {
-            for ((valueParameter, resolvedValueArgument) in mappedArguments) {
-                resolvedCall.recordValueArgument(valueParameter, resolvedValueArgument)
-            }
+            resolvedCall.valueArguments = mappedArguments.toMap()
         }
     }
 
     private fun isCallableReferenceWithImplicitConversion(
-        resolvedCall: ResolvedCall<CallableDescriptor>,
+        resolvedCall: NewAbstractResolvedCall<*>,
         callableReferenceAdaptation: CallableReferenceAdaptation
     ): Boolean {
         val resultingDescriptor = resolvedCall.resultingDescriptor
