@@ -150,9 +150,20 @@ class FirJavaFacade(
         firJavaClass.annotations.addFromJava(session, javaClass, javaTypeParameterStack)
         val enhancement = FirSignatureEnhancement(firJavaClass, session) { emptyList() }
         enhancement.enhanceTypeParameterBounds(firJavaClass.typeParameters)
-        firJavaClass.superTypeRefs.replaceAll { enhancement.enhanceSuperType(it) }
+        firJavaClass.convertSuperTypes(javaClass, javaTypeParameterStack)
         firJavaClass.replaceDeprecation(firJavaClass.getDeprecationInfos(session.languageVersionSettings.apiVersion))
         return firJavaClass
+    }
+
+    private fun FirJavaClass.convertSuperTypes(
+        javaClass: JavaClass,
+        javaTypeParameterStack: JavaTypeParameterStack
+    ) {
+        replaceSuperTypeRefs(
+            javaClass.supertypes.map { supertype ->
+                supertype.toFirResolvedTypeRef(session, javaTypeParameterStack, FirJavaTypeConversionMode.SUPERTYPE)
+            }
+        )
     }
 
     private fun createFirJavaClass(
