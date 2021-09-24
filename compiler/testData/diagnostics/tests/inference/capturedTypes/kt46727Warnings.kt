@@ -1,4 +1,4 @@
-// !LANGUAGE: +RefineTypeCheckingOnAssignmentsToJavaFields
+// !LANGUAGE: -RefineTypeCheckingOnAssignmentsToJavaFields
 // WITH_RUNTIME
 
 // FILE: Foo.java
@@ -25,7 +25,7 @@ public class Foo3<T> {
 // --- from Java --- //
 
 fun takeStarFoo(x: Foo<*>) {
-    x.value = <!TYPE_MISMATCH("Nothing!; String")!>"test"<!>
+    <!TYPE_MISMATCH_WARNING("Nothing!; String")!>x.value = "test"<!>
 }
 
 fun main1() {
@@ -55,7 +55,7 @@ fun main2() {
 // --- from Java (nullable) --- //
 
 fun takeStarFoo2(x: Foo2<*>) {
-    x.value = <!TYPE_MISMATCH("Nothing?; String")!>"test"<!>
+    <!TYPE_MISMATCH_WARNING("Nothing?; String")!>x.value = "test"<!>
 }
 
 fun main3() {
@@ -84,7 +84,7 @@ fun main4() {
 // --- from Java (not-null) --- //
 
 fun takeStarFoo3(x: Foo3<*>) {
-    x.value = <!TYPE_MISMATCH("Nothing; String")!>"test"<!>
+    <!TYPE_MISMATCH_WARNING("Nothing; String")!>x.value = "test"<!>
 }
 
 fun main5() {
