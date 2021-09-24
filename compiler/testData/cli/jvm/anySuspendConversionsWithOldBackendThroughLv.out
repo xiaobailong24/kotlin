@@ -1,0 +1,11 @@
+warning: -Xuse-old-backend is deprecated and will be removed in a future release
+compiler/testData/cli/jvm/anySuspendConversionsWithOldBackend.kt:14:10: error: unsupported [Feature "Suspend conversions" is supported only since Kotlin 1.6 (except compilation using the old JVM back-end)]
+    foo1(f1)
+         ^
+compiler/testData/cli/jvm/anySuspendConversionsWithOldBackend.kt:15:10: error: unsupported [Feature "Suspend conversions" is supported only since Kotlin 1.6 (except compilation using the old JVM back-end)]
+    foo2(f2)
+         ^
+compiler/testData/cli/jvm/anySuspendConversionsWithOldBackend.kt:16:10: error: unsupported [Feature "Suspend conversions" is supported only since Kotlin 1.6 (except compilation using the old JVM back-end)]
+    foo3(f3)
+         ^
+COMPILATION_ERROR

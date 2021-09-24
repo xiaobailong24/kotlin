@@ -41,6 +41,16 @@ public class CliTestGenerated extends AbstractCliTest {
             KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/cli/jvm"), Pattern.compile("^(.+)\\.args$"), null, false);
         }
 
+        @TestMetadata("anySuspendConversionsWithOldBackend.args")
+        public void testAnySuspendConversionsWithOldBackend() throws Exception {
+            runTest("compiler/testData/cli/jvm/anySuspendConversionsWithOldBackend.args");
+        }
+
+        @TestMetadata("anySuspendConversionsWithOldBackendThroughLv.args")
+        public void testAnySuspendConversionsWithOldBackendThroughLv() throws Exception {
+            runTest("compiler/testData/cli/jvm/anySuspendConversionsWithOldBackendThroughLv.args");
+        }
+
         @TestMetadata("apiAndLanguageVersionsUnsupported.args")
         public void testApiAndLanguageVersionsUnsupported() throws Exception {
             runTest("compiler/testData/cli/jvm/apiAndLanguageVersionsUnsupported.args");

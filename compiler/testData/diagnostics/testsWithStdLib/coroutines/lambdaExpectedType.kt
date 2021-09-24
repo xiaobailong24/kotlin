@@ -20,7 +20,7 @@ fun foo() {
     builder { 1 }
 
     val x = { 1 }
-    builder(<!UNSUPPORTED_FEATURE!>x<!>)
+    builder(<!UNSUPPORTED!>x<!>)
     builder({1} <!UNCHECKED_CAST!>as (suspend () -> Int)<!>)
 
     var i: Int = 1
@@ -31,7 +31,7 @@ fun foo() {
     genericBuilder<Int> { <!TYPE_MISMATCH!>""<!> }
 
     val y = { 1 }
-    genericBuilder(<!UNSUPPORTED_FEATURE!>y<!>)
+    genericBuilder(<!UNSUPPORTED!>y<!>)
 
     unitBuilder {}
     unitBuilder { 1 }

@@ -554,6 +554,9 @@ default: `indy-with-constants` for JVM target 9 or greater, `inline` otherwise""
         if (typeEnhancementImprovementsInStrictMode) {
             result[LanguageFeature.TypeEnhancementImprovementsInStrictMode] = LanguageFeature.State.ENABLED
         }
+        if (useOldBackend) {
+            result[LanguageFeature.SuspendConversion] = LanguageFeature.State.DISABLED
+        }
         return result
     }
 

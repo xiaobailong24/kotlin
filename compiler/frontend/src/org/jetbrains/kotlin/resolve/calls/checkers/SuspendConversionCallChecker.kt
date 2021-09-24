@@ -29,9 +29,9 @@ object SuspendConversionCallChecker : CallChecker {
 
         for (argumentWithSuspendConversion in argumentsWithSuspendConversion.keys) {
             context.trace.report(
-                Errors.UNSUPPORTED_FEATURE.on(
+                Errors.UNSUPPORTED.on(
                     argumentWithSuspendConversion.psiCallArgument.valueArgument.asElement(),
-                    LanguageFeature.SuspendConversion to context.languageVersionSettings
+                    "Feature \"Suspend conversions\" is supported only since Kotlin 1.6 (except compilation using the old JVM back-end)"
                 )
             )
         }
