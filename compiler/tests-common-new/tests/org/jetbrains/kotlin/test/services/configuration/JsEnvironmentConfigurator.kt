@@ -41,6 +41,7 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
         const val TEST_FUNCTION = "box"
 
         private const val OUTPUT_DIR_NAME = "outputDir"
+        private const val OUTPUT_KLIB_DIR_NAME = "outputKlibDir"
         private const val DCE_OUTPUT_DIR_NAME = "dceOutputDir"
         private const val PIR_OUTPUT_DIR_NAME = "pirOutputDir"
         private const val MINIFICATION_OUTPUT_DIR_NAME = "minOutputDir"
@@ -68,8 +69,17 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
             return getJsArtifactsOutputDir(testServices).absolutePath + "/" + getJsArtifactSimpleName(testServices, moduleName) + "_v5"
         }
 
+        fun getJsKlibArtifactPath(testServices: TestServices, moduleName: String): String? {
+            val path = getJsKlibOutputDir(testServices).absolutePath + "/" + getJsArtifactSimpleName(testServices, moduleName)
+            return path.takeIf { File(it).exists() }
+        }
+
         fun getJsArtifactsOutputDir(testServices: TestServices): File {
             return testServices.temporaryDirectoryManager.getOrCreateTempDirectory(OUTPUT_DIR_NAME)
+        }
+
+        fun getJsKlibOutputDir(testServices: TestServices): File {
+            return testServices.temporaryDirectoryManager.getOrCreateTempDirectory(OUTPUT_KLIB_DIR_NAME)
         }
 
         fun getDceJsArtifactsOutputDir(testServices: TestServices): File {
@@ -99,6 +109,23 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
             return JsConfig(
                 project, configuration, CompilerEnvironment, METADATA_CACHE, (JsConfig.JS_STDLIB + JsConfig.JS_KOTLIN_TEST).toSet()
             )
+        }
+
+        fun getMainModule(testServices: TestServices): TestModule {
+            val modules = testServices.moduleStructure.modules
+            val inferMainModule = JsEnvironmentConfigurationDirectives.INFER_MAIN_MODULE in testServices.moduleStructure.allDirectives
+            return when {
+                inferMainModule -> modules.last()
+                else -> modules.singleOrNull { it.name == ModuleStructureExtractor.DEFAULT_MODULE_NAME } ?: modules.single()
+            }
+        }
+
+        fun isMainModule(module: TestModule, testServices: TestServices): Boolean {
+            return module == getMainModule(testServices)
+        }
+
+        fun getMainModuleName(testServices: TestServices): String {
+            return getMainModule(testServices).name
         }
     }
 

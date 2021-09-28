@@ -17,8 +17,8 @@ import org.jetbrains.kotlin.test.model.BackendKinds
 import org.jetbrains.kotlin.test.model.Frontend2BackendConverter
 import org.jetbrains.kotlin.test.model.FrontendKinds
 import org.jetbrains.kotlin.test.model.TestModule
-import org.jetbrains.kotlin.test.services.TestServices
-import org.jetbrains.kotlin.test.services.compilerConfigurationProvider
+import org.jetbrains.kotlin.test.services.*
+import org.jetbrains.kotlin.test.services.configuration.JsEnvironmentConfigurator
 
 class ClassicFrontend2IrConverter(
     testServices: TestServices
@@ -27,6 +27,9 @@ class ClassicFrontend2IrConverter(
     FrontendKinds.ClassicFrontend,
     BackendKinds.IrBackend
 ) {
+    override val additionalServices: List<ServiceRegistrationData>
+        get() = listOf(service(::JsLibraryProvider))
+
     override fun transform(
         module: TestModule,
         inputArtifact: ClassicFrontendOutputArtifact
@@ -47,5 +50,23 @@ class ClassicFrontend2IrConverter(
 
         val ignoreErrors = CodegenTestDirectives.IGNORE_ERRORS in module.directives
         return IrBackendInput(codegenFactory.convertToIr(state, files, ignoreErrors))
+    }
+
+    private fun transformToJsIr(module: TestModule, inputArtifact: ClassicFrontendOutputArtifact): IrBackendInput {
+        val isMainModule = JsEnvironmentConfigurator.isMainModule(module, testServices)
+        val klibMainModule = java.lang.Boolean.getBoolean("kotlin.js.ir.klibMainModule")
+        if (!isMainModule) {
+            // 1. generate Klib
+            val outputFile = JsEnvironmentConfigurator.getJsKlibArtifactPath(testServices, module.name)
+
+        } else {
+            // 2. compile
+            if (klibMainModule) {
+
+            } else {
+
+            }
+        }
+        TODO()
     }
 }

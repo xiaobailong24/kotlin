@@ -145,6 +145,10 @@ fun generateJUnit5CompilerTests(args: Array<String>) {
                 model("box/", pattern = "^([^_](.+))\\.kt$", excludeDirs = listOf("incremental"))
             }
 
+            testClass<AbstractIrBoxJsTest> {
+                model("box/", pattern = "^([^_](.+))\\.kt$", excludeDirs = listOf("incremental"))
+            }
+
             testClass<AbstractSourceMapGenerationSmokeTest> {
                 model("sourcemap/")
             }

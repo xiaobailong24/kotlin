@@ -268,9 +268,11 @@ projectTest("jsTest", parallel = true, jUnit5Enabled = true) {
     useJUnitPlatform()
 }
 
-projectTest("jsIrTest", true) {
+projectTest("jsIrTest", true, jUnit5Enabled = true) {
     systemProperty("kotlin.js.ir.pir", "false")
     setUpJsBoxTests(jsEnabled = false, jsIrEnabled = true)
+    maxHeapSize = "3g"
+    useJUnitPlatform()
 }
 
 projectTest("jsEs6IrTest", true) {

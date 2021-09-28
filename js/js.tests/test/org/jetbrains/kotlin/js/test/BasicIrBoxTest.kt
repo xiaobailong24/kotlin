@@ -11,7 +11,6 @@ import org.jetbrains.kotlin.backend.common.phaser.toPhaseMap
 import org.jetbrains.kotlin.cli.common.messages.AnalyzerWithCompilerReport
 import org.jetbrains.kotlin.ir.backend.js.*
 import org.jetbrains.kotlin.ir.backend.js.ic.SerializedIcData
-import org.jetbrains.kotlin.ir.backend.js.ic.prepareSingleLibraryIcCache
 import org.jetbrains.kotlin.ir.declarations.impl.IrFactoryImpl
 import org.jetbrains.kotlin.ir.declarations.persistent.PersistentIrFactory
 import org.jetbrains.kotlin.js.config.JSConfigurationKeys
@@ -125,7 +124,7 @@ abstract class BasicIrBoxTest(
 
         val klibPath = outputFile.absolutePath.replace("_v5.js", "")
 
-        prepareRuntimePirCaches(config, icCache)
+//        prepareRuntimePirCaches(config, icCache)
 
         if (isMainModule && klibMainModule) {
             val module = prepareAnalyzedSourceModule(
@@ -135,6 +134,9 @@ abstract class BasicIrBoxTest(
                 allKlibPaths,
                 emptyList(),
                 AnalyzerWithCompilerReport(config.configuration),
+                icUseGlobalSignatures = false,
+                icUseStdlibCache = false,
+                icCache = emptyMap()
             )
             generateKLib(
                 module,
@@ -167,10 +169,7 @@ abstract class BasicIrBoxTest(
                 PhaseConfig(jsPhases)
             }
 
-            fun prepareModule(allowIc: Boolean): ModulesStructure {
-                val useIc = runIcMode && allowIc
-                @Suppress("NAME_SHADOWING")
-                val icCache = if (useIc) icCache else emptyMap()
+            fun prepareModule(): ModulesStructure {
                 return if (!klibMainModule) {
                     prepareAnalyzedSourceModule(
                         config.project,
@@ -179,9 +178,9 @@ abstract class BasicIrBoxTest(
                         allKlibPaths,
                         emptyList(),
                         AnalyzerWithCompilerReport(config.configuration),
-                        icUseGlobalSignatures = useIc,
-                        icUseStdlibCache = useIc,
-                        icCache = icCache
+                        icUseGlobalSignatures = false,
+                        icUseStdlibCache = false,
+                        icCache = emptyMap()
                     )
                 } else {
                     ModulesStructure(
@@ -190,15 +189,15 @@ abstract class BasicIrBoxTest(
                         config.configuration,
                         allKlibPaths,
                         emptyList(),
-                        icUseGlobalSignatures = useIc,
-                        icUseStdlibCache = useIc,
-                        icCache = icCache
+                        icUseGlobalSignatures = false,
+                        icUseStdlibCache = false,
+                        icCache = emptyMap()
                     )
                 }
             }
 
             if (!skipRegularMode) {
-                val module = prepareModule(true)
+                val module = prepareModule()
                 val irFactory = if (lowerPerModule) PersistentIrFactory() else IrFactoryImpl
                 val compiledModule = compile(
                     module,
@@ -230,7 +229,7 @@ abstract class BasicIrBoxTest(
             }
 
             if (runIrPir && !skipDceDriven) {
-                val module = prepareModule(false)
+                val module = prepareModule()
                 compile(
                     module,
                     phaseConfig = phaseConfig,
@@ -256,7 +255,10 @@ abstract class BasicIrBoxTest(
                 config.configuration,
                 allKlibPaths,
                 emptyList(),
-                AnalyzerWithCompilerReport(config.configuration)
+                AnalyzerWithCompilerReport(config.configuration),
+                icUseGlobalSignatures = false,
+                icUseStdlibCache = false,
+                icCache = emptyMap()
             )
             generateKLib(
                 module,
@@ -268,45 +270,45 @@ abstract class BasicIrBoxTest(
                 null
             )
 
-            if (runIcMode) {
-                icCache[klibPath] = createPirCache(klibPath, allKlibPaths + klibPath, config, icCache)
-            }
-
-            logger.logFile("Output klib", File(klibPath))
+//            if (runIcMode) {
+//                icCache[klibPath] = createPirCache(klibPath, allKlibPaths + klibPath, config, icCache)
+//            }
+//
+//            logger.logFile("Output klib", File(klibPath))
 
             compilationCache[outputFile.name.replace(".js", ".meta.js")] = klibPath
         }
     }
 
 
-    private fun createPirCache(path: String, allKlibPaths: Collection<String>, config: JsConfig, icCache: Map<String, SerializedIcData>): SerializedIcData {
-        val icData = predefinedKlibHasIcCache[path] ?: prepareSingleLibraryIcCache(
-            project = project,
-            configuration = config.configuration,
-            libPath = path,
-            dependencies = allKlibPaths,
-            icCache = icCache
-        )
-
-        if (path in predefinedKlibHasIcCache) {
-            predefinedKlibHasIcCache[path] = icData
-        }
-
-        return icData
-    }
-
-    private fun prepareRuntimePirCaches(config: JsConfig, icCache: MutableMap<String, SerializedIcData>) {
-        if (!runIcMode) return
-
-        val defaultRuntimePath = File(defaultRuntimeKlib).canonicalPath
-        icCache[defaultRuntimePath] = createPirCache(defaultRuntimePath, listOf(defaultRuntimePath), config, icCache)
-
-        val fullRuntimePath = File(fullRuntimeKlib).canonicalPath
-        icCache[fullRuntimePath] = createPirCache(fullRuntimePath, listOf(fullRuntimePath), config, icCache)
-
-        val testKlibPath = File(kotlinTestKLib).canonicalPath
-        icCache[testKlibPath] = createPirCache(testKlibPath, listOf(fullRuntimePath, testKlibPath), config, icCache)
-    }
+//    private fun createPirCache(path: String, allKlibPaths: Collection<String>, config: JsConfig, icCache: Map<String, SerializedIcData>): SerializedIcData {
+//        val icData = predefinedKlibHasIcCache[path] ?: prepareSingleLibraryIcCache(
+//            project = project,
+//            configuration = config.configuration,
+//            libPath = path,
+//            dependencies = allKlibPaths,
+//            icCache = icCache
+//        )
+//
+//        if (path in predefinedKlibHasIcCache) {
+//            predefinedKlibHasIcCache[path] = icData
+//        }
+//
+//        return icData
+//    }
+//
+//    private fun prepareRuntimePirCaches(config: JsConfig, icCache: MutableMap<String, SerializedIcData>) {
+//        if (!runIcMode) return
+//
+//        val defaultRuntimePath = File(defaultRuntimeKlib).canonicalPath
+//        icCache[defaultRuntimePath] = createPirCache(defaultRuntimePath, listOf(defaultRuntimePath), config, icCache)
+//
+//        val fullRuntimePath = File(fullRuntimeKlib).canonicalPath
+//        icCache[fullRuntimePath] = createPirCache(fullRuntimePath, listOf(fullRuntimePath), config, icCache)
+//
+//        val testKlibPath = File(kotlinTestKLib).canonicalPath
+//        icCache[testKlibPath] = createPirCache(testKlibPath, listOf(fullRuntimePath, testKlibPath), config, icCache)
+//    }
 
     private fun fromSysPropertyOrAll(key: String, all: Set<AnyNamedPhase>): Set<AnyNamedPhase> {
         val phases = System.getProperty(key)?.split(',')?.toSet() ?: emptySet()

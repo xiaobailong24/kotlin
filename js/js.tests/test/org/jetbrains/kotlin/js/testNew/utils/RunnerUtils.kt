@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.test.model.TestModule
 import org.jetbrains.kotlin.test.services.*
 import org.jetbrains.kotlin.test.services.configuration.JsEnvironmentConfigurator
 import org.jetbrains.kotlin.test.services.configuration.JsEnvironmentConfigurator.Companion.TEST_FUNCTION
+import org.jetbrains.kotlin.test.services.configuration.JsEnvironmentConfigurator.Companion.getMainModule
 import java.io.File
 
 private const val MODULE_EMULATION_FILE = "${JsEnvironmentConfigurator.TEST_DATA_DIR_PATH}/moduleEmulation.js"
@@ -96,19 +97,6 @@ fun getAllFilesForRunner(
 
 fun getOnlyJsFilesForRunner(testServices: TestServices, modulesToArtifact: Map<TestModule, BinaryArtifacts.Js>): List<String> {
     return getAllFilesForRunner(testServices, modulesToArtifact).first
-}
-
-private fun getMainModule(testServices: TestServices): TestModule {
-    val modules = testServices.moduleStructure.modules
-    val inferMainModule = INFER_MAIN_MODULE in testServices.moduleStructure.allDirectives
-    return when {
-        inferMainModule -> modules.last()
-        else -> modules.singleOrNull { it.name == ModuleStructureExtractor.DEFAULT_MODULE_NAME } ?: modules.single()
-    }
-}
-
-fun getMainModuleName(testServices: TestServices): String {
-    return getMainModule(testServices).name
 }
 
 fun getTestModuleName(testServices: TestServices): String? {

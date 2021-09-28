@@ -7,13 +7,13 @@ package org.jetbrains.kotlin.js.testNew.handlers
 
 import com.intellij.openapi.util.io.FileUtil
 import org.jetbrains.kotlin.js.testNew.utils.extractTestPackage
-import org.jetbrains.kotlin.js.testNew.utils.getMainModuleName
 import org.jetbrains.kotlin.js.testNew.utils.getOnlyJsFilesForRunner
 import org.jetbrains.kotlin.test.TargetBackend
 import org.jetbrains.kotlin.test.directives.CodegenTestDirectives
 import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives
 import org.jetbrains.kotlin.test.services.TestServices
 import org.jetbrains.kotlin.test.services.configuration.JsEnvironmentConfigurator
+import org.jetbrains.kotlin.test.services.configuration.JsEnvironmentConfigurator.Companion.getMainModuleName
 import org.jetbrains.kotlin.test.services.defaultsProvider
 import org.jetbrains.kotlin.test.services.moduleStructure
 import java.io.File
