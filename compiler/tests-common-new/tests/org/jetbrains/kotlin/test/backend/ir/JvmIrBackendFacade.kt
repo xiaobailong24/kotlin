@@ -22,7 +22,7 @@ class JvmIrBackendFacade(
         module: TestModule,
         inputArtifact: IrBackendInput
     ): BinaryArtifacts.Jvm? {
-        val state = inputArtifact.backendInput.state
+        val state = inputArtifact.backendInput!!.state
         val codegenFactory = state.codegenFactory as JvmIrCodegenFactory
         try {
             codegenFactory.doGenerateFilesInternal(inputArtifact.backendInput)

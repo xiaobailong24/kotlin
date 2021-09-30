@@ -62,7 +62,7 @@ class IrTextDumpHandler(testServices: TestServices) : AbstractIrHandler(testServ
     @OptIn(ExperimentalStdlibApi::class)
     override fun processModule(module: TestModule, info: IrBackendInput) {
         if (DUMP_IR !in module.directives) return
-        val irFiles = info.backendInput.irModuleFragment.files
+        val irFiles = info.backendInput!!.irModuleFragment.files
         val testFileToIrFile = irFiles.groupWithTestFiles(module)
         val builder = baseDumper.builderForModule(module)
         for ((testFile, irFile) in testFileToIrFile) {
@@ -83,7 +83,7 @@ class IrTextDumpHandler(testServices: TestServices) : AbstractIrHandler(testServ
         // TODO: why JS one is used here in original AbstractIrTextTestCase?
         val mangler = JsManglerDesc
         val signaturer = IdSignatureDescriptor(mangler)
-        val irModule = info.backendInput.irModuleFragment
+        val irModule = info.backendInput!!.irModuleFragment
         val stubGenerator = DeclarationStubGeneratorImpl(
             irModule.descriptor,
             SymbolTable(signaturer, IrFactoryImpl), // TODO

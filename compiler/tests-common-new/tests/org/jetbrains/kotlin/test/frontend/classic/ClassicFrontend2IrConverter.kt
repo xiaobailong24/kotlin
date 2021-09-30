@@ -30,6 +30,7 @@ import org.jetbrains.kotlin.psi2ir.Psi2IrConfiguration
 import org.jetbrains.kotlin.psi2ir.Psi2IrTranslator
 import org.jetbrains.kotlin.test.TargetBackend
 import org.jetbrains.kotlin.test.backend.ir.IrBackendInput
+import org.jetbrains.kotlin.test.backend.ir.JsIrBackendInput
 import org.jetbrains.kotlin.test.directives.CodegenTestDirectives
 import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives
 import org.jetbrains.kotlin.test.model.BackendKinds
@@ -110,6 +111,19 @@ class ClassicFrontend2IrConverter(
             ) {
                 testServices.jsLibraryProvider.getDescriptorByCompiledLibrary(it)
             }
+
+            return IrBackendInput(
+                null,
+                JsIrBackendInput(
+                    moduleFragment,
+                    emptyList(),
+                    symbolTable = null,
+                    bindingContext = analysisResult.bindingContext,
+                    expectDescriptorToSymbol = expectDescriptorToSymbol,
+                    deserializer = null,
+                    moduleFragmentToUniqueName = emptyMap()
+                )
+            )
         } else {
             val messageLogger = configuration.get(IrMessageLogger.IR_MESSAGE_LOGGER) ?: IrMessageLogger.None
             val signaturer = IdSignatureDescriptor(JsManglerDesc)
@@ -163,8 +177,20 @@ class ClassicFrontend2IrConverter(
                     { emptySet() },
                     { testServices.jsLibraryProvider.getDescriptorByCompiledLibrary(it) },
                 )
+
+                return IrBackendInput(
+                    null,
+                    JsIrBackendInput(
+                        moduleInfo.module,
+                        dependencyModules = moduleInfo.allDependencies,
+                        symbolTable = moduleInfo.symbolTable,
+                        bindingContext = analysisResult.bindingContext,
+                        expectDescriptorToSymbol = expectDescriptorToSymbol,
+                        deserializer = moduleInfo.deserializer,
+                        moduleFragmentToUniqueName = emptyMap()
+                    )
+                )
             }
         }
-        TODO()
     }
 }
