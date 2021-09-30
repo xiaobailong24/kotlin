@@ -36,22 +36,22 @@ class ClassicJsBackendFacade(
 ) : ClassicBackendFacade<BinaryArtifacts.Js>(testServices, ArtifactKinds.Js) {
     companion object {
         const val KOTLIN_TEST_INTERNAL = "\$kotlin_test_internal\$"
-    }
 
-    private fun wrapWithModuleEmulationMarkers(content: String, moduleKind: ModuleKind, moduleId: String): String {
-        val escapedModuleId = StringUtil.escapeStringCharacters(moduleId)
+        fun wrapWithModuleEmulationMarkers(content: String, moduleKind: ModuleKind, moduleId: String): String {
+            val escapedModuleId = StringUtil.escapeStringCharacters(moduleId)
 
-        return when (moduleKind) {
-            ModuleKind.COMMON_JS -> "$KOTLIN_TEST_INTERNAL.beginModule();\n" +
-                    "$content\n" +
-                    "$KOTLIN_TEST_INTERNAL.endModule(\"$escapedModuleId\");"
+            return when (moduleKind) {
+                ModuleKind.COMMON_JS -> "$KOTLIN_TEST_INTERNAL.beginModule();\n" +
+                        "$content\n" +
+                        "$KOTLIN_TEST_INTERNAL.endModule(\"$escapedModuleId\");"
 
-            ModuleKind.AMD, ModuleKind.UMD ->
-                "if (typeof $KOTLIN_TEST_INTERNAL !== \"undefined\") { " +
-                        "$KOTLIN_TEST_INTERNAL.setModuleId(\"$escapedModuleId\"); }\n" +
-                        "$content\n"
+                ModuleKind.AMD, ModuleKind.UMD ->
+                    "if (typeof $KOTLIN_TEST_INTERNAL !== \"undefined\") { " +
+                            "$KOTLIN_TEST_INTERNAL.setModuleId(\"$escapedModuleId\"); }\n" +
+                            "$content\n"
 
-            ModuleKind.PLAIN -> content
+                ModuleKind.PLAIN -> content
+            }
         }
     }
 

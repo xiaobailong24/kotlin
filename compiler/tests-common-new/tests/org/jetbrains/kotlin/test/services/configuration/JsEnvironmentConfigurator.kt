@@ -75,6 +75,14 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
             return getJsKlibOutputDir(testServices).absolutePath + "/" + getJsArtifactSimpleName(testServices, moduleName)
         }
 
+        fun getDceJsArtifactPath(testServices: TestServices, moduleName: String): String {
+            return getDceJsArtifactsOutputDir(testServices).absolutePath + "/" + getJsArtifactSimpleName(testServices, moduleName) + "_v5"
+        }
+
+        fun getPirJsArtifactPath(testServices: TestServices, moduleName: String): String {
+            return getPirJsArtifactsOutputDir(testServices).absolutePath + "/" + getJsArtifactSimpleName(testServices, moduleName) + "_v5"
+        }
+
         fun getJsArtifactsOutputDir(testServices: TestServices): File {
             return testServices.temporaryDirectoryManager.getOrCreateTempDirectory(OUTPUT_DIR_NAME)
         }
