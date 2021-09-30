@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.js.config.*
+import org.jetbrains.kotlin.js.facade.MainCallParameters
 import org.jetbrains.kotlin.resolve.CompilerEnvironment
 import org.jetbrains.kotlin.serialization.js.JsModuleDescriptor
 import org.jetbrains.kotlin.serialization.js.KotlinJavascriptSerializationUtil
@@ -70,9 +71,8 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
             return getJsArtifactsOutputDir(testServices).absolutePath + "/" + getJsArtifactSimpleName(testServices, moduleName) + "_v5"
         }
 
-        fun getJsKlibArtifactPath(testServices: TestServices, moduleName: String): String? {
-            val path = getJsKlibOutputDir(testServices).absolutePath + "/" + getJsArtifactSimpleName(testServices, moduleName)
-            return path.takeIf { File(it).exists() }
+        fun getJsKlibArtifactPath(testServices: TestServices, moduleName: String): String {
+            return getJsKlibOutputDir(testServices).absolutePath + "/" + getJsArtifactSimpleName(testServices, moduleName)
         }
 
         fun getJsArtifactsOutputDir(testServices: TestServices): File {
@@ -135,6 +135,13 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
                     JvmEnvironmentConfigurationDirectives.WITH_RUNTIME in module.directives
 
             return if (needsFullIrRuntime) listOf("full.stdlib", "kotlin.test") else listOf("reduced.stdlib")
+        }
+
+        fun getMainCallParametersForModule(module: TestModule): MainCallParameters {
+            return when (JsEnvironmentConfigurationDirectives.CALL_MAIN) {
+                in module.directives -> MainCallParameters.mainWithArguments(listOf("testArg"))
+                else -> MainCallParameters.noCall()
+            }
         }
     }
 

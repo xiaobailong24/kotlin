@@ -97,7 +97,6 @@ class ClassicFrontend2IrConverter(
         val expectDescriptorToSymbol = mutableMapOf<DeclarationDescriptor, IrSymbol>()
         if (!isMainModule) {
             // 1. generate Klib
-            val outputFile = JsEnvironmentConfigurator.getJsKlibArtifactPath(testServices, module.name)
             val moduleFragment = generateIrForKlibSerialization(
                 project,
                 psiFiles.values.toList(),

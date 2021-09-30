@@ -62,10 +62,7 @@ class ClassicJsBackendFacade(
         // TODO how to reuse this config from frontend
         val jsConfig = JsEnvironmentConfigurator.createJsConfig(project, configuration)
         val units = psiFiles.map(TranslationUnit::SourceFile)
-        val mainCallParameters = when (JsEnvironmentConfigurationDirectives.CALL_MAIN) {
-            in module.directives -> MainCallParameters.mainWithArguments(listOf("testArg"))
-            else -> MainCallParameters.noCall()
-        }
+        val mainCallParameters = JsEnvironmentConfigurator.getMainCallParametersForModule(module)
 
         val translator = K2JSTranslator(jsConfig, false)
         val translationResult = translator.translateUnits(
