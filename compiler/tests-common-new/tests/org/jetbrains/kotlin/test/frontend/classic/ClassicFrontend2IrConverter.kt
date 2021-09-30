@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.codegen.ClassBuilderFactories
 import org.jetbrains.kotlin.codegen.state.GenerationState
 import org.jetbrains.kotlin.config.languageVersionSettings
+import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.ir.backend.js.generateIrForKlibSerialization
 import org.jetbrains.kotlin.ir.backend.js.getIrModuleInfoForKlib
 import org.jetbrains.kotlin.ir.backend.js.getIrModuleInfoForSourceFiles
@@ -20,6 +21,7 @@ import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.JsManglerDesc
 import org.jetbrains.kotlin.ir.backend.js.sortDependencies
 import org.jetbrains.kotlin.ir.declarations.impl.IrFactoryImpl
 import org.jetbrains.kotlin.ir.declarations.persistent.PersistentIrFactory
+import org.jetbrains.kotlin.ir.symbols.IrSymbol
 import org.jetbrains.kotlin.ir.util.IrMessageLogger
 import org.jetbrains.kotlin.ir.util.SymbolTable
 import org.jetbrains.kotlin.js.config.ErrorTolerancePolicy
@@ -83,23 +85,32 @@ class ClassicFrontend2IrConverter(
         val klibMainModule = JsEnvironmentConfigurationDirectives.KLIB_MAIN_MODULE in module.directives
         val verifySignatures = JsEnvironmentConfigurationDirectives.SKIP_MANGLE_VERIFICATION !in module.directives
 
-//        val mapping = testServices.jsLibraryProvider.getLibraryToDescriptorMapping()
+        val stdlib = JsEnvironmentConfigurator.getStdlibPathsForModule(module).map {
+            testServices.jsLibraryProvider.getOrCreateStdlibByPath(it) {
+                testServices.assertions.fail { "Library with path $it wasn't found" }
+            }
+        }
+
+        val dependencies = testServices.moduleDescriptorProvider.getModuleDescriptor(module).allDependencyModules
+        val allDependencies = (dependencies + stdlib).associateBy { testServices.jsLibraryProvider.getCompiledLibraryBeDescriptor(it) }
+
+        val expectDescriptorToSymbol = mutableMapOf<DeclarationDescriptor, IrSymbol>()
         if (!isMainModule) {
             // 1. generate Klib
             val outputFile = JsEnvironmentConfigurator.getJsKlibArtifactPath(testServices, module.name)
-//            val moduleFragment = generateIrForKlibSerialization(
-//                project,
-//                psiFiles.values.toList(),
-//                configuration,
-//                analysisResult,
-//                sortDependencies(depsDescriptors.descriptors),
-//                mutableListOf(),
-//                expectDescriptorToSymbol,
-//                IrFactoryImpl,
-//                verifySignatures
-//            ) {
-//                testServices.jsLibraryProvider.getDescriptorByCompiledLibrary(it)
-//            }
+            val moduleFragment = generateIrForKlibSerialization(
+                project,
+                psiFiles.values.toList(),
+                configuration,
+                analysisResult,
+                sortDependencies(allDependencies),
+                mutableListOf(),
+                expectDescriptorToSymbol,
+                IrFactoryImpl,
+                verifySignatures
+            ) {
+                testServices.jsLibraryProvider.getDescriptorByCompiledLibrary(it)
+            }
         } else {
             val messageLogger = configuration.get(IrMessageLogger.IR_MESSAGE_LOGGER) ?: IrMessageLogger.None
             val signaturer = IdSignatureDescriptor(JsManglerDesc)
@@ -140,19 +151,19 @@ class ClassicFrontend2IrConverter(
                     symbolTable
                 )
 
-//                val moduleInfo = getIrModuleInfoForSourceFiles(
-//                    psi2IrContext,
-//                    project,
-//                    configuration,
-//                    psiFiles.values.toList(),
-//                    sortDependencies(depsDescriptors.descriptors),
-//                    emptyMap(),
-//                    symbolTable,
-//                    messageLogger,
-//                    verifySignatures,
-//                    { emptySet() },
-//                    { testServices.jsLibraryProvider.getDescriptorByCompiledLibrary(it) },
-//                )
+                val moduleInfo = getIrModuleInfoForSourceFiles(
+                    psi2IrContext,
+                    project,
+                    configuration,
+                    psiFiles.values.toList(),
+                    sortDependencies(allDependencies),
+                    emptyMap(),
+                    symbolTable,
+                    messageLogger,
+                    verifySignatures,
+                    { emptySet() },
+                    { testServices.jsLibraryProvider.getDescriptorByCompiledLibrary(it) },
+                )
             }
         }
         TODO()

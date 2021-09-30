@@ -19,6 +19,10 @@ class JsLibraryProvider(private val testServices: TestServices) : TestService {
         }
     }
 
+    fun setDescriptorByPath(path: String, descriptor: ModuleDescriptorImpl) {
+        stdlibPathToDescriptor[path] = descriptor
+    }
+
     fun getCompiledLibraryBeDescriptor(descriptor: ModuleDescriptor): KotlinLibrary {
         return descriptorToLibrary[descriptor] ?: testServices.assertions.fail {
             "There is no library for descriptor ${descriptor.name}"
@@ -39,14 +43,6 @@ class JsLibraryProvider(private val testServices: TestServices) : TestService {
             }
         }
     }
-
-//    fun getLibraryToDescriptorMapping(): Map<KotlinLibrary, ModuleDescriptor> {
-//        val runtimeKlibsDescriptors = JsEnvironmentConfigurator.getStdlibPathsForModule(module).map {
-//            getDescriptorByPath(it)
-//        }
-//        val runtimeKlibsLibraries = runtimeKlibsDescriptors.map { getCompiledLibraryBeDescriptor(it) }
-//        TODO()
-//    }
 }
 
 val TestServices.jsLibraryProvider: JsLibraryProvider by TestServices.testServiceAccessor()
