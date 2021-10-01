@@ -142,7 +142,8 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
                     JvmEnvironmentConfigurationDirectives.WITH_STDLIB in module.directives ||
                     JvmEnvironmentConfigurationDirectives.WITH_RUNTIME in module.directives
 
-            return if (needsFullIrRuntime) listOf("full.stdlib", "kotlin.test") else listOf("reduced.stdlib")
+            val names = if (needsFullIrRuntime) listOf("full.stdlib", "kotlin.test") else listOf("reduced.stdlib")
+            return names.map { System.getProperty("kotlin.js.$it.path") }
         }
 
         fun getMainCallParametersForModule(module: TestModule): MainCallParameters {

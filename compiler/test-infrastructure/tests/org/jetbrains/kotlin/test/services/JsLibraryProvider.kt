@@ -19,14 +19,19 @@ class JsLibraryProvider(private val testServices: TestServices) : TestService {
         }
     }
 
-    fun setDescriptorByPath(path: String, descriptor: ModuleDescriptorImpl) {
-        stdlibPathToDescriptor[path] = descriptor
+    fun setDescriptorAndLibraryByName(name: String, descriptor: ModuleDescriptorImpl, library: KotlinLibrary) {
+        stdlibPathToDescriptor[name] = descriptor
+        descriptorToLibrary[descriptor] = library
     }
 
-    fun getCompiledLibraryBeDescriptor(descriptor: ModuleDescriptor): KotlinLibrary {
+    fun getCompiledLibraryByDescriptor(descriptor: ModuleDescriptor): KotlinLibrary {
         return descriptorToLibrary[descriptor] ?: testServices.assertions.fail {
             "There is no library for descriptor ${descriptor.name}"
         }
+    }
+
+    fun getPathByDescriptor(descriptor: ModuleDescriptor): String {
+        return stdlibPathToDescriptor.entries.single { it.value == descriptor }.key
     }
 
     fun getDescriptorByCompiledLibrary(library: KotlinLibrary): ModuleDescriptor {

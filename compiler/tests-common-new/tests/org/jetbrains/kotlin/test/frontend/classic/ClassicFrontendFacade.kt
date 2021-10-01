@@ -38,6 +38,8 @@ import org.jetbrains.kotlin.ir.backend.js.toResolverLogger
 import org.jetbrains.kotlin.ir.util.IrMessageLogger
 import org.jetbrains.kotlin.js.analyze.TopDownAnalyzerFacadeForJS
 import org.jetbrains.kotlin.js.config.JSConfigurationKeys
+import org.jetbrains.kotlin.konan.properties.propertyList
+import org.jetbrains.kotlin.library.KLIB_PROPERTY_DEPENDS
 import org.jetbrains.kotlin.library.unresolvedDependencies
 import org.jetbrains.kotlin.load.java.lazy.SingleModuleClassResolver
 import org.jetbrains.kotlin.load.kotlin.ModuleVisibilityManager
@@ -270,17 +272,17 @@ class ClassicFrontendFacade(
     }
 
     private fun loadKlib(names: List<String>, configuration: CompilerConfiguration): List<ModuleDescriptorImpl> {
+        val resolvedLibraries = jsResolveLibraries(
+            names,
+            configuration[JSConfigurationKeys.REPOSITORIES] ?: emptyList(),
+            configuration[IrMessageLogger.IR_MESSAGE_LOGGER].toResolverLogger()
+        ).getFullResolvedList()
+
         var builtInsModule: KotlinBuiltIns? = null
+        val dependencies = mutableListOf<ModuleDescriptorImpl>()
 
-        return names.map {
-            val klibPath = listOf(System.getProperty("kotlin.js.$it.path"))
-            testServices.jsLibraryProvider.getOrCreateStdlibByPath(klibPath.first()) {
-                val resolvedLibrary = jsResolveLibraries(
-                    klibPath,
-                    configuration[JSConfigurationKeys.REPOSITORIES] ?: emptyList(),
-                    configuration[IrMessageLogger.IR_MESSAGE_LOGGER].toResolverLogger()
-                ).getFullResolvedList().single()
-
+        return resolvedLibraries.zip(names).map { (resolvedLibrary, klibPath) ->
+            testServices.jsLibraryProvider.getOrCreateStdlibByPath(klibPath) {
                 val storageManager = LockBasedStorageManager("ModulesStructure")
                 val isBuiltIns = resolvedLibrary.library.unresolvedDependencies.isEmpty()
 
@@ -293,7 +295,8 @@ class ClassicFrontendFacade(
                     lookupTracker = LookupTracker.DO_NOTHING
                 )
                 if (isBuiltIns) builtInsModule = moduleDescriptor.builtIns
-                moduleDescriptor.setDependencies(listOf(moduleDescriptor))
+                dependencies += moduleDescriptor
+                moduleDescriptor.setDependencies(dependencies)
 
                 Pair(moduleDescriptor, resolvedLibrary.library)
             }
@@ -314,7 +317,7 @@ class ClassicFrontendFacade(
         val runtimeKlibsNames = JsEnvironmentConfigurator.getStdlibPathsForModule(module)
         val runtimeKlibs = loadKlib(runtimeKlibsNames, configuration)
         val transitiveLibraries = configuration[JSConfigurationKeys.TRANSITIVE_LIBRARIES]!!.map {
-            testServices.jsLibraryProvider.getDescriptorByPath(File(it).absolutePath)
+            testServices.jsLibraryProvider.getDescriptorByPath(File(it).absolutePath.replace("_v5.meta.js", "").replace("outputDir", "outputKlibDir"))
         }
         val allDependencies = runtimeKlibs + dependentDescriptors + transitiveLibraries
 

@@ -6,8 +6,10 @@
 package org.jetbrains.kotlin.test.model
 
 import org.jetbrains.kotlin.codegen.ClassFileFactory
+import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.ir.backend.js.CompilerResult
 import org.jetbrains.kotlin.js.backend.ast.JsProgram
+import org.jetbrains.kotlin.library.KotlinLibrary
 import java.io.File
 
 object BinaryArtifacts {
@@ -26,7 +28,7 @@ object BinaryArtifacts {
 
     class JsIrArtifact(override val outputFile: File, val compilerResult: CompilerResult, val pirCompilerResult: CompilerResult?) : Js()
 
-    class JsKlibArtifact(override val outputFile: File) : Js()
+    class JsKlibArtifact(override val outputFile: File, val descriptor: ModuleDescriptor, val library: KotlinLibrary) : Js()
 
     class Native : ResultingArtifact.Binary<Native>() {
         override val kind: BinaryKind<Native>

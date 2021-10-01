@@ -34,7 +34,7 @@ class JsSourceMapHandler(testServices: TestServices) : JsBinaryArtifactHandler(t
     override fun processModule(module: TestModule, info: BinaryArtifacts.Js) {
         val outputFile = File(JsEnvironmentConfigurator.getJsModuleArtifactPath(testServices, module.name))
         val program = (info as? BinaryArtifacts.OldJsArtifact)?.jsProgram
-            ?: throw AssertionError("JsBoxRunner suppose to work only with old js backend")
+            ?: throw AssertionError("JsSourceMapHandler suppose to work only with old js backend")
         val remap = JsEnvironmentConfigurationDirectives.SKIP_SOURCEMAP_REMAPPING !in module.directives
         checkSourceMap(outputFile, program, remap) { expected, actual ->
             testServices.assertions.assertEquals(expected, actual)

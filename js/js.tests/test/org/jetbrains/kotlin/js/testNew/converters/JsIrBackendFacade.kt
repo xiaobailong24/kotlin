@@ -5,14 +5,12 @@
 
 package org.jetbrains.kotlin.js.testNew.converters
 
-import org.jetbrains.kotlin.analyzer.CompilationErrorException
 import org.jetbrains.kotlin.backend.common.phaser.PhaseConfig
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.ir.backend.js.*
 import org.jetbrains.kotlin.ir.declarations.impl.IrFactoryImpl
 import org.jetbrains.kotlin.ir.declarations.persistent.PersistentIrFactory
 import org.jetbrains.kotlin.ir.util.IrMessageLogger
-import org.jetbrains.kotlin.js.analyzer.JsAnalysisResult
 import org.jetbrains.kotlin.js.config.ErrorTolerancePolicy
 import org.jetbrains.kotlin.js.config.JSConfigurationKeys
 import org.jetbrains.kotlin.js.testNew.utils.extractTestPackage
@@ -36,7 +34,6 @@ class JsIrBackendFacade(
         val configuration = testServices.compilerConfigurationProvider.getCompilerConfiguration(module)
         val isMainModule = JsEnvironmentConfigurator.isMainModule(module, testServices)
         val project = testServices.compilerConfigurationProvider.getProject(module)
-        val sourceFiles = module.files.map { testServices.sourceFileProvider.getKtFileForSourceFile(it, project) }
 
         val input = inputArtifact.jsBackendInput!!
         if (isMainModule) {
@@ -45,7 +42,7 @@ class JsIrBackendFacade(
             val lowerPerModule = JsEnvironmentConfigurationDirectives.LOWER_PER_MODULE in module.directives
             val compiledModule = compileIr(
                 input.moduleFragment,
-                MainModule.SourceFiles(sourceFiles), // TODO MainModule.Klib if needed
+                MainModule.SourceFiles(input.sourceFiles), // TODO MainModule.Klib if needed
                 configuration,
                 input.dependencyModules,
                 input.moduleFragment.irBuiltins,
@@ -77,7 +74,7 @@ class JsIrBackendFacade(
             val pirCompiledModule = if (runIrPir && !dontSkipDceDriven) {
                 compileIr(
                     input.moduleFragment,
-                    MainModule.SourceFiles(sourceFiles), // TODO MainModule.Klib if needed
+                    MainModule.SourceFiles(input.sourceFiles), // TODO MainModule.Klib if needed
                     configuration,
                     input.dependencyModules,
                     input.moduleFragment.irBuiltins,
@@ -113,16 +110,16 @@ class JsIrBackendFacade(
         } else {
             val outputFile = JsEnvironmentConfigurator.getJsKlibArtifactPath(testServices, module.name)
             val errorPolicy = configuration.get(JSConfigurationKeys.ERROR_TOLERANCE_POLICY) ?: ErrorTolerancePolicy.DEFAULT
-            val hasErrors = TopDownAnalyzerFacadeForJSIR.checkForErrors(sourceFiles, input.bindingContext, errorPolicy)
+            val hasErrors = TopDownAnalyzerFacadeForJSIR.checkForErrors(input.sourceFiles, input.bindingContext, errorPolicy)
 
-            val stdlib = JsEnvironmentConfigurator.getStdlibPathsForModule(module).map {
-                testServices.jsLibraryProvider.getOrCreateStdlibByPath(it) {
-                    testServices.assertions.fail { "Library with path $it wasn't found" }
-                }
-            }
+//            val stdlib = JsEnvironmentConfigurator.getStdlibPathsForModule(module).map {
+//                testServices.jsLibraryProvider.getOrCreateStdlibByPath(it) {
+//                    testServices.assertions.fail { "Library with path $it wasn't found" }
+//                }
+//            }
 
             val dependencies = testServices.moduleDescriptorProvider.getModuleDescriptor(module).allDependencyModules
-            val allDependencies = (dependencies + stdlib).map { testServices.jsLibraryProvider.getCompiledLibraryBeDescriptor(it) }
+            val allDependencies = dependencies.map { testServices.jsLibraryProvider.getCompiledLibraryByDescriptor(it) }
 
             serializeModuleIntoKlib(
                 configuration[CommonConfigurationKeys.MODULE_NAME]!!,
@@ -130,7 +127,7 @@ class JsIrBackendFacade(
                 configuration,
                 configuration.get(IrMessageLogger.IR_MESSAGE_LOGGER) ?: IrMessageLogger.None,
                 input.bindingContext,
-                sourceFiles,
+                input.sourceFiles,
                 klibPath = outputFile,
                 allDependencies,
                 input.moduleFragment,
@@ -143,7 +140,13 @@ class JsIrBackendFacade(
                 jsOutputName = null
             )
 
-            return BinaryArtifacts.JsKlibArtifact(File(outputFile))
+            val lib = jsResolveLibraries(
+                dependencies.map { testServices.jsLibraryProvider.getPathByDescriptor(it) } + listOf(outputFile),
+                configuration[JSConfigurationKeys.REPOSITORIES] ?: emptyList(),
+                configuration[IrMessageLogger.IR_MESSAGE_LOGGER].toResolverLogger()
+            ).getFullResolvedList().last().library
+
+            return BinaryArtifacts.JsKlibArtifact(File(outputFile), input.moduleFragment.descriptor, lib)
         }
     }
 }

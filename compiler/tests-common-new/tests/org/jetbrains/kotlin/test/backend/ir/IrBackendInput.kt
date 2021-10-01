@@ -32,6 +32,7 @@ data class IrBackendInput(
 
 data class JsIrBackendInput(
     val moduleFragment: IrModuleFragment,
+    val sourceFiles: List<KtFile>,
     val dependencyModules: List<IrModuleFragment>,
     val symbolTable: SymbolTable?,
     val bindingContext: BindingContext,

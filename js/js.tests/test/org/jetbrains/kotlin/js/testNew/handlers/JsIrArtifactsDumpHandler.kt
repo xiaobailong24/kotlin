@@ -6,7 +6,11 @@
 package org.jetbrains.kotlin.js.testNew.handlers
 
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
+import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
 import org.jetbrains.kotlin.ir.backend.js.CompilationOutputs
+import org.jetbrains.kotlin.ir.backend.js.jsResolveLibraries
+import org.jetbrains.kotlin.ir.backend.js.toResolverLogger
+import org.jetbrains.kotlin.ir.util.IrMessageLogger
 import org.jetbrains.kotlin.js.config.JSConfigurationKeys
 import org.jetbrains.kotlin.js.testNew.converters.ClassicJsBackendFacade.Companion.wrapWithModuleEmulationMarkers
 import org.jetbrains.kotlin.serialization.js.ModuleKind
@@ -16,21 +20,28 @@ import org.jetbrains.kotlin.test.model.TestModule
 import org.jetbrains.kotlin.test.services.TestServices
 import org.jetbrains.kotlin.test.services.compilerConfigurationProvider
 import org.jetbrains.kotlin.test.services.configuration.JsEnvironmentConfigurator
+import org.jetbrains.kotlin.test.services.jsLibraryProvider
+import org.jetbrains.kotlin.util.DummyLogger
 import java.io.File
 
 class JsIrArtifactsDumpHandler(testServices: TestServices) : JsBinaryArtifactHandler(testServices) {
     override fun processModule(module: TestModule, info: BinaryArtifacts.Js) {
-        info as BinaryArtifacts.JsIrArtifact
-        val configuration = testServices.compilerConfigurationProvider.getCompilerConfiguration(module)
-        val moduleId = configuration.getNotNull(CommonConfigurationKeys.MODULE_NAME)
-        val moduleKind = configuration.get(JSConfigurationKeys.MODULE_KIND, ModuleKind.PLAIN)
-        val outputFile = File(JsEnvironmentConfigurator.getJsModuleArtifactPath(testServices, module.name) + ".js")
-        val outputDceFile = File(JsEnvironmentConfigurator.getDceJsArtifactPath(testServices, module.name) + ".js")
-        val outputPirFile = File(JsEnvironmentConfigurator.getPirJsArtifactPath(testServices, module.name) + ".js")
+        if (info is BinaryArtifacts.JsIrArtifact) {
+            val configuration = testServices.compilerConfigurationProvider.getCompilerConfiguration(module)
+            val moduleId = configuration.getNotNull(CommonConfigurationKeys.MODULE_NAME)
+            val moduleKind = configuration.get(JSConfigurationKeys.MODULE_KIND, ModuleKind.PLAIN)
+            val outputFile = File(JsEnvironmentConfigurator.getJsModuleArtifactPath(testServices, module.name) + ".js")
+            val outputDceFile = File(JsEnvironmentConfigurator.getDceJsArtifactPath(testServices, module.name) + ".js")
+            val outputPirFile = File(JsEnvironmentConfigurator.getPirJsArtifactPath(testServices, module.name) + ".js")
 
-        info.compilerResult.outputs!!.writeTo(outputFile, moduleId, moduleKind)
-        info.compilerResult.outputsAfterDce?.writeTo(outputDceFile, moduleId, moduleKind)
-        info.pirCompilerResult?.outputs?.writeTo(outputPirFile, moduleId, moduleKind)
+            info.compilerResult.outputs!!.writeTo(outputFile, moduleId, moduleKind)
+            info.compilerResult.outputsAfterDce?.writeTo(outputDceFile, moduleId, moduleKind)
+            info.pirCompilerResult?.outputs?.writeTo(outputPirFile, moduleId, moduleKind)
+        } else if (info is BinaryArtifacts.JsKlibArtifact) {
+            testServices.jsLibraryProvider.setDescriptorAndLibraryByName(info.outputFile.absolutePath, info.descriptor as ModuleDescriptorImpl, info.library)
+        }
+
+        // TODO write dts
     }
 
     override fun processAfterAllModules(someAssertionWasFailed: Boolean) {}

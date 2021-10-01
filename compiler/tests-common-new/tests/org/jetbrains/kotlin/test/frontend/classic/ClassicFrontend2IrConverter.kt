@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.codegen.state.GenerationState
 import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.ir.backend.js.generateIrForKlibSerialization
-import org.jetbrains.kotlin.ir.backend.js.getIrModuleInfoForKlib
 import org.jetbrains.kotlin.ir.backend.js.getIrModuleInfoForSourceFiles
 import org.jetbrains.kotlin.ir.backend.js.lower.serialization.ir.JsManglerDesc
 import org.jetbrains.kotlin.ir.backend.js.sortDependencies
@@ -39,7 +38,6 @@ import org.jetbrains.kotlin.test.model.FrontendKinds
 import org.jetbrains.kotlin.test.model.TestModule
 import org.jetbrains.kotlin.test.services.*
 import org.jetbrains.kotlin.test.services.configuration.JsEnvironmentConfigurator
-import java.io.File
 
 class ClassicFrontend2IrConverter(
     testServices: TestServices
@@ -86,14 +84,14 @@ class ClassicFrontend2IrConverter(
         val klibMainModule = JsEnvironmentConfigurationDirectives.KLIB_MAIN_MODULE in module.directives
         val verifySignatures = JsEnvironmentConfigurationDirectives.SKIP_MANGLE_VERIFICATION !in module.directives
 
-        val stdlib = JsEnvironmentConfigurator.getStdlibPathsForModule(module).map {
-            testServices.jsLibraryProvider.getOrCreateStdlibByPath(it) {
-                testServices.assertions.fail { "Library with path $it wasn't found" }
-            }
-        }
+//        val stdlib = JsEnvironmentConfigurator.getStdlibPathsForModule(module).map {
+//            testServices.jsLibraryProvider.getOrCreateStdlibByPath(it) {
+//                testServices.assertions.fail { "Library with path $it wasn't found" }
+//            }
+//        }
 
         val dependencies = testServices.moduleDescriptorProvider.getModuleDescriptor(module).allDependencyModules
-        val allDependencies = (dependencies + stdlib).associateBy { testServices.jsLibraryProvider.getCompiledLibraryBeDescriptor(it) }
+        val allDependencies = dependencies.associateBy { testServices.jsLibraryProvider.getCompiledLibraryByDescriptor(it) }
 
         val expectDescriptorToSymbol = mutableMapOf<DeclarationDescriptor, IrSymbol>()
         if (!isMainModule) {
@@ -116,6 +114,7 @@ class ClassicFrontend2IrConverter(
                 null,
                 JsIrBackendInput(
                     moduleFragment,
+                    psiFiles.values.toList(),
                     emptyList(),
                     symbolTable = null,
                     bindingContext = analysisResult.bindingContext,
@@ -182,6 +181,7 @@ class ClassicFrontend2IrConverter(
                     null,
                     JsIrBackendInput(
                         moduleInfo.module,
+                        psiFiles.values.toList(),
                         dependencyModules = moduleInfo.allDependencies,
                         symbolTable = moduleInfo.symbolTable,
                         bindingContext = analysisResult.bindingContext,
