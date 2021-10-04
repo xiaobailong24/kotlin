@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.idea.fir.frontend.api.SymbolByFqName
 import org.jetbrains.kotlin.idea.frontend.api.symbols.KtSymbol
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
-import org.jetbrains.kotlin.test.directives.JvmEnvironmentConfigurationDirectives
+import org.jetbrains.kotlin.test.directives.ConfigurationDirectives
 import org.jetbrains.kotlin.test.services.TestServices
 
 abstract class AbstractSymbolByFqNameTest : AbstractSymbolTest() {
@@ -23,7 +23,7 @@ abstract class AbstractSymbolByFqNameTest : AbstractSymbolTest() {
         super.configureTest(builder)
         with(builder) {
             defaultDirectives {
-                +JvmEnvironmentConfigurationDirectives.WITH_STDLIB
+                +ConfigurationDirectives.WITH_STDLIB
             }
         }
     }

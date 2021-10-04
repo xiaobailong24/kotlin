@@ -140,8 +140,8 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
 
         fun getStdlibPathsForModule(module: TestModule): List<String> {
             val needsFullIrRuntime = JsEnvironmentConfigurationDirectives.KJS_WITH_FULL_RUNTIME in module.directives ||
-                    JvmEnvironmentConfigurationDirectives.WITH_STDLIB in module.directives ||
-                    JvmEnvironmentConfigurationDirectives.WITH_RUNTIME in module.directives
+                    ConfigurationDirectives.WITH_STDLIB in module.directives ||
+                    ConfigurationDirectives.WITH_RUNTIME in module.directives
 
             val names = if (needsFullIrRuntime) listOf("full.stdlib", "kotlin.test") else listOf("reduced.stdlib")
             return names.map { System.getProperty("kotlin.js.$it.path") }

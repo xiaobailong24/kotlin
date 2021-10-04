@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.test.base.AbstractLowLevelApi
 import org.jetbrains.kotlin.psi.KtDeclaration
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
-import org.jetbrains.kotlin.test.directives.JvmEnvironmentConfigurationDirectives
+import org.jetbrains.kotlin.test.directives.ConfigurationDirectives
 import org.jetbrains.kotlin.test.services.TestModuleStructure
 import org.jetbrains.kotlin.test.services.TestServices
 import org.jetbrains.kotlin.test.services.assertions
@@ -106,7 +106,7 @@ abstract class AbstractFirLazyDeclarationResolveTest : AbstractLowLevelApiSingle
         super.configureTest(builder)
         with(builder) {
             defaultDirectives {
-                +JvmEnvironmentConfigurationDirectives.WITH_STDLIB
+                +ConfigurationDirectives.WITH_STDLIB
             }
         }
     }
