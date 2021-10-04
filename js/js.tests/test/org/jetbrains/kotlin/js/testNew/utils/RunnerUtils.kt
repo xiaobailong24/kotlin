@@ -12,7 +12,6 @@ import org.jetbrains.kotlin.js.testNew.JsAdditionalSourceProvider
 import org.jetbrains.kotlin.psi.KtNamedFunction
 import org.jetbrains.kotlin.serialization.js.ModuleKind
 import org.jetbrains.kotlin.test.TargetBackend
-import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives.INFER_MAIN_MODULE
 import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives.NO_JS_MODULE_SYSTEM
 import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives.RUN_PLAIN_BOX_FUNCTION
 import org.jetbrains.kotlin.test.model.BinaryArtifacts
@@ -84,13 +83,20 @@ fun getAllFilesForRunner(
     val additionalFiles = getAdditionalFiles(testServices)
     val additionalMainFiles = getAdditionalMainFiles(testServices)
 
-    val artifactsPaths = modulesToArtifact.values.map { it.outputFile.absolutePath }
+    val artifactsPaths = modulesToArtifact.values.map { it.outputFile.absolutePath }.filter { !File(it).isDirectory }
     val dceJsFiles = artifactsPaths.map { it.replace(outputDir.absolutePath, dceOutputDir.absolutePath) }
     val pirJsFiles = artifactsPaths.map { it.replace(outputDir.absolutePath, pirOutputDir.absolutePath) }
+    val klibDependencies = modulesToArtifact.values
+        .filterIsInstance<BinaryArtifacts.JsIrArtifact>()
+        .singleOrNull()?.let { artifact ->
+            artifact.compilerResult.outputs?.dependencies?.map { (moduleId, _) ->
+                artifact.outputFile.absolutePath.replace("_v5.js", "-${moduleId}_v5.js")
+            }
+        } ?: emptyList()
 
-    val allJsFiles = additionalFiles + inputJsFiles + artifactsPaths + commonFiles + additionalMainFiles
-    val dceAllJsFiles = additionalFiles + inputJsFiles + dceJsFiles + commonFiles + additionalMainFiles
-    val pirAllJsFiles = additionalFiles + inputJsFiles + pirJsFiles + commonFiles + additionalMainFiles
+    val allJsFiles = additionalFiles + inputJsFiles + klibDependencies + artifactsPaths + commonFiles + additionalMainFiles
+    val dceAllJsFiles = additionalFiles + inputJsFiles + klibDependencies + dceJsFiles + commonFiles + additionalMainFiles
+    val pirAllJsFiles = additionalFiles + inputJsFiles + klibDependencies + pirJsFiles + commonFiles + additionalMainFiles
 
     return Triple(allJsFiles, dceAllJsFiles, pirAllJsFiles)
 }

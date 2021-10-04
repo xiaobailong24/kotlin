@@ -14,18 +14,18 @@ class PsiIrFileEntry(val psiFile: PsiFile) : IrFileEntry {
     private val psiFileName = psiFile.virtualFile?.path ?: psiFile.name
 
     override val maxOffset: Int
-    private val lineStartOffsets: IntArray
+    public val _lineStartOffsets: IntArray
     private val fileViewProvider = psiFile.viewProvider
 
     init {
         val document = fileViewProvider.document ?: throw AssertionError("No document for $psiFile")
         maxOffset = document.textLength
-        lineStartOffsets = IntArray(document.lineCount) { document.getLineStartOffset(it) }
+        _lineStartOffsets = IntArray(document.lineCount) { document.getLineStartOffset(it) }
     }
 
     override fun getLineNumber(offset: Int): Int {
         if (offset < 0) return -1
-        val index = lineStartOffsets.binarySearch(offset)
+        val index = _lineStartOffsets.binarySearch(offset)
         return if (index >= 0) index else -index - 2
     }
 
@@ -33,7 +33,7 @@ class PsiIrFileEntry(val psiFile: PsiFile) : IrFileEntry {
         if (offset < 0) return -1
         val lineNumber = getLineNumber(offset)
         if (lineNumber < 0) return -1
-        return offset - lineStartOffsets[lineNumber]
+        return offset - _lineStartOffsets[lineNumber]
     }
 
     override fun getSourceRangeInfo(beginOffset: Int, endOffset: Int): SourceRangeInfo =

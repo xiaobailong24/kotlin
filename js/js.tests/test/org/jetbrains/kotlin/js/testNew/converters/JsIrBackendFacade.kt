@@ -58,7 +58,7 @@ class JsIrBackendFacade(
                 dceDriven = false,
                 dceRuntimeDiagnostic = null,
                 es6mode = JsEnvironmentConfigurationDirectives.RUN_ES6_MODE in module.directives,
-                multiModule = JsEnvironmentConfigurationDirectives.RUN_ES6_MODE in module.directives ||
+                multiModule = JsEnvironmentConfigurationDirectives.SPLIT_PER_MODULE in module.directives ||
                         JsEnvironmentConfigurationDirectives.PER_MODULE in module.directives,
                 relativeRequirePath = false,
                 propertyLazyInitialization = JsEnvironmentConfigurationDirectives.PROPERTY_LAZY_INITIALIZATION in module.directives,
@@ -90,7 +90,7 @@ class JsIrBackendFacade(
                     dceDriven = true,
                     dceRuntimeDiagnostic = null,
                     es6mode = JsEnvironmentConfigurationDirectives.RUN_ES6_MODE in module.directives,
-                    multiModule = JsEnvironmentConfigurationDirectives.RUN_ES6_MODE in module.directives ||
+                    multiModule = JsEnvironmentConfigurationDirectives.SPLIT_PER_MODULE in module.directives ||
                             JsEnvironmentConfigurationDirectives.PER_MODULE in module.directives,
                     relativeRequirePath = false,
                     propertyLazyInitialization = JsEnvironmentConfigurationDirectives.PROPERTY_LAZY_INITIALIZATION in module.directives,

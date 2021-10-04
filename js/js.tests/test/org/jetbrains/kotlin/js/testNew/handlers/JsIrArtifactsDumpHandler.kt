@@ -50,12 +50,9 @@ class JsIrArtifactsDumpHandler(testServices: TestServices) : JsBinaryArtifactHan
         val wrappedCode = wrapWithModuleEmulationMarkers(jsCode, moduleId = moduleId, moduleKind = moduleKind)
         outputFile.write(wrappedCode)
 
-        val dependencyPaths = mutableListOf<String>()
-
         dependencies.forEach { (moduleId, outputs) ->
             val moduleWrappedCode = wrapWithModuleEmulationMarkers(outputs.jsCode, moduleKind, moduleId)
             val dependencyPath = outputFile.absolutePath.replace("_v5.js", "-${moduleId}_v5.js")
-            dependencyPaths += dependencyPath
             File(dependencyPath).write(moduleWrappedCode)
         }
     }

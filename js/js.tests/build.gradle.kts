@@ -243,7 +243,7 @@ fun Test.setUpBoxTests() {
 
 val testDataDir = project(":js:js.translator").projectDir.resolve("testData")
 
-projectTest(parallel = true) {
+projectTest(parallel = true, jUnit5Enabled = true) {
     setUpJsBoxTests(jsEnabled = true, jsIrEnabled = true)
     maxHeapSize = "3g"
 

@@ -184,6 +184,10 @@ fun generateJUnit5CompilerTests(args: Array<String>) {
             testClass<AbstractJsLegacyPrimitiveArraysBoxTest> {
                 model("codegen/box/arrays")
             }
+
+            testClass<AbstractIrJsCodegenBoxTest> {
+                model("codegen/box", excludeDirs = jvmOnlyBoxTests + "compileKotlinAgainstKotlin")
+            }
         }
 
         // ---------------------------------------------- FIR tests ----------------------------------------------

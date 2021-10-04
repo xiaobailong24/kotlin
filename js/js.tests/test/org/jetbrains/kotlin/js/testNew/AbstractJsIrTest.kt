@@ -67,3 +67,8 @@ open class AbstractIrBoxJsTest : AbstractJsIrTest(
     pathToTestDir = "${JsEnvironmentConfigurator.TEST_DATA_DIR_PATH}/box/",
     testGroupOutputDirPrefix = "box/"
 )
+
+open class AbstractIrJsCodegenBoxTest : AbstractJsIrTest(
+    pathToTestDir = "compiler/testData/codegen/box/",
+    testGroupOutputDirPrefix = "codegen/irBox/"
+)
