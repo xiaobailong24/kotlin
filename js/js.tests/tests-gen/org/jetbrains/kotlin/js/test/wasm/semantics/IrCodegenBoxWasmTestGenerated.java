@@ -6695,6 +6695,11 @@ public class IrCodegenBoxWasmTestGenerated extends AbstractIrCodegenBoxWasmTest 
                 runTest("compiler/testData/codegen/box/inference/builderInference/kt44241.kt");
             }
 
+            @TestMetadata("kt47989.kt")
+            public void testKt47989() throws Exception {
+                runTest("compiler/testData/codegen/box/inference/builderInference/kt47989.kt");
+            }
+
             @TestMetadata("substituteStubTypeIntolambdaParameterDescriptor.kt")
             public void testSubstituteStubTypeIntolambdaParameterDescriptor() throws Exception {
                 runTest("compiler/testData/codegen/box/inference/builderInference/substituteStubTypeIntolambdaParameterDescriptor.kt");
