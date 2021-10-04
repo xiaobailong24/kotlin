@@ -40,7 +40,7 @@ class CompletionModeCalculator {
             if (expectedType != null) return ConstraintSystemCompletionMode.FULL
 
             // This is questionable as null return type can be only for error call
-            if (returnType == null) return ConstraintSystemCompletionMode.PARTIAL
+            if (returnType == null) return ConstraintSystemCompletionMode.PARTIAL_NO_PROPER_CONSTRAINTS
 
             // Full if return type for call has no type variables
             if (csBuilder.isProperType(returnType)) return ConstraintSystemCompletionMode.FULL
@@ -76,11 +76,7 @@ class CompletionModeCalculator {
             typesToProcess.add(returnType)
             computeDirections()
 
-            // If all variables have required proper constraint, run full completion
-            if (directionRequirementsForVariablesHold())
-                return ConstraintSystemCompletionMode.FULL
-
-            return ConstraintSystemCompletionMode.PARTIAL
+            return getCompletionModeByAllConstraints()
         }
 
         private fun CsCompleterContext.computeDirections() {
@@ -111,13 +107,11 @@ class CompletionModeCalculator {
             }
         }
 
-        private fun CsCompleterContext.directionRequirementsForVariablesHold(): Boolean {
-            for ((variable, fixationDirection) in fixationDirectionsForVariables) {
-                if (!hasProperConstraint(variable, fixationDirection))
-                    return false
+        private fun CsCompleterContext.getCompletionModeByAllConstraints(): ConstraintSystemCompletionMode =
+            fixationDirectionsForVariables.minOf { (variable, fixationDirection) ->
+                val a = getCompletionModeByGivenConstraints(variable, fixationDirection)
+                a
             }
-            return true
-        }
 
         private fun updateDirection(directionForVariable: FixationDirectionForVariable) {
             val (variable, newDirection) = directionForVariable
@@ -189,10 +183,10 @@ class CompletionModeCalculator {
             newRequirementsCollector.add(requirement)
         }
 
-        private fun CsCompleterContext.hasProperConstraint(
+        private fun CsCompleterContext.getCompletionModeByGivenConstraints(
             variableWithConstraints: VariableWithConstraints,
             direction: FixationDirection
-        ): Boolean {
+        ): ConstraintSystemCompletionMode {
             val constraints = variableWithConstraints.constraints
             val variable = variableWithConstraints.typeVariable
 
@@ -210,6 +204,7 @@ class CompletionModeCalculator {
                     continue
 
                 if (constraint.type.typeConstructor().isIntegerLiteralTypeConstructor()) {
+                    properConstraintPresent = true
                     iltConstraintPresent = true
                 } else if (trivialConstraintTypeInferenceOracle.isSuitableResultedType(constraint.type)) {
                     properConstraintPresent = true
@@ -218,10 +213,11 @@ class CompletionModeCalculator {
                     properConstraintPresent = true
                 }
             }
-
-            if (!properConstraintPresent) return false
-
-            return !iltConstraintPresent || nonNothingProperConstraintPresent
+            return when {
+                !properConstraintPresent -> ConstraintSystemCompletionMode.PARTIAL_NO_PROPER_CONSTRAINTS
+                iltConstraintPresent && !nonNothingProperConstraintPresent -> ConstraintSystemCompletionMode.PARTIAL_ILT
+                else -> ConstraintSystemCompletionMode.FULL
+            }
         }
 
         private fun Constraint.hasRequiredKind(direction: FixationDirection) = when (direction) {

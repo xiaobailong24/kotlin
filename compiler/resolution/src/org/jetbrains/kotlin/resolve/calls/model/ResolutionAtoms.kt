@@ -273,7 +273,8 @@ class PartialCallResolutionResult(
     resultCallAtom: ResolvedCallAtom,
     diagnostics: List<KotlinCallDiagnostic>,
     constraintSystem: ConstraintStorage,
-    val forwardToInferenceSession: Boolean = false
+    val forwardToInferenceSession: Boolean = false,
+    val isIlt: Boolean = false
 ) : SingleCallResolutionResult(resultCallAtom, diagnostics, constraintSystem)
 
 class CompletedCallResolutionResult(

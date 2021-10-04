@@ -75,7 +75,7 @@ class KotlinConstraintSystemCompleter(
         completion@ while (true) {
             // TODO
             val postponedArguments = getOrderedNotAnalyzedPostponedArguments(topLevelAtoms)
-            if (completionMode == ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA && hasLambdaToAnalyze(postponedArguments)) return
+            if (completionMode == ConstraintSystemCompletionMode.PARTIAL_WITHOUT_POSTPONED_ARGUMENTS_ANALYSIS && hasLambdaToAnalyze(postponedArguments)) return
 
             // Stage 1: analyze postponed arguments with fixed parameter types
             if (analyzeArgumentWithFixedParameterTypes(postponedArguments, analyze))
@@ -169,7 +169,7 @@ class KotlinConstraintSystemCompleter(
         postponedArguments: List<PostponedResolvedAtom>,
         analyze: (PostponedResolvedAtom) -> Unit
     ): Boolean {
-        if (completionMode == ConstraintSystemCompletionMode.PARTIAL) return false
+        if (completionMode.isPartial) return false
 
         val useBuilderInferenceOnlyIfNeeded = languageVersionSettings.supportsFeature(LanguageFeature.UseBuilderInferenceOnlyIfNeeded)
 
@@ -376,7 +376,7 @@ class KotlinConstraintSystemCompleter(
                 "At this stage there should be no remaining variables with proper constraints"
             }
 
-            if (completionMode == ConstraintSystemCompletionMode.PARTIAL) break
+            if (completionMode.isPartial) break
 
             val variableWithConstraints = notFixedTypeVariables.getValue(variableForFixation.variable)
             val typeVariable = variableWithConstraints.typeVariable

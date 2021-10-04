@@ -61,15 +61,15 @@ class KotlinCallCompleter(
                     candidate.asCallResolutionResult(completionMode, diagnosticHolder)
                 } else {
                     candidate.asCallResolutionResult(
-                        ConstraintSystemCompletionMode.PARTIAL, diagnosticHolder, forwardToInferenceSession = true
+                        ConstraintSystemCompletionMode.PARTIAL_NO_PROPER_CONSTRAINTS, diagnosticHolder, forwardToInferenceSession = true
                     )
                 }
             }
-            ConstraintSystemCompletionMode.PARTIAL -> {
+            ConstraintSystemCompletionMode.PARTIAL_NO_PROPER_CONSTRAINTS, ConstraintSystemCompletionMode.PARTIAL_ILT -> {
                 candidate.runCompletion(completionMode, diagnosticHolder, resolutionCallbacks)
                 candidate.asCallResolutionResult(completionMode, diagnosticHolder)
             }
-            ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA -> throw IllegalStateException("Should not be here")
+            ConstraintSystemCompletionMode.PARTIAL_WITHOUT_POSTPONED_ARGUMENTS_ANALYSIS -> throw IllegalStateException("Should not be here")
 
         }
     }
@@ -92,7 +92,7 @@ class KotlinCallCompleter(
 
         for (candidate in lambdas.keys) {
             candidate.runCompletion(
-                ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA,
+                ConstraintSystemCompletionMode.PARTIAL_WITHOUT_POSTPONED_ARGUMENTS_ANALYSIS,
                 candidate,
                 resolutionCallbacks
             )
@@ -203,6 +203,7 @@ class KotlinCallCompleter(
         completionMode: ConstraintSystemCompletionMode,
         diagnosticHolder: KotlinDiagnosticsHolder,
         resolutionCallbacks: KotlinResolutionCallbacks,
+        dontAnalyseLambdas: Boolean = false
     ) {
         runCompletion(resolvedCall, completionMode, diagnosticHolder, getSystem(), resolutionCallbacks)
     }
@@ -305,7 +306,7 @@ class KotlinCallCompleter(
     }
 
     fun KotlinResolutionCandidate.asCallResolutionResult(
-        type: ConstraintSystemCompletionMode,
+        completionMode: ConstraintSystemCompletionMode,
         diagnosticsHolder: KotlinDiagnosticsHolder.SimpleHolder,
         forwardToInferenceSession: Boolean = false
     ): CallResolutionResult {
@@ -316,10 +317,10 @@ class KotlinCallCompleter(
             return ErrorCallResolutionResult(resolvedCall, allDiagnostics, systemStorage)
         }
 
-        return if (type == ConstraintSystemCompletionMode.FULL) {
+        return if (completionMode == ConstraintSystemCompletionMode.FULL) {
             CompletedCallResolutionResult(resolvedCall, allDiagnostics, systemStorage)
         } else {
-            PartialCallResolutionResult(resolvedCall, allDiagnostics, systemStorage, forwardToInferenceSession)
+            PartialCallResolutionResult(resolvedCall, allDiagnostics, systemStorage, forwardToInferenceSession, isIlt = completionMode == ConstraintSystemCompletionMode.PARTIAL_ILT)
         }
     }
 }

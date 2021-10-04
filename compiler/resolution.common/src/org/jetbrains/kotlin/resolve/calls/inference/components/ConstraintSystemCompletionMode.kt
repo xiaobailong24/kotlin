@@ -5,8 +5,9 @@
 
 package org.jetbrains.kotlin.resolve.calls.inference.components
 
-enum class ConstraintSystemCompletionMode {
-    FULL,
-    PARTIAL,
-    UNTIL_FIRST_LAMBDA
+enum class ConstraintSystemCompletionMode(val isPartial: Boolean) {
+    PARTIAL_WITHOUT_POSTPONED_ARGUMENTS_ANALYSIS(true),
+    PARTIAL_NO_PROPER_CONSTRAINTS(true),
+    PARTIAL_ILT(true),
+    FULL(false),
 }

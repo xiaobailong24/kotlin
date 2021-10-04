@@ -111,7 +111,7 @@ class FirOverloadByLambdaReturnTypeResolver(
             call.replaceCalleeReference(FirNamedReferenceWithCandidate(null, candidate.callInfo.name, candidate))
             callCompleter.runCompletionForCall(
                 candidate,
-                ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA,
+                ConstraintSystemCompletionMode.PARTIAL_WITHOUT_POSTPONED_ARGUMENTS_ANALYSIS,
                 call,
                 components.initialTypeOfCandidate(candidate)
             )

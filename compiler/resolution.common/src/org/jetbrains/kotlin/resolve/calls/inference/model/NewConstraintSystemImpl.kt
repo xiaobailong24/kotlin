@@ -38,6 +38,8 @@ class NewConstraintSystemImpl(
     private val properTypesCache: MutableSet<KotlinTypeMarker> = SmartSet.create()
     private val notProperTypesCache: MutableSet<KotlinTypeMarker> = SmartSet.create()
 
+    var delegatingStorage: ConstraintStorage? = null
+
     private var couldBeResolvedWithUnrestrictedBuilderInference: Boolean = false
 
     private enum class State {
@@ -246,6 +248,26 @@ class NewConstraintSystemImpl(
                 State.TRANSACTION
             )
         }
+
+    fun addOtherDelegatingSystem(otherSystem: ConstraintStorage) {
+        this.delegatingStorage = otherSystem
+        if (otherSystem.allTypeVariables.isNotEmpty()) {
+            otherSystem.allTypeVariables.forEach {
+                transactionRegisterVariable(it.value)
+            }
+            storage.allTypeVariables.putAll(otherSystem.allTypeVariables)
+            notProperTypesCache.clear()
+        }
+        for ((variable, constraints) in otherSystem.notFixedTypeVariables) {
+            notFixedTypeVariables[variable] = MutableVariableWithConstraints(this, constraints)
+        }
+        storage.initialConstraints.addAll(otherSystem.initialConstraints)
+        storage.maxTypeDepthFromInitialConstraints =
+            max(storage.maxTypeDepthFromInitialConstraints, otherSystem.maxTypeDepthFromInitialConstraints)
+        storage.errors.addAll(otherSystem.errors)
+        storage.fixedTypeVariables.putAll(otherSystem.fixedTypeVariables)
+        storage.postponedTypeVariables.addAll(otherSystem.postponedTypeVariables)
+    }
 
     override fun addOtherSystem(otherSystem: ConstraintStorage) {
         if (otherSystem.allTypeVariables.isNotEmpty()) {

@@ -12967,6 +12967,11 @@ public class IrJsCodegenBoxES6TestGenerated extends AbstractIrJsCodegenBoxES6Tes
             runTest("compiler/testData/codegen/box/inference/kt45118.kt");
         }
 
+        @TestMetadata("kt45458.kt")
+        public void testKt45458() throws Exception {
+            runTest("compiler/testData/codegen/box/inference/kt45458.kt");
+        }
+
         @TestMetadata("lambdaWithStarReturn.kt")
         public void testLambdaWithStarReturn() throws Exception {
             runTest("compiler/testData/codegen/box/inference/lambdaWithStarReturn.kt");

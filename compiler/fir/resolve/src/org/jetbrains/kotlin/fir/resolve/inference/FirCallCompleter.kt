@@ -141,13 +141,13 @@ class FirCallCompleter(
                 }
             }
 
-            ConstraintSystemCompletionMode.PARTIAL -> {
+            ConstraintSystemCompletionMode.PARTIAL_NO_PROPER_CONSTRAINTS, ConstraintSystemCompletionMode.PARTIAL_ILT -> {
                 runCompletionForCall(candidate, completionMode, call, initialType, analyzer)
                 inferenceSession.addPartiallyResolvedCall(call)
                 CompletionResult(call, false)
             }
 
-            ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA -> throw IllegalStateException()
+            ConstraintSystemCompletionMode.PARTIAL_WITHOUT_POSTPONED_ARGUMENTS_ANALYSIS -> throw IllegalStateException()
         }
     }
 

@@ -71,6 +71,11 @@ class SimpleCandidateFactory(
             baseSystem.addSubsystemFromArgument(kotlinCall.explicitReceiver)
             baseSystem.addSubsystemFromArgument(kotlinCall.dispatchReceiverForInvokeExtension)
         }
+
+        for (argument in kotlinCall.argumentsInParenthesis) {
+
+        }
+
         for (argument in kotlinCall.argumentsInParenthesis) {
             baseSystem.addSubsystemFromArgument(argument)
         }

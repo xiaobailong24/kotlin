@@ -47,7 +47,9 @@ class ConstraintSystemCompleter(private val components: BodyResolveComponents) {
         completion@ while (true) {
             val postponedArguments = getOrderedNotAnalyzedPostponedArguments(topLevelAtoms)
 
-            if (completionMode == ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA && hasLambdaToAnalyze(postponedArguments)) return
+            if (completionMode == ConstraintSystemCompletionMode.PARTIAL_WITHOUT_POSTPONED_ARGUMENTS_ANALYSIS
+                && hasLambdaToAnalyze(postponedArguments)
+            ) return
 
             // Stage 1
             if (analyzeArgumentWithFixedParameterTypes(postponedArguments, analyze))
@@ -215,7 +217,7 @@ class ConstraintSystemCompleter(private val components: BodyResolveComponents) {
                 topLevelType
             ) ?: break
 
-            if (!variableForFixation.hasProperConstraint && completionMode == ConstraintSystemCompletionMode.PARTIAL)
+            if (!variableForFixation.hasProperConstraint && completionMode == ConstraintSystemCompletionMode.PARTIAL_NO_PROPER_CONSTRAINTS)
                 break
 
             val variableWithConstraints = notFixedTypeVariables.getValue(variableForFixation.variable)

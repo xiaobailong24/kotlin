@@ -389,7 +389,7 @@ class PostponedArgumentInputTypesResolver(
              *
              * TODO: investigate why we can't do it for anonymous functions in full mode always (see `diagnostics/tests/resolve/resolveWithSpecifiedFunctionLiteralWithId.kt`)
              */
-            if (completionMode == ConstraintSystemCompletionMode.PARTIAL && !argument.isAnonymousFunction())
+            if (completionMode.isPartial && !argument.isAnonymousFunction())
                 return@any false
             if (argument.revisedExpectedType != null) return@any false
             val parameterTypesInfo =
