@@ -76,7 +76,7 @@ class JsIrBackendFacade(
 
             val runIrPir = JsEnvironmentConfigurationDirectives.RUN_IR_PIR in module.directives
             val dontSkipDceDriven = JsEnvironmentConfigurationDirectives.SKIP_DCE_DRIVEN !in module.directives
-            val pirCompiledModule = if (runIrPir && !dontSkipDceDriven) {
+            val pirCompiledModule = if (runIrPir && dontSkipDceDriven) {
                 compileIr(
                     input.moduleFragment,
                     MainModule.SourceFiles(input.sourceFiles), // TODO MainModule.Klib if needed

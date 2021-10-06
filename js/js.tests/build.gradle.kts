@@ -297,9 +297,11 @@ projectTest("jsEs6IrTest", true) {
     setUpBoxTests()
 }
 
-projectTest("jsPirTest", true) {
+projectTest("jsPirTest", parallel = true, jUnit5Enabled = true) {
     systemProperty("kotlin.js.ir.skipRegularMode", "true")
     setUpJsBoxTests(jsEnabled = false, jsIrEnabled = true)
+    maxHeapSize = "3g"
+    useJUnitPlatform()
 }
 
 projectTest("quickTest", parallel = true, jUnit5Enabled = true) {
