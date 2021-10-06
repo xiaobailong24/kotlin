@@ -188,6 +188,14 @@ fun generateJUnit5CompilerTests(args: Array<String>) {
             testClass<AbstractIrJsCodegenBoxTest> {
                 model("codegen/box", excludeDirs = jvmOnlyBoxTests + "compileKotlinAgainstKotlin")
             }
+
+            testClass<AbstractIrJsCodegenBoxErrorTest> {
+                model("codegen/boxError", excludeDirs = jvmOnlyBoxTests + "compileKotlinAgainstKotlin")
+            }
+
+            testClass<AbstractIrJsCodegenInlineTest> {
+                model("codegen/boxInline")
+            }
         }
 
         // ---------------------------------------------- FIR tests ----------------------------------------------

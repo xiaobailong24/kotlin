@@ -6,6 +6,8 @@
 package org.jetbrains.kotlin.test.services.configuration
 
 import com.intellij.openapi.project.Project
+import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
+import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.js.config.*
@@ -198,6 +200,9 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
         if (errorIgnorancePolicy.allowErrors) {
             configuration.put(JSConfigurationKeys.DEVELOPER_MODE, true)
         }
+        if (errorIgnorancePolicy != ErrorTolerancePolicy.DEFAULT) {
+            configuration.put(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
+        }
 
         val multiModule = testServices.moduleStructure.modules.size > 1
         configuration.put(JSConfigurationKeys.META_INFO, multiModule)
@@ -215,10 +220,7 @@ class JsEnvironmentConfigurator(testServices: TestServices) : EnvironmentConfigu
 
         configuration.put(
             JSConfigurationKeys.FILE_PATHS_PREFIX_MAP,
-            mapOf(
-                // tmpDir.absolutePath to "<TMP>", // TODO check do we need this on js ir tests
-                File(".").absolutePath.removeSuffix(".") to ""
-            )
+            mapOf(File(".").absolutePath.removeSuffix(".") to "")
         )
 
         configuration.put(CommonConfigurationKeys.EXPECT_ACTUAL_LINKER, EXPECT_ACTUAL_LINKER in registeredDirectives)

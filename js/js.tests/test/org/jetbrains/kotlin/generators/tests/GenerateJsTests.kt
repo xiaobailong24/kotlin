@@ -30,10 +30,6 @@ fun main(args: Array<String>) {
                 model("box/incremental/", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.JS)
             }
 
-            testClass<AbstractIrBoxJsTest> {
-                model("box/", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.JS_IR)
-            }
-
             testClass<AbstractIrBoxJsES6Test> {
                 model("box/", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.JS_IR_ES6)
             }
@@ -62,14 +58,6 @@ fun main(args: Array<String>) {
                 "testsWithJava17",
             )
 
-            testClass<AbstractIrJsCodegenBoxTest> {
-                model("codegen/box", targetBackend = TargetBackend.JS_IR, excludeDirs = jvmOnlyBoxTests + "compileKotlinAgainstKotlin")
-            }
-
-            testClass<AbstractIrJsCodegenBoxErrorTest> {
-                model("codegen/boxError", targetBackend = TargetBackend.JS_IR, excludeDirs = jvmOnlyBoxTests + "compileKotlinAgainstKotlin")
-            }
-
             testClass<AbstractIrCodegenBoxWasmTest> {
                 model(
                     "codegen/box", pattern = "^([^_](.+))\\.kt$", targetBackend = TargetBackend.WASM, excludeDirs = listOf(
@@ -96,10 +84,6 @@ fun main(args: Array<String>) {
 
             testClass<AbstractIrJsCodegenBoxES6Test> {
                 model("codegen/box", targetBackend = TargetBackend.JS_IR_ES6, excludeDirs = jvmOnlyBoxTests)
-            }
-
-            testClass<AbstractIrJsCodegenInlineTest> {
-                model("codegen/boxInline/", targetBackend = TargetBackend.JS_IR)
             }
 
             testClass<AbstractIrJsCodegenInlineES6Test> {
