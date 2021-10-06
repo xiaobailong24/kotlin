@@ -92,7 +92,6 @@ fun compile(
         deserializer,
         moduleToName,
         phaseConfig,
-        irFactory,
         mainArguments,
         exportedDeclarations,
         generateFullJs,
@@ -121,7 +120,6 @@ fun compileIr(
     deserializer: JsIrLinker,
     moduleToName: Map<IrModuleFragment, String>,
     phaseConfig: PhaseConfig,
-    irFactory: IrFactory,
     mainArguments: List<String>?,
     exportedDeclarations: Set<FqName>,
     generateFullJs: Boolean,
@@ -139,6 +137,7 @@ fun compileIr(
     safeExternalBooleanDiagnostic: RuntimeDiagnostic?
 ): CompilerResult {
     val moduleDescriptor = moduleFragment.descriptor
+    val irFactory = symbolTable.irFactory
 
     val allModules = when (mainModule) {
         is MainModule.SourceFiles -> dependencyModules + listOf(moduleFragment)

@@ -24,7 +24,7 @@ import org.jetbrains.kotlin.test.model.ResultingArtifact
 // IR backend (JVM, JS, Native)
 data class IrBackendInput(
     val backendInput: JvmIrCodegenFactory.JvmIrBackendInput?,
-    val jsBackendInput: JsIrBackendInput? = null
+    val jsBackendInput: JsIrBackendInput? = null,
 ) : ResultingArtifact.BackendInput<IrBackendInput>() {
     override val kind: BackendKinds.IrBackend
         get() = BackendKinds.IrBackend

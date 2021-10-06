@@ -126,9 +126,14 @@ class ClassicFrontend2IrConverter(
         } else {
             val messageLogger = configuration.get(IrMessageLogger.IR_MESSAGE_LOGGER) ?: IrMessageLogger.None
             val signaturer = IdSignatureDescriptor(JsManglerDesc)
-            val irFactory = when (JsEnvironmentConfigurationDirectives.LOWER_PER_MODULE) {
-                in module.directives -> PersistentIrFactory()
-                else -> IrFactoryImpl
+            val runIrPir = JsEnvironmentConfigurationDirectives.RUN_IR_PIR in module.directives
+            val lowerPerModule = JsEnvironmentConfigurationDirectives.LOWER_PER_MODULE in module.directives
+            val dontSkipDceDriven = JsEnvironmentConfigurationDirectives.SKIP_DCE_DRIVEN !in module.directives
+
+            val irFactory = if (lowerPerModule || (runIrPir && dontSkipDceDriven)) {
+                PersistentIrFactory()
+            } else {
+                IrFactoryImpl
             }
             val symbolTable = SymbolTable(signaturer, irFactory)
 

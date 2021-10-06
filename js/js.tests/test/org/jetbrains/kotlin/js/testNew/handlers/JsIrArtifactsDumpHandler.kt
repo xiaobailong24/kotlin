@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.js.config.JSConfigurationKeys
 import org.jetbrains.kotlin.js.testNew.converters.ClassicJsBackendFacade.Companion.wrapWithModuleEmulationMarkers
 import org.jetbrains.kotlin.serialization.js.ModuleKind
 import org.jetbrains.kotlin.test.backend.handlers.JsBinaryArtifactHandler
+import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives
 import org.jetbrains.kotlin.test.model.BinaryArtifacts
 import org.jetbrains.kotlin.test.model.TestModule
 import org.jetbrains.kotlin.test.services.TestServices
@@ -34,9 +35,19 @@ class JsIrArtifactsDumpHandler(testServices: TestServices) : JsBinaryArtifactHan
             val outputDceFile = File(JsEnvironmentConfigurator.getDceJsArtifactPath(testServices, module.name) + ".js")
             val outputPirFile = File(JsEnvironmentConfigurator.getPirJsArtifactPath(testServices, module.name) + ".js")
 
-            info.compilerResult.outputs!!.writeTo(outputFile, moduleId, moduleKind)
-            info.compilerResult.outputsAfterDce?.writeTo(outputDceFile, moduleId, moduleKind)
-            info.pirCompilerResult?.outputs?.writeTo(outputPirFile, moduleId, moduleKind)
+            val runIrPir = JsEnvironmentConfigurationDirectives.RUN_IR_PIR in module.directives
+            val dontSkipDceDriven = JsEnvironmentConfigurationDirectives.SKIP_DCE_DRIVEN !in module.directives
+            val dontSkipRegularMode = JsEnvironmentConfigurationDirectives.SKIP_REGULAR_MODE !in module.directives
+
+            if (dontSkipRegularMode) {
+                info.compilerResult.outputs!!.writeTo(outputFile, moduleId, moduleKind)
+                info.compilerResult.outputsAfterDce?.writeTo(outputDceFile, moduleId, moduleKind)
+            } else if (runIrPir && dontSkipDceDriven) {
+                info.compilerResult.outputs!!.writeTo(outputPirFile, moduleId, moduleKind)
+            } else {
+                TODO()
+            }
+
         } else if (info is BinaryArtifacts.JsKlibArtifact) {
             testServices.jsLibraryProvider.setDescriptorAndLibraryByName(info.outputFile.absolutePath, info.descriptor as ModuleDescriptorImpl, info.library)
         }

@@ -26,7 +26,7 @@ object BinaryArtifacts {
 
     class OldJsArtifact(override val outputFile: File, val jsProgram: JsProgram) : Js()
 
-    class JsIrArtifact(override val outputFile: File, val compilerResult: CompilerResult, val pirCompilerResult: CompilerResult?) : Js()
+    class JsIrArtifact(override val outputFile: File, val compilerResult: CompilerResult) : Js()
 
     class JsKlibArtifact(override val outputFile: File, val descriptor: ModuleDescriptor, val library: KotlinLibrary) : Js()
 

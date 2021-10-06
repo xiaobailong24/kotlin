@@ -53,6 +53,7 @@ abstract class AbstractJsBlackBoxCodegenTestBase<R : ResultingArtifact.FrontendO
             +JsEnvironmentConfigurationDirectives.TYPED_ARRAYS
             +JsEnvironmentConfigurationDirectives.GENERATE_NODE_JS_RUNNER
             if (skipMinification) +JsEnvironmentConfigurationDirectives.SKIP_MINIFICATION
+            if (getBoolean("kotlin.js.ir.skipRegularMode")) +JsEnvironmentConfigurationDirectives.SKIP_REGULAR_MODE
         }
 
         facadeStep(frontendFacade)
