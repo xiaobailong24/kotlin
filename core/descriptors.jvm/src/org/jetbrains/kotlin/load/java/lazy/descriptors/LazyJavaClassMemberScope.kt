@@ -336,7 +336,7 @@ class LazyJavaClassMemberScope(
 
         // Merge functions with same signatures
         val mergedFunctionFromSuperTypes = resolveOverridesForNonStaticMembers(
-            name, functionsFromSupertypes, emptyList(), ownerDescriptor, ErrorReporter.DO_NOTHING,
+            name, getFunctionsFromSupertypesForOverriddenCheck(name), emptyList(), ownerDescriptor, ErrorReporter.DO_NOTHING,
             c.components.kotlinTypeChecker.overridingUtil
         )
 
@@ -485,12 +485,14 @@ class LazyJavaClassMemberScope(
         }
     }
 
-    private fun getFunctionsFromSupertypes(name: Name): Set<SimpleFunctionDescriptor> {
-        return computeSupertypes()
-            .flatMapTo(LinkedHashSet()) {
-                it.memberScope.getContributedFunctions(name, NoLookupLocation.WHEN_GET_SUPER_MEMBERS)
-            }
-    }
+    private fun getFunctionsFromSupertypes(
+        name: Name,
+        location: LookupLocation = NoLookupLocation.WHEN_GET_SUPER_MEMBERS
+    ): Set<SimpleFunctionDescriptor> =
+        computeSupertypes().flatMapTo(LinkedHashSet()) { it.memberScope.getContributedFunctions(name, location) }
+
+    private fun getFunctionsFromSupertypesForOverriddenCheck(name: Name): Set<SimpleFunctionDescriptor> =
+        getFunctionsFromSupertypes(name, NoLookupLocation.WHEN_GET_SUPER_MEMBERS_FOR_OVERRIDDEN_CHECK)
 
     override fun computeImplicitlyDeclaredFunctions(result: MutableCollection<SimpleFunctionDescriptor>, name: Name) {
         if (jClass.isRecord && declaredMemberIndex().findRecordComponentByName(name) != null && result.none { it.valueParameters.isEmpty() }) {

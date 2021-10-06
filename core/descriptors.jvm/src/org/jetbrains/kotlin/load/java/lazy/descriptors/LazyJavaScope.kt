@@ -114,15 +114,15 @@ abstract class LazyJavaScope(
                 null
         }
 
+    private val notEnhancedFunctions = c.storageManager.createMemoizedFunction<Name, Collection<SimpleFunctionDescriptor>> { name ->
+        declaredFunctions(name).toMutableSet().apply {
+            retainMostSpecificMethods()
+            computeNonDeclaredFunctions(this, name)
+        }
+    }
 
     private val functions = c.storageManager.createMemoizedFunction<Name, Collection<SimpleFunctionDescriptor>> { name ->
-        val result = LinkedHashSet<SimpleFunctionDescriptor>(declaredFunctions(name))
-
-        result.retainMostSpecificMethods()
-
-        computeNonDeclaredFunctions(result, name)
-
-        c.components.signatureEnhancement.enhanceSignatures(c, result).toList()
+        c.components.signatureEnhancement.enhanceSignatures(c, notEnhancedFunctions(name))
     }
 
     private fun MutableSet<SimpleFunctionDescriptor>.retainMostSpecificMethods() {
@@ -269,7 +269,7 @@ abstract class LazyJavaScope(
 
     override fun getContributedFunctions(name: Name, location: LookupLocation): Collection<SimpleFunctionDescriptor> {
         if (name !in getFunctionNames()) return emptyList()
-        return functions(name)
+        return if (location == NoLookupLocation.WHEN_GET_SUPER_MEMBERS_FOR_OVERRIDDEN_CHECK) notEnhancedFunctions(name) else functions(name)
     }
 
     protected abstract fun computeFunctionNames(kindFilter: DescriptorKindFilter, nameFilter: ((Name) -> Boolean)?): Set<Name>
