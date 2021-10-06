@@ -38,16 +38,21 @@ abstract class AbstractJsIrTest(
     override val backendFacade: Constructor<BackendFacade<IrBackendInput, BinaryArtifacts.Js>>
         get() = ::JsIrBackendFacade
 
+    private fun getBoolean(s: String, default: Boolean) = System.getProperty(s)?.let { parseBoolean(it) } ?: default
+
     override fun configure(builder: TestConfigurationBuilder) {
         super.configure(builder)
         with(builder) {
             defaultDirectives {
                 val runIc = getBoolean("kotlin.js.ir.icMode")
+                val lowerPerModule = runIc || getBoolean("kotlin.js.ir.lowerPerModule")
                 if (runIc) +JsEnvironmentConfigurationDirectives.RUN_IC
-                if (runIc || getBoolean("kotlin.js.ir.lowerPerModule")) +JsEnvironmentConfigurationDirectives.LOWER_PER_MODULE
+                if (lowerPerModule) +JsEnvironmentConfigurationDirectives.LOWER_PER_MODULE
                 if (getBoolean("kotlin.js.ir.klibMainModule")) +JsEnvironmentConfigurationDirectives.KLIB_MAIN_MODULE
                 if (getBoolean("kotlin.js.ir.es6")) +JsEnvironmentConfigurationDirectives.RUN_ES6_MODE
                 if (getBoolean("kotlin.js.ir.perModule")) +JsEnvironmentConfigurationDirectives.PER_MODULE
+                if (getBoolean("kotlin.js.ir.dce", true)) +JsEnvironmentConfigurationDirectives.RUN_IR_DCE
+                if (!lowerPerModule && getBoolean("kotlin.js.ir.pir", true)) +JsEnvironmentConfigurationDirectives.RUN_IR_PIR
             }
 
             configureJsArtifactsHandlersStep {

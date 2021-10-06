@@ -187,7 +187,7 @@ class ClassicFrontend2IrConverter(
                         bindingContext = analysisResult.bindingContext,
                         expectDescriptorToSymbol = expectDescriptorToSymbol,
                         deserializer = moduleInfo.deserializer,
-                        moduleFragmentToUniqueName = emptyMap()
+                        moduleFragmentToUniqueName = moduleInfo.moduleFragmentToUniqueName
                     )
                 )
             }

@@ -84,8 +84,6 @@ fun getAllFilesForRunner(
     val additionalMainFiles = getAdditionalMainFiles(testServices)
 
     val artifactsPaths = modulesToArtifact.values.map { it.outputFile.absolutePath }.filter { !File(it).isDirectory }
-    val dceJsFiles = artifactsPaths.map { it.replace(outputDir.absolutePath, dceOutputDir.absolutePath) }
-    val pirJsFiles = artifactsPaths.map { it.replace(outputDir.absolutePath, pirOutputDir.absolutePath) }
     val klibDependencies = modulesToArtifact.values
         .filterIsInstance<BinaryArtifacts.JsIrArtifact>()
         .singleOrNull()?.let { artifact ->
@@ -93,10 +91,12 @@ fun getAllFilesForRunner(
                 artifact.outputFile.absolutePath.replace("_v5.js", "-${moduleId}_v5.js")
             }
         } ?: emptyList()
+    val dceJsFiles = (klibDependencies + artifactsPaths).map { it.replace(outputDir.absolutePath, dceOutputDir.absolutePath) }
+    val pirJsFiles = (klibDependencies + artifactsPaths).map { it.replace(outputDir.absolutePath, pirOutputDir.absolutePath) }
 
     val allJsFiles = additionalFiles + inputJsFiles + klibDependencies + artifactsPaths + commonFiles + additionalMainFiles
-    val dceAllJsFiles = additionalFiles + inputJsFiles + klibDependencies + dceJsFiles + commonFiles + additionalMainFiles
-    val pirAllJsFiles = additionalFiles + inputJsFiles + klibDependencies + pirJsFiles + commonFiles + additionalMainFiles
+    val dceAllJsFiles = additionalFiles + inputJsFiles + dceJsFiles + commonFiles + additionalMainFiles
+    val pirAllJsFiles = additionalFiles + inputJsFiles + pirJsFiles + commonFiles + additionalMainFiles
 
     return Triple(allJsFiles, dceAllJsFiles, pirAllJsFiles)
 }

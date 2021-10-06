@@ -7,6 +7,9 @@ package org.jetbrains.kotlin.js.testNew.converters
 
 import org.jetbrains.kotlin.backend.common.phaser.PhaseConfig
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
+import org.jetbrains.kotlin.config.languageVersionSettings
+import org.jetbrains.kotlin.descriptors.impl.ModuleDescriptorImpl
+import org.jetbrains.kotlin.incremental.components.LookupTracker
 import org.jetbrains.kotlin.ir.backend.js.*
 import org.jetbrains.kotlin.ir.declarations.impl.IrFactoryImpl
 import org.jetbrains.kotlin.ir.declarations.persistent.PersistentIrFactory
@@ -15,7 +18,9 @@ import org.jetbrains.kotlin.js.config.ErrorTolerancePolicy
 import org.jetbrains.kotlin.js.config.JSConfigurationKeys
 import org.jetbrains.kotlin.js.testNew.utils.extractTestPackage
 import org.jetbrains.kotlin.library.KotlinAbiVersion
+import org.jetbrains.kotlin.library.unresolvedDependencies
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.storage.LockBasedStorageManager
 import org.jetbrains.kotlin.test.backend.ir.IrBackendFacade
 import org.jetbrains.kotlin.test.backend.ir.IrBackendInput
 import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives
@@ -118,7 +123,7 @@ class JsIrBackendFacade(
 //                }
 //            }
 
-            val dependencies = testServices.moduleDescriptorProvider.getModuleDescriptor(module).allDependencyModules
+            val dependencies = testServices.moduleDescriptorProvider.getModuleDescriptor(module).allDependencyModules.map { it as ModuleDescriptorImpl }
             val allDependencies = dependencies.map { testServices.jsLibraryProvider.getCompiledLibraryByDescriptor(it) }
 
             serializeModuleIntoKlib(
@@ -146,7 +151,18 @@ class JsIrBackendFacade(
                 configuration[IrMessageLogger.IR_MESSAGE_LOGGER].toResolverLogger()
             ).getFullResolvedList().last().library
 
-            return BinaryArtifacts.JsKlibArtifact(File(outputFile), input.moduleFragment.descriptor, lib)
+            val moduleDescriptor = JsFactories.DefaultDeserializedDescriptorFactory.createDescriptorOptionalBuiltIns(
+                lib,
+                configuration.languageVersionSettings,
+                LockBasedStorageManager("ModulesStructure"),
+                testServices.moduleDescriptorProvider.getModuleDescriptor(module).builtIns,
+                packageAccessHandler = null,
+                lookupTracker = LookupTracker.DO_NOTHING
+            )
+            moduleDescriptor.setDependencies(dependencies + moduleDescriptor)
+            testServices.moduleDescriptorProvider.replaceModuleDescriptorForModule(module, moduleDescriptor)
+
+            return BinaryArtifacts.JsKlibArtifact(File(outputFile), moduleDescriptor, lib)
         }
     }
 }
