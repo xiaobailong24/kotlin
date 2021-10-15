@@ -541,7 +541,12 @@ class Fir2IrVisitor(
         }?.run {
             if (expression is FirQualifiedAccessExpression && expression.calleeReference is FirSuperReference) return@run this
 
-            implicitCastInserter.implicitCastFromDispatchReceiver(this, expression.typeRef, calleeReference)
+            implicitCastInserter.implicitCastFromDispatchReceiver(
+                this,
+                expression.typeRef,
+                calleeReference,
+                (expression as? FirExpressionWithSmartcast)?.originalExpression?.typeRef
+            )
         }
     }
 
