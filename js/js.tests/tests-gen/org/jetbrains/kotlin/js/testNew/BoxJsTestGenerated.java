@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 public class BoxJsTestGenerated extends AbstractBoxJsTest {
     @Test
     public void testAllFilesPresentInBox() throws Exception {
-        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("js/js.translator/testData/box"), Pattern.compile("^([^_](.+))\\.kt$"), null, TargetBackend.JS, true, "incremental");
+        KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("js/js.translator/testData/box"), Pattern.compile("^([^_](.+))\\.kt$"), null, TargetBackend.JS, true);
     }
 
     @Nested
@@ -3966,6 +3966,178 @@ public class BoxJsTestGenerated extends AbstractBoxJsTest {
         @TestMetadata("withSameNameAndDiffReceiverType.kt")
         public void testWithSameNameAndDiffReceiverType() throws Exception {
             runTest("js/js.translator/testData/box/extensionProperty/withSameNameAndDiffReceiverType.kt");
+        }
+    }
+
+    @Nested
+    @TestMetadata("js/js.translator/testData/box/incremental")
+    @TestDataPath("$PROJECT_ROOT")
+    public class Incremental {
+        @Test
+        public void testAllFilesPresentInIncremental() throws Exception {
+            KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("js/js.translator/testData/box/incremental"), Pattern.compile("^([^_](.+))\\.kt$"), null, TargetBackend.JS, true);
+        }
+
+        @Test
+        @TestMetadata("catchScope.kt")
+        public void testCatchScope() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/catchScope.kt");
+        }
+
+        @Test
+        @TestMetadata("classReferencingClass.kt")
+        public void testClassReferencingClass() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/classReferencingClass.kt");
+        }
+
+        @Test
+        @TestMetadata("coroutines.kt")
+        public void testCoroutines() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/coroutines.kt");
+        }
+
+        @Test
+        @TestMetadata("defaultArguments.kt")
+        public void testDefaultArguments() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/defaultArguments.kt");
+        }
+
+        @Test
+        @TestMetadata("enumUsage.kt")
+        public void testEnumUsage() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/enumUsage.kt");
+        }
+
+        @Test
+        @TestMetadata("exportedPackage.kt")
+        public void testExportedPackage() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/exportedPackage.kt");
+        }
+
+        @Test
+        @TestMetadata("forWithoutInit.kt")
+        public void testForWithoutInit() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/forWithoutInit.kt");
+        }
+
+        @Test
+        @TestMetadata("functionReferencingClass.kt")
+        public void testFunctionReferencingClass() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/functionReferencingClass.kt");
+        }
+
+        @Test
+        @TestMetadata("inheritViaAnotherInterface.kt")
+        public void testInheritViaAnotherInterface() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/inheritViaAnotherInterface.kt");
+        }
+
+        @Test
+        @TestMetadata("inline.kt")
+        public void testInline() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/inline.kt");
+        }
+
+        @Test
+        @TestMetadata("inlineLambda.kt")
+        public void testInlineLambda() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/inlineLambda.kt");
+        }
+
+        @Test
+        @TestMetadata("inlineModuleVariable.kt")
+        public void testInlineModuleVariable() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/inlineModuleVariable.kt");
+        }
+
+        @Test
+        @TestMetadata("inlineSuspendFun.kt")
+        public void testInlineSuspendFun() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/inlineSuspendFun.kt");
+        }
+
+        @Test
+        @TestMetadata("inlineableAliasForExternalDeclaration.kt")
+        public void testInlineableAliasForExternalDeclaration() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/inlineableAliasForExternalDeclaration.kt");
+        }
+
+        @Test
+        @TestMetadata("jsModule.kt")
+        public void testJsModule() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/jsModule.kt");
+        }
+
+        @Test
+        @TestMetadata("kClassOnReifiedType.kt")
+        public void testKClassOnReifiedType() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/kClassOnReifiedType.kt");
+        }
+
+        @Test
+        @TestMetadata("kClassOnReifiedTypeInLambda-advanced.kt")
+        public void testKClassOnReifiedTypeInLambda_advanced() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/kClassOnReifiedTypeInLambda-advanced.kt");
+        }
+
+        @Test
+        @TestMetadata("kotlinTestIncremental.kt")
+        public void testKotlinTestIncremental() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/kotlinTestIncremental.kt");
+        }
+
+        @Test
+        @TestMetadata("localDeclarationsClash.kt")
+        public void testLocalDeclarationsClash() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/localDeclarationsClash.kt");
+        }
+
+        @Test
+        @TestMetadata("mainIncremental.kt")
+        public void testMainIncremental() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/mainIncremental.kt");
+        }
+
+        @Test
+        @TestMetadata("multipleExport.kt")
+        public void testMultipleExport() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/multipleExport.kt");
+        }
+
+        @Test
+        @TestMetadata("multipleReimport.kt")
+        public void testMultipleReimport() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/multipleReimport.kt");
+        }
+
+        @Test
+        @TestMetadata("packagesWithSameName.kt")
+        public void testPackagesWithSameName() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/packagesWithSameName.kt");
+        }
+
+        @Test
+        @TestMetadata("repeatedImport.kt")
+        public void testRepeatedImport() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/repeatedImport.kt");
+        }
+
+        @Test
+        @TestMetadata("simple.kt")
+        public void testSimple() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/simple.kt");
+        }
+
+        @Test
+        @TestMetadata("sourceMapSourceEmbedding.kt")
+        public void testSourceMapSourceEmbedding() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/sourceMapSourceEmbedding.kt");
+        }
+
+        @Test
+        @TestMetadata("syntheticStatement.kt")
+        public void testSyntheticStatement() throws Exception {
+            runTest("js/js.translator/testData/box/incremental/syntheticStatement.kt");
         }
     }
 
