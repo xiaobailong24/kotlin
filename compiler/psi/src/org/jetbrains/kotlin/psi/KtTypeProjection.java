@@ -59,7 +59,11 @@ public class KtTypeProjection extends KtModifierListOwnerStub<KotlinTypeProjecti
 
     @Nullable
     public KtTypeReference getTypeReference() {
-        return getStubOrPsiChild(KtStubElementTypes.TYPE_REFERENCE);
+        KtTypeReference typeRef = getStubOrPsiChild(KtStubElementTypes.TYPE_REFERENCE);
+
+        if (typeRef != null && typeRef.isPlaceholder()) return null;
+
+        return typeRef;
     }
 
     @Nullable
