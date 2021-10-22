@@ -12838,6 +12838,12 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
             }
 
             @Test
+            @TestMetadata("annotatedUnderscoredTypeArgument.kt")
+            public void testAnnotatedUnderscoredTypeArgument() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/annotatedUnderscoredTypeArgument.kt");
+            }
+
+            @Test
             @TestMetadata("cannotCompleteResolveAmbiguity.kt")
             public void testCannotCompleteResolveAmbiguity() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/cannotCompleteResolveAmbiguity.kt");
