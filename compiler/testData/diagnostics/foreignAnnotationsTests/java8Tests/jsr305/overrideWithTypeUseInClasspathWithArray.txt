@@ -12,7 +12,7 @@ public interface J1</*0*/ T : kotlin.Any!> {
 public open class J2 : J1<kotlin.String!> {
     public constructor J2()
     public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
-    @spr.NotNull public open override /*1*/ fun getFoo(): kotlin.Array<(out) @spr.NotNull kotlin.String>?
+    @spr.NotNull public open override /*1*/ fun getFoo(): kotlin.Array<(out) @spr.NotNull kotlin.String>
     public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
     public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
 }

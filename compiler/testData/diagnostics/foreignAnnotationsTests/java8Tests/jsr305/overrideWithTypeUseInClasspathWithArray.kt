@@ -85,5 +85,5 @@ annotation class NotNull
 // FILE: main.kt
 
 fun bar(j2: J2) {
-    j2.foo<!UNSAFE_CALL!>.<!>get(0).length // `j2.foo` is not nullable
+    j2.foo.get(0).length // `j2.foo` is not nullable
 }
