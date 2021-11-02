@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.descriptors.VariableAccessorDescriptor
 import org.jetbrains.kotlin.descriptors.VariableDescriptorWithAccessors
 import org.jetbrains.kotlin.diagnostics.Errors.*
+import org.jetbrains.kotlin.diagnostics.reportDiagnosticOnce
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.renderer.DescriptorRenderer
 import org.jetbrains.kotlin.resolve.BindingContext.*
@@ -288,7 +289,7 @@ class DelegatedPropertyResolver(
 
         resolutionErrorFactory?.let {
             val expectedFunction = renderCall(delegateOperatorCall, trace.bindingContext)
-            trace.report(it.on(delegateExpression, expectedFunction, delegateOperatorResults.resultingCalls))
+            trace.reportDiagnosticOnce(it.on(delegateExpression, expectedFunction, delegateOperatorResults.resultingCalls))
         }
 
         return resolutionErrorFactory != null
