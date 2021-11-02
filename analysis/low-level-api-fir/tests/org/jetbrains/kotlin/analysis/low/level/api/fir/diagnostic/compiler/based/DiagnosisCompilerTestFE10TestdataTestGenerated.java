@@ -6995,6 +6995,12 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
                 runTest("compiler/testData/diagnostics/tests/dataFlow/WhenSubject.kt");
             }
 
+            @Test
+            @TestMetadata("whenWithSafeCast.kt")
+            public void testWhenWithSafeCast() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/dataFlow/whenWithSafeCast.kt");
+            }
+
             @Nested
             @TestMetadata("compiler/testData/diagnostics/tests/dataFlow/assignment")
             @TestDataPath("$PROJECT_ROOT")

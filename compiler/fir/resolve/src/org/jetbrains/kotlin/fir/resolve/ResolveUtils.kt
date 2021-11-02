@@ -301,9 +301,14 @@ fun BodyResolveComponents.transformQualifiedAccessUsingSmartcastInfo(
         }
 
     val originalType = qualifiedAccessExpression.resultType.coneType
-    val allTypes = typesFromSmartCast.also {
-        it += originalType
+
+    // The order here is important, but it's a kind of hack that allows to choose the original type in case of ambiguity
+    // See KT-49542 for details
+    val allTypes = buildList {
+        add(originalType)
+        addAll(typesFromSmartCast)
     }
+
     val intersectedType = ConeTypeIntersector.intersectTypes(session.typeContext, allTypes)
     if (intersectedType == originalType) return qualifiedAccessExpression
     val intersectedTypeRef = buildResolvedTypeRef {

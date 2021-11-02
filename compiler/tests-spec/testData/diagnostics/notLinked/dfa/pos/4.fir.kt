@@ -179,7 +179,7 @@ fun case_16() {
     val x: TypealiasNothing = return
 
     if (<!SENSELESS_COMPARISON!>x == null<!>) {
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNothing")!>x<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNothing & kotlin.Nothing")!>x<!>
     }
 }
 

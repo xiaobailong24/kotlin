@@ -88,17 +88,17 @@ fun <T> T?.case_4() {
 fun <T> T?.case_5() {
     if (this is Interface1) {
         if (<!SENSELESS_COMPARISON!>this != null<!>) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.equals(null)
             this.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.propNullableAny
             this.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.funNullableAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.itest1()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.itest1()
 
             equals(this)
             itest1()
@@ -148,17 +148,17 @@ fun <T> T?.case_5() {
 fun <T> T?.case_6() {
     if (this is Interface1?) {
         if (this != null) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.equals(null)
             this.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.propNullableAny
             this.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.funNullableAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.itest1()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.itest1()
 
             equals(this)
             itest1()
@@ -263,17 +263,17 @@ fun <T> T.case_7() {
 fun <T> T.case_8() {
     if (this != null) {
         if (this is Interface1?) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & T!!")!>this<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & T!!")!>this<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1")!>this<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1")!>this<!>.equals(null)
             this.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & T!!")!>this<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & T!!")!>this<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & T!!")!>this<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1")!>this<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1")!>this<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1")!>this<!>.propNullableAny
             this.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & T!!")!>this<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & T!!")!>this<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & T!!")!>this<!>.funNullableAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & T!!")!>this<!>.itest1()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1")!>this<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1")!>this<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1")!>this<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1")!>this<!>.itest1()
 
             equals(this)
             itest1()
@@ -449,17 +449,17 @@ fun <T : Number?> T.case_10() {
 fun <T : Number> T?.case_11() {
     if (this is Interface1?) {
         if (this != null) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.equals(null)
             this.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.propNullableAny
             this.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.funNullableAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("T? & Interface1 & T?!!")!>this<!>.itest1()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("T? & T?!! & Interface1")!>this<!>.itest1()
 
             equals(this)
             itest1()
@@ -3865,16 +3865,16 @@ fun <T> T.case_65() {
     if (this is Interface1?) {
         if (this is Interface2?) {
             if (this != null) {
-                <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & Interface2 & T!!")!>this<!>
-                <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & Interface2 & T!!")!>this<!>.equals(null)
+                <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1 & Interface2")!>this<!>
+                <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1 & Interface2")!>this<!>.equals(null)
                 this.propT
-                <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & Interface2 & T!!")!>this<!>.propAny
-                <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & Interface2 & T!!")!>this<!>.propNullableT
-                <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & Interface2 & T!!")!>this<!>.propNullableAny
+                <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1 & Interface2")!>this<!>.propAny
+                <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1 & Interface2")!>this<!>.propNullableT
+                <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1 & Interface2")!>this<!>.propNullableAny
                 this.funT()
-                <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & Interface2 & T!!")!>this<!>.funAny()
-                <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & Interface2 & T!!")!>this<!>.funNullableT()
-                <!DEBUG_INFO_EXPRESSION_TYPE("T & Interface1 & Interface2 & T!!")!>this<!>.funNullableAny()
+                <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1 & Interface2")!>this<!>.funAny()
+                <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1 & Interface2")!>this<!>.funNullableT()
+                <!DEBUG_INFO_EXPRESSION_TYPE("T & T!! & Interface1 & Interface2")!>this<!>.funNullableAny()
                 apply {
                     <!DEBUG_INFO_EXPRESSION_TYPE("Interface1 & Interface2 & T!!")!>this<!>
                     <!DEBUG_INFO_EXPRESSION_TYPE("Interface1 & Interface2 & T!!")!>this<!>.equals(null)

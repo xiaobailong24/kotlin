@@ -151,16 +151,16 @@ fun case_9(x: TypealiasNullableString?) {
 
     } else if (<!SENSELESS_COMPARISON!>x === null<!> || <!SENSELESS_COMPARISON!>x === null<!>) {
     } else if (false) {
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.equals(null)
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.propT
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.propAny
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.propNullableT
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.propNullableAny
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.funT()
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.funAny()
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.funNullableT()
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.funNullableAny()
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.equals(null)
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.propT
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.propAny
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.propNullableT
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.propNullableAny
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.funT()
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.funAny()
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.funNullableT()
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.funNullableAny()
     }
 }
 
@@ -195,16 +195,16 @@ fun case_11(x: TypealiasNullableString?, y: TypealiasNullableString) {
             if (y != null || <!SENSELESS_COMPARISON!>y != null<!>) {
                 if (<!SENSELESS_COMPARISON!>stringProperty == null<!> && <!SENSELESS_COMPARISON!>nullableNothingProperty == null<!>) {
                     if (t != null || <!SENSELESS_COMPARISON!>t != null<!>) {
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.equals(null)
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.propT
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.propAny
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.propNullableT
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.propNullableAny
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.funT()
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.funAny()
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.funNullableT()
-                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & kotlin.Any & TypealiasNullableString")!>x<!>.funNullableAny()
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.equals(null)
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.propT
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.propAny
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.propNullableT
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.propNullableAny
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.funT()
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.funAny()
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.funNullableT()
+                        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString? & TypealiasNullableString & kotlin.Any")!>x<!>.funNullableAny()
                     }
                 }
             }
@@ -215,16 +215,16 @@ fun case_11(x: TypealiasNullableString?, y: TypealiasNullableString) {
 // TESTCASE NUMBER: 12
 fun case_12(x: TypealiasNullableString, y: TypealiasNullableString) = <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>if (x == null) "1"
     else if (y === null || <!SENSELESS_COMPARISON!>y === null<!>) {
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>.equals(null)
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>.propT
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>.propAny
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>.propNullableT
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>.propNullableAny
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>.funT()
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>.funAny()
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>.funNullableT()
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>.funNullableAny()
-        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & kotlin.Any & TypealiasNullableString")!>x<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>.equals(null)
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>.propT
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>.propAny
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>.propNullableT
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>.propNullableAny
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>.funT()
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>.funAny()
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>.funNullableT()
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>.funNullableAny()
+        <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNullableString & TypealiasNullableString & kotlin.Any")!>x<!>
     } else "-1"<!>
 
 // TESTCASE NUMBER: 13
@@ -283,7 +283,7 @@ fun case_16() {
     val x: TypealiasNothing? = null
     val y: Nothing? = null
 
-    if (x != null || x !== null || x != y) {
+    if (x != null || <!SENSELESS_COMPARISON!>x !== null<!> || <!SENSELESS_COMPARISON!>x != y<!>) {
         <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNothing?")!>x<!>
         <!DEBUG_INFO_EXPRESSION_TYPE("TypealiasNothing?")!>x<!>.hashCode()
     }
