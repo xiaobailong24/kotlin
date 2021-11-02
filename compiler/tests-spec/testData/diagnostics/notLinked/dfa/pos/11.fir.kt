@@ -95,33 +95,33 @@ fun case_4(a: Interface1?, b: Interface2?, c: Boolean) {
     }
 
     x.apply {
-        <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1?")!>this<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2?")!>this<!>
         if (this != null) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.equals(null)
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.propNullableAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.propT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.funT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.funNullableAny()
         }
     }
     x.let {
-        <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1?")!>it<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2?")!>it<!>
         if (it != null) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.equals(null)
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.propNullableAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.propT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.funT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.funNullableAny()
         }
     }
 }
@@ -140,30 +140,30 @@ fun case_5(a: Interface1?, b: Interface2?, d: Boolean) {
 
     x.apply {
         if (this != null) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.equals(null)
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.propNullableAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>this<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.propT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.funT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>this<!>.funNullableAny()
         }
     }
     x.let {
         if (it != null) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.equals(null)
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.propNullableAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface2 & Interface1")!>it<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.propT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.funT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2")!>it<!>.funNullableAny()
         }
     }
 }
@@ -182,38 +182,38 @@ fun case_6(a: Interface1?, b: Interface2, d: Boolean) {
 
     x.apply {
         this as Interface3
-        <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>
         if (<!SENSELESS_COMPARISON!>this != null<!>) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.equals(null)
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.propNullableAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.funNullableAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.itest1()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.itest2()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.propT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.funT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.itest1()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.itest2()
         }
     }
     x.let {
         it as Interface3
-        <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>
         if (<!SENSELESS_COMPARISON!>it != null<!>) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.equals(null)
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.propNullableAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.funNullableAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.itest1()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.itest2()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.propT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.funT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.itest1()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.itest2()
         }
     }
 }
@@ -232,38 +232,38 @@ fun case_7(a: Interface1?, b: Interface2?, d: Boolean) {
 
     x.apply {
         this as Interface3?
-        <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3? & Interface2? & Interface1?")!>this<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1? & Interface2? & Interface3?")!>this<!>
         if (this != null) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.equals(null)
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.propNullableAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.funNullableAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.itest1()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>this<!>.itest2()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.propT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.funT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.itest1()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>this<!>.itest2()
         }
     }
     x.let {
         it as Interface3?
-        <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3? & Interface2? & Interface1?")!>it<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1? & Interface2? & Interface3?")!>it<!>
         if (it != null) {
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.equals(null)
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.propT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.propAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.propNullableT
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.propNullableAny
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.funT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.funAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.funNullableT()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.funNullableAny()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.itest1()
-            <!DEBUG_INFO_EXPRESSION_TYPE("Interface2? & Interface1? & Interface3 & Interface2 & Interface1")!>it<!>.itest2()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.equals(null)
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.propT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.propAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.propNullableT
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.propNullableAny
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.funT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.funAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.funNullableT()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.funNullableAny()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.itest1()
+            <!DEBUG_INFO_EXPRESSION_TYPE("Interface1? & Interface2? & Interface1 & Interface2 & Interface3")!>it<!>.itest2()
         }
     }
 }

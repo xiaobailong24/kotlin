@@ -175,7 +175,7 @@ fun testSmartCastOnVarWithSuspendConversion(a: Any) {
 
 fun testSmartCastVsSuspendConversion(a: Function0<Unit>) {
   a as SuspendFunction0<Unit> /*~> Unit */
-  useSuspend(sfn = a /*as SuspendFunction0<Unit> */)
+  useSuspend(sfn = a)
 }
 
 fun testSmartCastOnVarVsSuspendConversion(a: Function0<Unit>) {

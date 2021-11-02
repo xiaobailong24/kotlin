@@ -8,8 +8,8 @@
  */
 inline fun <reified T, reified K> case_1(x: T) {
     if (x is K) {
-        <!DEBUG_INFO_EXPRESSION_TYPE("T & K & T")!>x<!>
-        <!DEBUG_INFO_EXPRESSION_TYPE("T & K & T")!>x<!><!UNSAFE_CALL!>.<!>equals(x)
+        <!DEBUG_INFO_EXPRESSION_TYPE("T & T & K")!>x<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("T & T & K")!>x<!><!UNSAFE_CALL!>.<!>equals(x)
     }
 }
 
@@ -19,8 +19,8 @@ inline fun <reified T, reified K> case_1(x: T) {
  */
 inline fun <reified T, reified K> case_2(x: T) {
     x as K
-    <!DEBUG_INFO_EXPRESSION_TYPE("T & K & T")!>x<!>
-    <!DEBUG_INFO_EXPRESSION_TYPE("T & K & T")!>x<!><!UNSAFE_CALL!>.<!>equals(x)
+    <!DEBUG_INFO_EXPRESSION_TYPE("T & T & K")!>x<!>
+    <!DEBUG_INFO_EXPRESSION_TYPE("T & T & K")!>x<!><!UNSAFE_CALL!>.<!>equals(x)
 }
 
 /*
@@ -40,16 +40,16 @@ inline fun <reified T, reified K> case_3() {
 // TESTCASE NUMBER: 4
 inline fun <reified T, reified K> case_4(x: T?) {
     if (x is K) {
-        <!DEBUG_INFO_EXPRESSION_TYPE("T? & K & T?")!>x<!>
-        <!DEBUG_INFO_EXPRESSION_TYPE("T? & K & T?")!>x<!><!UNSAFE_CALL!>.<!>equals(x)
+        <!DEBUG_INFO_EXPRESSION_TYPE("T? & T? & K")!>x<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("T? & T? & K")!>x<!><!UNSAFE_CALL!>.<!>equals(x)
     }
 }
 
 // TESTCASE NUMBER: 5
 inline fun <reified T, reified K> case_5(x: T) {
     if (x is K?) {
-        <!DEBUG_INFO_EXPRESSION_TYPE("T & K? & T")!>x<!>
-        <!DEBUG_INFO_EXPRESSION_TYPE("T & K? & T")!>x<!><!UNSAFE_CALL!>.<!>equals(x)
+        <!DEBUG_INFO_EXPRESSION_TYPE("T & T & K?")!>x<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("T & T & K?")!>x<!><!UNSAFE_CALL!>.<!>equals(x)
     }
 }
 
