@@ -144,10 +144,10 @@ tasks {
         dependsOn(named("validatePlugins"))
     }
 
-    named<DokkaTask>("dokka") {
-        outputFormat = "markdown"
-        includes = listOf("$projectDir/Module.md")
-    }
+//    named<DokkaTask>("dokka") {
+//        outputFormat = "markdown"
+//        includes = listOf("$projectDir/Module.md")
+//    }
 }
 
 projectTest {
