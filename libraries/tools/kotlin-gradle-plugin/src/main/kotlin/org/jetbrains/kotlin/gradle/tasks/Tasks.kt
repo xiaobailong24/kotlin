@@ -57,6 +57,7 @@ import org.jetbrains.kotlin.incremental.ClasspathChanges
 import org.jetbrains.kotlin.incremental.ChangedFiles
 import org.jetbrains.kotlin.incremental.IncrementalCompilerRunner
 import org.jetbrains.kotlin.library.impl.isKotlinLibrary
+import org.jetbrains.kotlin.statistics.BuildSessionLogger
 import org.jetbrains.kotlin.statistics.metrics.BooleanMetrics
 import org.jetbrains.kotlin.utils.JsLibraryUtils
 import org.jetbrains.kotlin.utils.addToStdlib.cast
@@ -332,6 +333,12 @@ abstract class AbstractKotlinCompile<T : CommonCompilerArguments> : AbstractKotl
 
     @TaskAction
     fun execute(inputChanges: InputChanges) {
+        KotlinBuildStatsService.applyIfInitialised {
+            if (name.contains("Test"))
+                it.report(BooleanMetrics.TESTS_EXECUTED, true)
+            else
+                it.report(BooleanMetrics.COMPILATION_STARTED, true)
+        }
         val buildMetrics = metrics.get()
         buildMetrics.measure(BuildTime.GRADLE_TASK_ACTION) {
             systemPropertiesService.get().startIntercept()
