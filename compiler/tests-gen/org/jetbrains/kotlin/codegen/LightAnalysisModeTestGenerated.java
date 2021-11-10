@@ -21623,6 +21623,11 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
             runTest("compiler/testData/codegen/box/jvmName/fakeJvmNameInJava.kt");
         }
 
+        @TestMetadata("fakeOverrideOfProperty.kt")
+        public void testFakeOverrideOfProperty() throws Exception {
+            runTest("compiler/testData/codegen/box/jvmName/fakeOverrideOfProperty.kt");
+        }
+
         @TestMetadata("functionName.kt")
         public void testFunctionName() throws Exception {
             runTest("compiler/testData/codegen/box/jvmName/functionName.kt");
