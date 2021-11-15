@@ -19,12 +19,12 @@ class B() {
 class C() {
     val i : Int
     get() : Int {
-        try {
+        <!TYPE_MISMATCH!>try {
             doSmth()
         }
         finally {
             doSmth()
-        }
+        }<!>
     <!NO_RETURN_IN_FUNCTION_WITH_BLOCK_BODY!>}<!>
 }
 
