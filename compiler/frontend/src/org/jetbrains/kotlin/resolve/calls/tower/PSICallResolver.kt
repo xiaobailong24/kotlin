@@ -123,18 +123,22 @@ class PSICallResolver(
     fun <D : CallableDescriptor> runResolutionAndInferenceForGivenDescriptors(
         context: BasicCallResolutionContext,
         descriptors: Collection<CallableDescriptor>,
-        tracingStrategy: TracingStrategy
+        tracingStrategy: TracingStrategy,
+        dispatchReceiver: ReceiverValueWithSmartCastInfo?,
+        extensionReceiver: ReceiverValueWithSmartCastInfo?
     ): OverloadResolutionResults<D> {
         val isSpecialFunction = descriptors.any { it.name in SPECIAL_FUNCTION_NAMES }
         val kotlinCall = toKotlinCall(
-            context, KotlinCallKind.FUNCTION, context.call, givenCandidatesName, tracingStrategy, isSpecialFunction, null
+            context, KotlinCallKind.FUNCTION, context.call, givenCandidatesName,
+            tracingStrategy, isSpecialFunction, dispatchReceiver?.receiverValue
         )
         val scopeTower = ASTScopeTower(context)
         val resolutionCallbacks = createResolutionCallbacks(context)
         val givenCandidates = descriptors.map {
             GivenCandidate(
                 it,
-                dispatchReceiver = null,
+                dispatchReceiver = dispatchReceiver,
+                extensionReceiver = extensionReceiver,
                 knownTypeParametersResultingSubstitutor = null
             )
         }
@@ -167,6 +171,7 @@ class PSICallResolver(
             GivenCandidate(
                 it.descriptor as FunctionDescriptor,
                 it.dispatchReceiver?.let { context.transformToReceiverWithSmartCastInfo(it) },
+                null,
                 it.knownTypeParametersResultingSubstitutor
             )
         }

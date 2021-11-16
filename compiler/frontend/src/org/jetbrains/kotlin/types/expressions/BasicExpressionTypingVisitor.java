@@ -24,6 +24,8 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import kotlin.TuplesKt;
 import kotlin.collections.CollectionsKt;
+import kotlin.collections.EmptyList;
+import kotlin.collections.EmptySet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.KtNodeTypes;
@@ -67,6 +69,7 @@ import org.jetbrains.kotlin.resolve.scopes.LexicalScopeKind;
 import org.jetbrains.kotlin.resolve.scopes.LexicalWritableScope;
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExpressionReceiver;
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue;
+import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValueWithSmartCastInfo;
 import org.jetbrains.kotlin.resolve.scopes.utils.ScopeUtilsKt;
 import org.jetbrains.kotlin.types.*;
 import org.jetbrains.kotlin.types.checker.KotlinTypeChecker;
@@ -75,10 +78,12 @@ import org.jetbrains.kotlin.types.expressions.typeInfoFactory.TypeInfoFactoryKt;
 import org.jetbrains.kotlin.types.expressions.unqualifiedSuper.UnqualifiedSuperKt;
 import org.jetbrains.kotlin.util.OperatorNameConventions;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.emptySet;
 import static org.jetbrains.kotlin.diagnostics.Errors.*;
 import static org.jetbrains.kotlin.lexer.KtTokens.*;
 import static org.jetbrains.kotlin.resolve.BindingContext.*;
@@ -613,7 +618,7 @@ public class BasicExpressionTypingVisitor extends ExpressionTypingVisitor {
         BindingTrace trace = context.trace;
         Call call = CallMaker.makeCall(expression, null, null, expression, Collections.emptyList());
         OverloadResolutionResults<ReceiverParameterDescriptor> results =
-                components.callResolver.resolveThisOrSuperCallWithGivenDescriptor(context, call, descriptor);
+                components.callResolver.resolveThisOrSuperCallWithGivenDescriptor(context, call, descriptor, null, null);
 
         ResolvedCall<?> resolvedCall = results.getResultingCall();
 
@@ -986,19 +991,43 @@ public class BasicExpressionTypingVisitor extends ExpressionTypingVisitor {
             @NotNull ResolvedCall<?> propertyResolvedCall,
             @NotNull KtExpression expression
     ) {
-        Call call = propertyResolvedCall.getCall();
+        Call propertyCall = propertyResolvedCall.getCall();
+        Call call = CallMaker.makeCall(expression, null, propertyCall.getCallOperationNode(), expression, propertyCall.getValueArguments());
 
-        OldResolutionCandidate<PropertySetterDescriptor> resolutionCandidate = OldResolutionCandidate.create(
-                call, descriptor, propertyResolvedCall.getDispatchReceiver(), propertyResolvedCall.getExplicitReceiverKind(), null
+        ReceiverValue receiverValue = descriptor.getDispatchReceiverParameter() != null ? descriptor.getDispatchReceiverParameter().getValue() : null;
+        ReceiverValue exreceiverValue = descriptor.getExtensionReceiverParameter() != null ? descriptor.getExtensionReceiverParameter().getValue() : null;
+
+        TemporaryBindingTrace temp = TemporaryBindingTrace.create(context.trace, "Trace for fake property setter resolved call");
+
+        OverloadResolutionResults<ReceiverParameterDescriptor> results = components.callResolver.resolveThisOrSuperCallWithGivenDescriptor(
+                context,
+                call,
+                descriptor,
+                receiverValue != null
+                    ? new ReceiverValueWithSmartCastInfo(receiverValue, emptySet(), true, receiverValue.getType())
+                    : null,
+                exreceiverValue != null
+                    ? new ReceiverValueWithSmartCastInfo(exreceiverValue, emptySet(), true, exreceiverValue.getType())
+                    : null
         );
 
-        ResolvedCallImpl<PropertySetterDescriptor> resolvedCall = ResolvedCallImpl.create(
-                resolutionCandidate,
-                TemporaryBindingTrace.create(context.trace, "Trace for fake property setter resolved call"),
-                TracingStrategy.EMPTY,
-                new DataFlowInfoForArgumentsImpl(propertyResolvedCall.getDataFlowInfoForArguments().getResultInfo(), call)
-        );
-        resolvedCall.markCallAsCompleted();
+        //temp.commit();
+        if (results.isNothing())
+            return;
+
+        ResolvedCall<?> resolvedCall = results.getResultingCall();
+        //
+        //OldResolutionCandidate<PropertySetterDescriptor> resolutionCandidate = OldResolutionCandidate.create(
+        //        call, descriptor, propertyResolvedCall.getDispatchReceiver(), propertyResolvedCall.getExplicitReceiverKind(), null
+        //);
+        //
+        //ResolvedCallImpl<PropertySetterDescriptor> resolvedCall = ResolvedCallImpl.create(
+        //        resolutionCandidate,
+        //        TemporaryBindingTrace.create(context.trace, "Trace for fake property setter resolved call"),
+        //        TracingStrategy.EMPTY,
+        //        new DataFlowInfoForArgumentsImpl(propertyResolvedCall.getDataFlowInfoForArguments().getResultInfo(), call)
+        //);
+        //resolvedCall.markCallAsCompleted();
 
         if (context.trace.wantsDiagnostics()) {
             CallCheckerContext callCheckerContext =

@@ -51,5 +51,6 @@ class KotlinCallComponents(
 class GivenCandidate(
     val descriptor: CallableDescriptor,
     val dispatchReceiver: ReceiverValueWithSmartCastInfo?,
+    val extensionReceiver: ReceiverValueWithSmartCastInfo?,
     val knownTypeParametersResultingSubstitutor: TypeSubstitutor?
 )

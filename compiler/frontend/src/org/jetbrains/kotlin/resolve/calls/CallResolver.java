@@ -43,6 +43,7 @@ import org.jetbrains.kotlin.resolve.lazy.ForceResolveUtil;
 import org.jetbrains.kotlin.resolve.scopes.LexicalScope;
 import org.jetbrains.kotlin.resolve.scopes.SyntheticScopes;
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExpressionReceiver;
+import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValueWithSmartCastInfo;
 import org.jetbrains.kotlin.types.KotlinType;
 import org.jetbrains.kotlin.types.KotlinTypeKt;
 import org.jetbrains.kotlin.types.expressions.ExpressionTypingContext;
@@ -294,14 +295,18 @@ public class CallResolver {
     public OverloadResolutionResults<ReceiverParameterDescriptor> resolveThisOrSuperCallWithGivenDescriptor(
             @NotNull ExpressionTypingContext context,
             @NotNull Call call,
-            @NotNull ReceiverParameterDescriptor descriptor
+            @NotNull CallableDescriptor descriptor,
+            @Nullable ReceiverValueWithSmartCastInfo receiver,
+            @Nullable ReceiverValueWithSmartCastInfo exreceiver
     ) {
         BasicCallResolutionContext callResolutionContext = BasicCallResolutionContext.create(context, call, CheckArgumentTypesMode.CHECK_VALUE_ARGUMENTS);
 
         return PSICallResolver.runResolutionAndInferenceForGivenDescriptors(
                 callResolutionContext,
                 Collections.singletonList(descriptor),
-                TracingStrategy.EMPTY
+                TracingStrategy.EMPTY,
+                receiver,
+                exreceiver
         );
     }
 

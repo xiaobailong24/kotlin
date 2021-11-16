@@ -76,8 +76,11 @@ class SimpleCandidateFactory(
         val dispatchArgumentReceiver = givenCandidate.dispatchReceiver?.let {
             ReceiverExpressionKotlinCallArgument(it, isSafeCall)
         }
+        val extensionArgumentReceiver = givenCandidate.extensionReceiver?.let {
+            ReceiverExpressionKotlinCallArgument(it, isSafeCall)
+        }
         return createCandidate(
-            givenCandidate.descriptor, explicitReceiverKind, dispatchArgumentReceiver, null,
+            givenCandidate.descriptor, explicitReceiverKind, dispatchArgumentReceiver, extensionArgumentReceiver,
             listOf(), givenCandidate.knownTypeParametersResultingSubstitutor
         )
     }
