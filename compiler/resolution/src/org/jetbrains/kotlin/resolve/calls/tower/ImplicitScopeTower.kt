@@ -38,6 +38,8 @@ interface ImplicitScopeTower {
 
     fun getImplicitReceiver(scope: LexicalScope): ReceiverValueWithSmartCastInfo?
 
+    fun getNameForGivenImportAlias(name: Name): Name?
+
     val dynamicScope: MemberScope
 
     val syntheticScopes: SyntheticScopes
