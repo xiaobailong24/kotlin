@@ -156,7 +156,8 @@ class Fir2IrLazyClass(
             when (declaration) {
                 is FirSimpleFunction -> {
                     if (fir.classKind == ClassKind.ENUM_CLASS && declaration.isStatic &&
-                        (declaration.source == null || declaration.source?.kind == KtFakeSourceElementKind.EnumGeneratedDeclaration)
+                        (declaration.source == null || declaration.source?.kind == KtFakeSourceElementKind.EnumGeneratedDeclaration) &&
+                        declaration.returnTypeRef is FirResolvedTypeRef
                     ) {
                         // Handle generated methods for enum classes (values(), valueOf(String)).
                         // TODO we also come here for all deserialized static enum members (with declaration.source == null).
