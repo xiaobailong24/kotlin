@@ -13,7 +13,7 @@ fun test() {
 }
 
 fun baz(arg: Array<Int> = []) {
-    <!NEW_INFERENCE_NO_INFORMATION_FOR_PARAMETER!>if (true) ["yes"] else {["no"]}<!>
+    if (true) ["yes"] else {["no"]}
 }
 
 class Foo(

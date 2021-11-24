@@ -9,46 +9,46 @@ fun f1(s: Int?): Int {
 }
 
 fun f2(s: Int?): Int {
-    return <!TYPE_MISMATCH!>when (s) {
+    return when (s) {
         !is Int -> s
         else -> s
-    }<!>
+    }
 }
 
 fun f3(s: Int?): Int {
-    return <!TYPE_MISMATCH!>when (s) {
+    return when (s) {
         is Int -> s
         else -> s
-    }<!>
+    }
 }
 
 fun f4(s: Int?): Int {
-    return <!TYPE_MISMATCH!>when {
+    return when {
         s == 4 -> s
         s == null -> s
         else -> s
-    }<!>
+    }
 }
 
 fun f5(s: Int?): Int {
-    return <!TYPE_MISMATCH!>when (s) {
+    return when (s) {
         s -> s
         s!! -> s
         s -> s
         else -> 0
-    }<!>
+    }
 }
 
 fun f6(s: Int?): Int {
-    return <!TYPE_MISMATCH!>when {
+    return when {
         s is Int -> s
         else -> s
-    }<!>
+    }
 }
 
 fun f7(s: Int?): Int {
-    return <!TYPE_MISMATCH!>when {
+    return when {
         s !is Int -> s
         else -> s
-    }<!>
+    }
 }
