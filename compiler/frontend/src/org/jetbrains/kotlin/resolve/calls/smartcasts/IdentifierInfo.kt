@@ -258,10 +258,6 @@ private fun getIdForSimpleNameExpression(
 private fun getIdForImplicitReceiver(receiverValue: ReceiverValue?, expression: KtExpression?) =
     when (receiverValue) {
         is ImplicitReceiver -> getIdForThisReceiver(receiverValue.declarationDescriptor)
-
-        is TransientReceiver ->
-            throw AssertionError("Transient receiver is implicit for an explicit expression: $expression. Receiver: $receiverValue")
-
         else -> null
     }
 
