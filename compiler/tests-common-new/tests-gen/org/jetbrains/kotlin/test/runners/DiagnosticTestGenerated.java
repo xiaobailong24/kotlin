@@ -4552,15 +4552,15 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
-            @TestMetadata("kt49276Error.kt")
-            public void testKt49276Error() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/checkArguments/kt49276Error.kt");
+            @TestMetadata("kt49276Disabled.kt")
+            public void testKt49276Disabled() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/checkArguments/kt49276Disabled.kt");
             }
 
             @Test
-            @TestMetadata("kt49276_18.kt")
-            public void testKt49276_18() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/checkArguments/kt49276_18.kt");
+            @TestMetadata("kt49276Error.kt")
+            public void testKt49276Error() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/checkArguments/kt49276Error.kt");
             }
 
             @Test

@@ -1,6 +1,5 @@
-// FIR_IDENTICAL
-// !API_VERSION: 1.8
 // WITH_RUNTIME
+// !LANGUAGE: +ProgressionsChangingResolve
 
 fun <E> SmartList(x: E) {}
 fun <E> SmartList(x: Collection<E>) {}

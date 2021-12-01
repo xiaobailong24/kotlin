@@ -241,12 +241,13 @@ enum class LanguageFeature(
     PartiallySpecifiedTypeArguments(KOTLIN_1_7),
     EliminateAmbiguitiesWithExternalTypeParameters(KOTLIN_1_7),
     EliminateAmbiguitiesOnInheritedSamInterfaces(KOTLIN_1_7),
+    ProgressionsChangingResolve(KOTLIN_1_7), // KT-49276
 
     // 1.8
 
     ProhibitConfusingSyntaxInWhenBranches(KOTLIN_1_8, kind = BUG_FIX), // KT-48385
     UseConsistentRulesForPrivateConstructorsOfSealedClasses(sinceVersion = KOTLIN_1_8, kind = BUG_FIX), // KT-44866
-    ProgressionsChangingResolve(KOTLIN_1_7), // KT-49276, NB: this behaviour is disabled explicitly since 1.8
+    DisableCheckingChangedProgressionsResolve(KOTLIN_1_8), // KT-49276
 
     // Temporarily disabled, see KT-27084/KT-22379
     SoundSmartcastFromLoopConditionForLoopAssignedVariables(sinceVersion = null, kind = BUG_FIX),

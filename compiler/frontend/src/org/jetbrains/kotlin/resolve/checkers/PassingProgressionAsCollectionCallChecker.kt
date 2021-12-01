@@ -6,7 +6,7 @@
 package org.jetbrains.kotlin.resolve.checkers
 
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
-import org.jetbrains.kotlin.config.toKotlinVersion
+import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.descriptors.annotations.Annotations
 import org.jetbrains.kotlin.diagnostics.Errors.PROGRESSIONS_CHANGING_RESOLVE
 import org.jetbrains.kotlin.resolve.BindingTrace
@@ -50,10 +50,10 @@ class PassingProgressionAsCollectionCallChecker(private val kotlinCallResolver: 
         expectedType: UnwrappedType?,
         context: BasicCallResolutionContext,
     ) {
-        // The stdlib migration is going to be finished in 1.8, checks aren't needed there
-        val isLanguageVersionMoreThanOrEqual18 = context.languageVersionSettings.languageVersion.toKotlinVersion().isAtLeast(1, 8)
+        // The stdlib migration is going to be finished in 1.8, checks aren't needed there (DisableCheckingChangedProgressionsResolve has 1.8 since version)
+        val isCheckingDisabled = context.languageVersionSettings.supportsFeature(LanguageFeature.DisableCheckingChangedProgressionsResolve)
 
-        if (isLanguageVersionMoreThanOrEqual18 || resolvedCall !is NewResolvedCallImpl<*>) return
+        if (isCheckingDisabled || resolvedCall !is NewResolvedCallImpl<*>) return
 
         val kotlinCall = resolvedCall.psiKotlinCall
         val valueArguments = kotlinCall.argumentsInParenthesis.takeIf { it.isNotEmpty() } ?: return

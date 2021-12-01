@@ -1,4 +1,3 @@
-// FIR_IDENTICAL
 // WITH_RUNTIME
 
 fun <E> SmartList(x: E) {}
