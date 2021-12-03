@@ -18,6 +18,9 @@ fun append3(x: In<Collection<*>>) {}
 fun <E> append4(x: E) {}
 fun <E: Collection<*>> append4(x: E) {}
 
+fun <T> takes(range: T) {}
+fun <T> takes(range: T) where T : Collection<*>, T: ClosedRange<*> {}
+
 fun main() {
     SmartList(<!PROGRESSIONS_CHANGING_RESOLVE_WARNING("fun <E> SmartList(x: Collection<E>): Unit")!>1..2<!>) // warning
     SmartList<IntRange>(1..10) // no warning
@@ -33,4 +36,8 @@ fun main() {
     append3(In(1..10))    // no warning
 
     append4(<!PROGRESSIONS_CHANGING_RESOLVE_WARNING("fun <E : Collection<*>> append4(x: E): Unit")!>1..10<!>)    // warning
+
+    append4<IntRange>(1..10)    // warning
+
+    takes(<!PROGRESSIONS_CHANGING_RESOLVE_WARNING("fun <T : Collection<*>> takes(range: T): Unit where T : ClosedRange<*>")!>1..10<!>)    // warning
 }

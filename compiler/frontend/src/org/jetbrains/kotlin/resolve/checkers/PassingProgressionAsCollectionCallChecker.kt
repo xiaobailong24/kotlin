@@ -25,6 +25,7 @@ import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValueWithSmartCastI
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.checker.ClassicTypeCheckerState
 import org.jetbrains.kotlin.types.checker.ClassicTypeCheckerStateInternals
+import org.jetbrains.kotlin.types.checker.intersectTypes
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 
 /*
@@ -102,7 +103,9 @@ class PassingProgressionAsCollectionCallChecker(private val kotlinCallResolver: 
                     } else type
                 } ?: continue
 
-            if (alternativeParameterType.constructor.declarationDescriptor != builtIns.collection) continue
+            val cons = alternativeParameterType.constructor
+
+            if (cons.declarationDescriptor != builtIns.collection && (cons !is IntersectionTypeConstructor || cons.supertypes.none { it.constructor.declarationDescriptor == builtIns.collection })) continue
 
             val argumentExpression = argument.psiExpression ?: continue
             val initialArgumentType = resolvedCall.candidateDescriptor.valueParameters.getOrNull(i)?.type ?: continue
@@ -153,12 +156,18 @@ class PassingProgressionAsCollectionCallChecker(private val kotlinCallResolver: 
         trace: BindingTrace,
         builtIns: KotlinBuiltIns
     ): List<KotlinCallArgument> = valueArguments.mapIndexed { i, argument ->
+        if (argument !is ExpressionKotlinCallArgumentImpl) return@mapIndexed argument
         val progressionOrRangeElementType = progressionOrRangeArgumentTypes[i] ?: return@mapIndexed argument
         val psiExpression = argument.psiExpression ?: return@mapIndexed argument
-        val newType = KotlinTypeFactory.simpleNotNullType(
-            Annotations.EMPTY,
-            builtIns.collection,
-            listOf(TypeProjectionImpl(progressionOrRangeElementType))
+        val newType = intersectTypes(
+            listOf(
+                KotlinTypeFactory.simpleNotNullType(
+                    Annotations.EMPTY,
+                    builtIns.collection,
+                    listOf(TypeProjectionImpl(progressionOrRangeElementType))
+                ),
+                argument.receiver.receiverValue.type.unwrap()
+            )
         )
 
         ExpressionKotlinCallArgumentImpl(
