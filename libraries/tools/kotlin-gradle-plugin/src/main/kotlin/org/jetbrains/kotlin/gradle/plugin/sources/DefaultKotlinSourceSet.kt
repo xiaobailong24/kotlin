@@ -13,9 +13,7 @@ import org.gradle.util.ConfigureUtil
 import org.jetbrains.kotlin.build.DEFAULT_KOTLIN_SOURCE_FILES_EXTENSIONS
 import org.jetbrains.kotlin.commonizer.util.transitiveClosure
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
+import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.utils.*
 import java.io.File
@@ -204,6 +202,18 @@ class DefaultKotlinSourceSet(
     }
 
     //endregion
+
+    @Suppress("unused") // Used in IDE import
+    fun isDefaultSourceSetInJvmOrJsCompilation(): Boolean {
+        val compilations = CompilationSourceSetUtil.compilationsBySourceSets(project)[this] ?: return false
+        return compilations
+            .filter {
+                it.target.platformType == KotlinPlatformType.jvm ||
+                        it.target.platformType == KotlinPlatformType.js ||
+                        it.target.platformType == KotlinPlatformType.native
+            }
+            .any { it.defaultSourceSet === this }
+    }
 }
 
 
