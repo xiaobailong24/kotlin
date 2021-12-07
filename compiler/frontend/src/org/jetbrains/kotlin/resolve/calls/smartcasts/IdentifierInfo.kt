@@ -262,9 +262,11 @@ private fun getIdForSimpleNameExpression(
 }
 
 private fun getIdForImplicitReceiver(receiverValue: ReceiverValue?): IdentifierInfo? =
-    if (receiverValue is ContextReceiver -> IdentifierInfo.Receiver(receiverValue)
-
-        is ImplicitReceiver) getIdForThisReceiver(receiverValue.declarationDescriptor) else null
+    when (receiverValue) {
+        is ContextReceiver -> IdentifierInfo.Receiver(receiverValue)
+        is ImplicitReceiver -> getIdForThisReceiver(receiverValue.declarationDescriptor)
+        else -> null
+    }
 
 private fun getIdForThisReceiver(descriptorOfThisReceiver: DeclarationDescriptor?) = when (descriptorOfThisReceiver) {
     is CallableDescriptor -> {
