@@ -148,8 +148,8 @@ public class JavaPropertyDescriptor extends PropertyDescriptorImpl implements Ja
 
         enhanced.initialize(newGetter, newSetter, getBackingField(), getDelegateField());
         enhanced.setSetterProjectedOut(isSetterProjectedOut());
-        if (compileTimeInitializer != null) {
-            enhanced.setCompileTimeInitializer(compileTimeInitializer);
+        if (compileTimeInitializerFactory != null) {
+            enhanced.setCompileTimeInitializer(compileTimeInitializerFactory);
         }
 
         enhanced.setOverriddenDescriptors(getOverriddenDescriptors());

@@ -31,6 +31,8 @@ public interface VariableDescriptor extends ValueDescriptor {
     @Nullable
     ConstantValue<?> getCompileTimeInitializer();
 
+    void cleanCompileTimeInitializerCache();
+
     /**
      * @return true if iff original declaration has appropriate flags and type, e.g. `const` modifier in Kotlin.
      * It completely does not means that if isConst then `getCompileTimeInitializer` is not null

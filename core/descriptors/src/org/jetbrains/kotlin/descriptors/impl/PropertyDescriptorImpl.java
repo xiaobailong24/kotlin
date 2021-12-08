@@ -514,8 +514,8 @@ public class PropertyDescriptorImpl extends VariableDescriptorWithInitializerImp
             substitutedDescriptor.setOverriddenDescriptors(overridden);
         }
 
-        if (isConst() && compileTimeInitializer != null) {
-            substitutedDescriptor.setCompileTimeInitializer(compileTimeInitializer);
+        if (isConst() && compileTimeInitializerFactory != null) {
+            substitutedDescriptor.setCompileTimeInitializer(compileTimeInitializerFactory);
         }
 
         return substitutedDescriptor;
