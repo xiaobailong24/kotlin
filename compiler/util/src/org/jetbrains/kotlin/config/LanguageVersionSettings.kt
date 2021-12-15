@@ -298,6 +298,7 @@ enum class LanguageFeature(
     GenericInlineClassParameter(sinceVersion = null, defaultState = State.ENABLED_WITH_WARNING, kind = UNSTABLE_FEATURE),
     ValueClasses(sinceVersion = null, defaultState = State.DISABLED, kind = UNSTABLE_FEATURE),
     JavaSamConversionEqualsHashCode(sinceVersion = null, defaultState = State.DISABLED, kind = UNSTABLE_FEATURE),
+    SealedInlineClasses(sinceVersion = null, defaultState = State.DISABLED, kind = UNSTABLE_FEATURE),
     ;
 
     val presentableName: String
