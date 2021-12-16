@@ -8,15 +8,18 @@ package org.jetbrains.kotlin.gradle.plugin.sources
 import groovy.lang.Closure
 import org.gradle.api.InvalidUserCodeException
 import org.gradle.api.Project
+import org.gradle.api.attributes.Attribute
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.util.ConfigureUtil
 import org.jetbrains.kotlin.build.DEFAULT_KOTLIN_SOURCE_FILES_EXTENSIONS
 import org.jetbrains.kotlin.commonizer.util.transitiveClosure
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
+import org.jetbrains.kotlin.gradle.targets.metadata.isKotlinGranularMetadataEnabled
 import org.jetbrains.kotlin.gradle.utils.*
 import java.io.File
 import java.util.*
@@ -144,7 +147,15 @@ class DefaultKotlinSourceSet(
         /** If empty, then this source set does not see any 'new' source sets of the dependency, compared to its dependsOn parents, but it
          * still does see all what the dependsOn parents see. */
         val useFilesForSourceSets: Map<String, Iterable<File>>
-    )
+    ) {
+        companion object {
+            /**
+             * Such MetadataDependencyTransformations are essentially dropped by IDE
+             */
+            fun excludedTransformation(group: String?, name: String, projectPath: String?): MetadataDependencyTransformation =
+                MetadataDependencyTransformation(group, name, projectPath, null, emptySet(), emptyMap())
+        }
+    }
 
     @Suppress("unused") // Used in IDE import
     fun getDependenciesTransformation(configurationName: String): Iterable<MetadataDependencyTransformation> {
@@ -177,10 +188,15 @@ class DefaultKotlinSourceSet(
             val (group, name) = groupAndName
             val projectPath = resolution.projectDependency?.path
             when (resolution) {
-                is MetadataDependencyResolution.KeepOriginalDependency -> null
+                is MetadataDependencyResolution.KeepOriginalDependency -> {
+                    if (isIncorrectDependencyForHmpp(resolution))
+                        MetadataDependencyTransformation.excludedTransformation(group, name, projectPath)
+                    else
+                        null
+                }
 
                 is MetadataDependencyResolution.ExcludeAsUnrequested ->
-                    MetadataDependencyTransformation(group, name, projectPath, null, emptySet(), emptyMap())
+                    MetadataDependencyTransformation.excludedTransformation(group, name, projectPath)
 
                 is MetadataDependencyResolution.ChooseVisibleSourceSets -> {
                     val filesBySourceSet = resolution.visibleSourceSetNamesExcludingDependsOn.associateWith { visibleSourceSetName ->
@@ -204,6 +220,23 @@ class DefaultKotlinSourceSet(
     }
 
     //endregion
+
+    private fun isIncorrectDependencyForHmpp(resolution: MetadataDependencyResolution): Boolean {
+        if (!project.isKotlinGranularMetadataEnabled) return false
+
+        // looking for something like "jvm (main) compilation" for "jvmMain"
+        val ownedCompilation = CompilationSourceSetUtil.compilationsBySourceSets(project)[this].orEmpty()
+            .find { it.defaultSourceSet == this } ?: return false
+
+        // can't use KotlinPlatformType.attribute, because type is String, not KotlinPlatformType
+        val serializedKotlinPlatformTypeAttribute = Attribute.of(KotlinPlatformType.attribute.name, String::class.java)
+        val dependencyKotlinPlatformType: String =
+            resolution.dependency.variants.singleOrNull()?.attributes?.getAttribute(serializedKotlinPlatformTypeAttribute) ?: return false
+
+        // incorrect dependencies == precisely those, which are used in platform compilations AND they are common
+        return ownedCompilation.platformType != KotlinPlatformType.common && dependencyKotlinPlatformType == KotlinPlatformType.common.name
+    }
+
 }
 
 
