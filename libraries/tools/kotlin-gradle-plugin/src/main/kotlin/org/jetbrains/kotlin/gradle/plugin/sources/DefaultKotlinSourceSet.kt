@@ -152,7 +152,7 @@ class DefaultKotlinSourceSet(
             /**
              * Such MetadataDependencyTransformations are essentially dropped by IDE
              */
-            fun excludedTransformation(group: String?, name: String, projectPath: String?): MetadataDependencyTransformation =
+            internal fun excludedTransformation(group: String?, name: String, projectPath: String?): MetadataDependencyTransformation =
                 MetadataDependencyTransformation(group, name, projectPath, null, emptySet(), emptyMap())
         }
     }
@@ -219,13 +219,12 @@ class DefaultKotlinSourceSet(
         }
     }
 
-    //endregion
-
     private fun isIncorrectDependencyForHmpp(resolution: MetadataDependencyResolution): Boolean {
         if (!project.isKotlinGranularMetadataEnabled) return false
 
         // looking for something like "jvm (main) compilation" for "jvmMain"
         val ownedCompilation = CompilationSourceSetUtil.compilationsBySourceSets(project)[this].orEmpty()
+            .filter { it !is KotlinMetadataCompilation<*> }
             .find { it.defaultSourceSet == this } ?: return false
 
         // can't use KotlinPlatformType.attribute, because type is String, not KotlinPlatformType
@@ -237,6 +236,7 @@ class DefaultKotlinSourceSet(
         return ownedCompilation.platformType != KotlinPlatformType.common && dependencyKotlinPlatformType == KotlinPlatformType.common.name
     }
 
+    //endregion
 }
 
 
