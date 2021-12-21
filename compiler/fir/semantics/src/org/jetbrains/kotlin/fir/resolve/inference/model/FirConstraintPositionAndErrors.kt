@@ -15,7 +15,7 @@ class ConeDeclaredUpperBoundConstraintPosition : DeclaredUpperBoundConstraintPos
 
 class ConeFixVariableConstraintPosition(variable: TypeVariableMarker) : FixVariableConstraintPosition<Nothing?>(variable, null)
 
-class ConeArgumentConstraintPosition(argument: FirElement) : ArgumentConstraintPosition<FirElement>(argument)
+class ConeArgumentConstraintPosition(argument: FirElement) : ValueArgumentConstraintPosition<FirElement>(argument)
 
 class ConeExpectedTypeConstraintPosition(
     val expectedTypeMismatchIsReportedInChecker: Boolean

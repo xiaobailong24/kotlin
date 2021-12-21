@@ -37,16 +37,18 @@ abstract class DeclaredUpperBoundConstraintPosition<T>(val typeParameter: T) : C
     override fun toString(): String = "DeclaredUpperBound $typeParameter"
 }
 
-abstract class ArgumentConstraintPosition<out T>(val argument: T) : ConstraintPosition(), OnlyInputTypeConstraintPosition {
+abstract class ArgumentBasedConstraintPosition<out T>(val argument: T) : ConstraintPosition(), OnlyInputTypeConstraintPosition
+
+abstract class ValueArgumentConstraintPosition<out T>(argument: T) : ArgumentBasedConstraintPosition<T>(argument) {
     override fun toString(): String = "Argument $argument"
+}
+
+abstract class ReceiverConstraintPosition<T>(argument: T) : ArgumentBasedConstraintPosition<T>(argument) {
+    override fun toString(): String = "Receiver $argument"
 }
 
 abstract class CallableReferenceConstraintPosition<out T>(val call: T) : ConstraintPosition(), OnlyInputTypeConstraintPosition {
     override fun toString(): String = "Callable reference $call"
-}
-
-abstract class ReceiverConstraintPosition<T>(val argument: T) : ConstraintPosition(), OnlyInputTypeConstraintPosition {
-    override fun toString(): String = "Receiver $argument"
 }
 
 abstract class FixVariableConstraintPosition<T>(val variable: TypeVariableMarker, val resolvedAtom: T) : ConstraintPosition() {

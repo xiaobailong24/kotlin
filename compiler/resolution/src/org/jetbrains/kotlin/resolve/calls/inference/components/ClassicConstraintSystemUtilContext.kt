@@ -49,7 +49,7 @@ class ClassicConstraintSystemUtilContext(
         return kotlinTypeRefiner.refineType(this)
     }
 
-    override fun createArgumentConstraintPosition(argument: PostponedAtomWithRevisableExpectedType): ArgumentConstraintPosition<*> {
+    override fun createArgumentConstraintPosition(argument: PostponedAtomWithRevisableExpectedType): ValueArgumentConstraintPosition<*> {
         require(argument is ResolvedAtom)
         return ArgumentConstraintPositionImpl(argument.atom as KotlinCallArgument)
     }
