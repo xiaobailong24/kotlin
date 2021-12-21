@@ -51,6 +51,7 @@ import org.jetbrains.kotlin.resolve.calls.smartcasts.DataFlowInfo;
 import org.jetbrains.kotlin.resolve.calls.tasks.ExplicitReceiverKind;
 import org.jetbrains.kotlin.resolve.calls.tasks.OldResolutionCandidate;
 import org.jetbrains.kotlin.resolve.calls.tasks.TracingStrategy;
+import org.jetbrains.kotlin.resolve.calls.util.BuilderLambdaLabelingInfo;
 import org.jetbrains.kotlin.resolve.calls.util.CallMaker;
 import org.jetbrains.kotlin.resolve.descriptorUtil.AnnotationsForResolveUtilsKt;
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue;
@@ -634,7 +635,26 @@ public class ControlStructureTypingUtils {
 
         @Override
         public <D extends CallableDescriptor> void ambiguity(
+                @NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> resolvedCalls
+        ) {
+            logError();
+        }
+
+        @Override
+        public <D extends CallableDescriptor> void ambiguityBecauseOfStubTypes(
                 @NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> descriptors
+        ) {
+            logError();
+        }
+
+        @Override
+        public void stubTypeCausesAmbiguity(
+                @NotNull BindingTrace trace,
+                @NotNull KtElement psiArgument,
+                @NotNull KotlinType argumentType,
+                @NotNull Collection<? extends KotlinType> types,
+                @NotNull BuilderLambdaLabelingInfo lambdaToLabel,
+                Boolean isReceiver
         ) {
             logError();
         }

@@ -17,12 +17,16 @@
 package org.jetbrains.kotlin.resolve.calls.tasks;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.kotlin.descriptors.*;
 import org.jetbrains.kotlin.psi.Call;
+import org.jetbrains.kotlin.psi.KtElement;
+import org.jetbrains.kotlin.psi.KtFunctionLiteral;
 import org.jetbrains.kotlin.resolve.BindingTrace;
 import org.jetbrains.kotlin.resolve.calls.context.ResolutionContext;
 import org.jetbrains.kotlin.resolve.calls.inference.InferenceErrorData;
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
+import org.jetbrains.kotlin.resolve.calls.util.BuilderLambdaLabelingInfo;
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue;
 import org.jetbrains.kotlin.types.KotlinType;
 
@@ -70,7 +74,20 @@ public interface TracingStrategy {
         public void wrongNumberOfTypeArguments(@NotNull BindingTrace trace, int expectedTypeArgumentCount, @NotNull CallableDescriptor descriptor) {}
 
         @Override
-        public <D extends CallableDescriptor> void ambiguity(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> descriptors) {}
+        public <D extends CallableDescriptor> void ambiguity(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> resolvedCalls) {}
+
+        @Override
+        public <D extends CallableDescriptor> void ambiguityBecauseOfStubTypes(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> descriptors) {}
+
+        @Override
+        public void stubTypeCausesAmbiguity(
+                @NotNull BindingTrace trace,
+                @NotNull KtElement psiArgument,
+                @NotNull KotlinType argumentType,
+                @NotNull Collection<? extends KotlinType> types,
+                @NotNull BuilderLambdaLabelingInfo lambdaToLabel,
+                Boolean isReceiver
+        ) {}
 
         @Override
         public <D extends CallableDescriptor> void noneApplicable(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> descriptors) {}
@@ -135,7 +152,18 @@ public interface TracingStrategy {
             @NotNull CallableDescriptor descriptor
     );
 
-    <D extends CallableDescriptor> void ambiguity(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> descriptors);
+    <D extends CallableDescriptor> void ambiguity(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> resolvedCalls);
+
+    <D extends CallableDescriptor> void ambiguityBecauseOfStubTypes(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> resolvedCalls);
+
+    void stubTypeCausesAmbiguity(
+            @NotNull BindingTrace trace,
+            @NotNull KtElement psiArgument,
+            @NotNull KotlinType argumentType,
+            @NotNull Collection<? extends KotlinType> types,
+            @NotNull BuilderLambdaLabelingInfo lambdaToLabel,
+            Boolean isReceiver
+    );
 
     <D extends CallableDescriptor> void noneApplicable(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> descriptors);
 

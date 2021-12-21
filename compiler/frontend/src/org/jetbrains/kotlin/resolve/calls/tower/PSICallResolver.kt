@@ -316,7 +316,13 @@ class PSICallResolver(
                 if (resolvedCalls.allIncomplete) {
                     tracingStrategy.cannotCompleteResolve(trace, resolvedCalls)
                 } else {
-                    tracingStrategy.ambiguity(trace, resolvedCalls)
+                    val wasStubTypeRelatedAmbiguityReported = reportStubTypeRelatedResolutionAmbiguityIfNeeded(
+                        diagnostic.candidates, resolvedCalls, tracingStrategy, trace, context.scope
+                    )
+
+                    if (!wasStubTypeRelatedAmbiguityReported) {
+                        tracingStrategy.ambiguity(trace, resolvedCalls)
+                    }
                 }
             }
         }

@@ -22,14 +22,14 @@ import org.jetbrains.kotlin.diagnostics.Errors.UNRESOLVED_REFERENCE
 import org.jetbrains.kotlin.diagnostics.Errors.UNRESOLVED_REFERENCE_WRONG_RECEIVER
 import org.jetbrains.kotlin.psi.Call
 import org.jetbrains.kotlin.psi.KtConstructorDelegationCall
-import org.jetbrains.kotlin.resolve.BindingContext.CALL
-import org.jetbrains.kotlin.resolve.BindingContext.REFERENCE_TARGET
-import org.jetbrains.kotlin.resolve.BindingContext.RESOLVED_CALL
+import org.jetbrains.kotlin.psi.KtElement
+import org.jetbrains.kotlin.resolve.BindingContext.*
 import org.jetbrains.kotlin.resolve.BindingTrace
-import org.jetbrains.kotlin.resolve.calls.util.reportOnElement
 import org.jetbrains.kotlin.resolve.calls.context.ResolutionContext
 import org.jetbrains.kotlin.resolve.calls.inference.InferenceErrorData
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.util.BuilderLambdaLabelingInfo
+import org.jetbrains.kotlin.resolve.calls.util.reportOnElement
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue
 import org.jetbrains.kotlin.types.ErrorUtils
 import org.jetbrains.kotlin.types.KotlinType
@@ -69,7 +69,25 @@ class TracingStrategyForImplicitConstructorDelegationCall(
         reportError(trace)
     }
 
-    override fun <D : CallableDescriptor?> ambiguity(trace: BindingTrace, descriptors: MutableCollection<out ResolvedCall<D>>) {
+    override fun <D : CallableDescriptor?> ambiguity(trace: BindingTrace, resolvedCalls: MutableCollection<out ResolvedCall<D>>) {
+        reportError(trace)
+    }
+
+    override fun <D : CallableDescriptor?> ambiguityBecauseOfStubTypes(
+        trace: BindingTrace,
+        descriptors: MutableCollection<out ResolvedCall<D>?>
+    ) {
+        reportError(trace)
+    }
+
+    override fun stubTypeCausesAmbiguity(
+        trace: BindingTrace,
+        psiArgument: KtElement,
+        argumentType: KotlinType,
+        types: Collection<KotlinType?>,
+        lambdaToLabel: BuilderLambdaLabelingInfo,
+        isReceiver: Boolean
+    ) {
         reportError(trace)
     }
 

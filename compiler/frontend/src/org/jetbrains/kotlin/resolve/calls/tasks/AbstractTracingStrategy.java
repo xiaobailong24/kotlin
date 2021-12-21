@@ -30,6 +30,7 @@ import org.jetbrains.kotlin.name.Name;
 import org.jetbrains.kotlin.psi.*;
 import org.jetbrains.kotlin.resolve.BindingTrace;
 import org.jetbrains.kotlin.resolve.DescriptorUtils;
+import org.jetbrains.kotlin.resolve.calls.util.BuilderLambdaLabelingInfo;
 import org.jetbrains.kotlin.resolve.calls.util.CallUtilKt;
 import org.jetbrains.kotlin.resolve.calls.context.ResolutionContext;
 import org.jetbrains.kotlin.resolve.calls.inference.ConstraintSystem;
@@ -115,8 +116,29 @@ public abstract class AbstractTracingStrategy implements TracingStrategy {
     }
 
     @Override
-    public <D extends CallableDescriptor> void ambiguity(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> descriptors) {
-        trace.report(OVERLOAD_RESOLUTION_AMBIGUITY.on(reference, descriptors));
+    public <D extends CallableDescriptor> void ambiguity(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> resolvedCalls) {
+        trace.report(OVERLOAD_RESOLUTION_AMBIGUITY.on(reference, resolvedCalls));
+    }
+
+    @Override
+    public <D extends CallableDescriptor> void ambiguityBecauseOfStubTypes(@NotNull BindingTrace trace, @NotNull Collection<? extends ResolvedCall<D>> resolvedCalls) {
+        trace.report(OVERLOAD_RESOLUTION_AMBIGUITY_BECAUSE_OF_STUB_TYPES.on(reference, resolvedCalls));
+    }
+
+    @Override
+    public void stubTypeCausesAmbiguity(
+            @NotNull BindingTrace trace,
+            @NotNull KtElement psiArgument,
+            @NotNull KotlinType argumentType,
+            @NotNull Collection<? extends KotlinType> types,
+            @NotNull BuilderLambdaLabelingInfo lambdaToLabel,
+            Boolean isReceiver
+    ) {
+        if (isReceiver) {
+            trace.report(STUB_TYPE_IN_RECEIVER_CAUSES_AMBIGUITY.on(psiArgument, argumentType, types, lambdaToLabel));
+        } else {
+            trace.report(STUB_TYPE_IN_ARGUMENT_CAUSES_AMBIGUITY.on(psiArgument, argumentType, types));
+        }
     }
 
     @Override
