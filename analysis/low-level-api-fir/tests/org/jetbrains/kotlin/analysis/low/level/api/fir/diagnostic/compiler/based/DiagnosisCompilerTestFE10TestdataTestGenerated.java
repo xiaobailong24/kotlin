@@ -17608,6 +17608,12 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
                 }
 
                 @Test
+                @TestMetadata("child-object.kt")
+                public void testChild_object() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/inlineClasses/sealed/child-object.kt");
+                }
+
+                @Test
                 @TestMetadata("flat.kt")
                 public void testFlat() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inlineClasses/sealed/flat.kt");
