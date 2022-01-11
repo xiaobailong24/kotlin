@@ -69,7 +69,7 @@ fun getDefaultMigrationJsr305ReportLevelForGivenGlobal(globalReportLevel: Report
 fun getReportLevelForAnnotation(
     annotation: FqName,
     configuredReportLevels: NullabilityAnnotationStates<ReportLevel>,
-    configuredKotlinVersion: KotlinVersion = KotlinVersion(1, 6, 20)
+    configuredKotlinVersion: KotlinVersion
 ): ReportLevel {
     configuredReportLevels[annotation]?.let { return it }
 
