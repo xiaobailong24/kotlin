@@ -29885,6 +29885,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
             runTest("compiler/testData/codegen/box/sam/kt17765.kt");
         }
 
+        @Test
+        @TestMetadata("kt50477Enabled.kt")
+        public void testKt50477Enabled() throws Exception {
+            runTest("compiler/testData/codegen/box/sam/kt50477Enabled.kt");
+        }
+
         @Nested
         @TestMetadata("compiler/testData/codegen/box/sam/adapters")
         @TestDataPath("$PROJECT_ROOT")

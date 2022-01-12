@@ -243,6 +243,7 @@ enum class LanguageFeature(
     NoDeprecationOnDeprecatedEnumEntries(KOTLIN_1_7), // KT-37975
     ProhibitQualifiedAccessToUninitializedEnumEntry(KOTLIN_1_7, kind = BUG_FIX), // KT-41124
     ForbidRecursiveDelegateExpressions(KOTLIN_1_7, kind = BUG_FIX),
+    SuspendOnlySamConversions(KOTLIN_1_7),
 
     // 1.8
 
