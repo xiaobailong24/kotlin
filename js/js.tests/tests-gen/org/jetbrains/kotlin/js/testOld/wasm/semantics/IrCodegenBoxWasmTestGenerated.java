@@ -24928,6 +24928,11 @@ public class IrCodegenBoxWasmTestGenerated extends AbstractIrCodegenBoxWasmTest 
             runTest("compiler/testData/codegen/box/sam/kt17765.kt");
         }
 
+        @TestMetadata("kt50477Enabled.kt")
+        public void testKt50477Enabled() throws Exception {
+            runTest("compiler/testData/codegen/box/sam/kt50477Enabled.kt");
+        }
+
         @TestMetadata("compiler/testData/codegen/box/sam/adapters")
         @TestDataPath("$PROJECT_ROOT")
         @RunWith(JUnit3RunnerWithInners.class)
