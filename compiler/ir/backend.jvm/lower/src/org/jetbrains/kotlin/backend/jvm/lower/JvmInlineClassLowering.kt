@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.builtins.StandardNames
 import org.jetbrains.kotlin.config.ApiVersion
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
+import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.*
@@ -93,7 +94,7 @@ private class JvmInlineClassLowering(context: JvmBackendContext) : JvmValueClass
 
         fun collectSealedBetweenTopAndBottom(bottom: IrClassSymbol): List<IrClassSymbol> {
             fun superClass(symbol: IrClassSymbol): IrClassSymbol =
-                symbol.owner.superTypes.single { it.asClass().kind == ClassKind.CLASS }.asClass().symbol
+                symbol.owner.superTypes.single { it.classOrNull!!.owner.kind == ClassKind.CLASS }.classOrNull!!
 
             val result = mutableListOf<IrClassSymbol>()
             var cursor = superClass(bottom)
@@ -107,7 +108,7 @@ private class JvmInlineClassLowering(context: JvmBackendContext) : JvmValueClass
         return collectBottoms(irClass).map { SubclassInfo(it.owner, collectSealedBetweenTopAndBottom(it)) }
     }
 
-    private fun addJvmInlineAnnotation(valueClass: IrClass) {
+    override fun addJvmInlineAnnotation(valueClass: IrClass) {
         if (valueClass.hasAnnotation(JVM_INLINE_ANNOTATION_FQ_NAME)) return
         val constructor = context.ir.symbols.jvmInlineAnnotation.constructors.first()
         valueClass.annotations = valueClass.annotations + IrConstructorCallImpl.fromSymbolOwner(
