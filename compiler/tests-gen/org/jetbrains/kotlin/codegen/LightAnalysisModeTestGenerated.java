@@ -20540,6 +20540,11 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
                 runTest("compiler/testData/codegen/box/inlineClasses/sealed/openMethod.kt");
             }
 
+            @TestMetadata("openMethodDefault.kt")
+            public void ignoreOpenMethodDefault() throws Exception {
+                runTest("compiler/testData/codegen/box/inlineClasses/sealed/openMethodDefault.kt");
+            }
+
             @TestMetadata("openMethodNoOverrideDeepNonInline.kt")
             public void ignoreOpenMethodNoOverrideDeepNonInline() throws Exception {
                 runTest("compiler/testData/codegen/box/inlineClasses/sealed/openMethodNoOverrideDeepNonInline.kt");
@@ -20563,6 +20568,11 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
             @TestMetadata("openMethodNoOverrideInNonInline.kt")
             public void ignoreOpenMethodNoOverrideInNonInline() throws Exception {
                 runTest("compiler/testData/codegen/box/inlineClasses/sealed/openMethodNoOverrideInNonInline.kt");
+            }
+
+            @TestMetadata("openMethodParam.kt")
+            public void ignoreOpenMethodParam() throws Exception {
+                runTest("compiler/testData/codegen/box/inlineClasses/sealed/openMethodParam.kt");
             }
 
             @TestMetadata("openVal.kt")
@@ -20598,6 +20608,16 @@ public class LightAnalysisModeTestGenerated extends AbstractLightAnalysisModeTes
             @TestMetadata("overrideDefaultMethod.kt")
             public void ignoreOverrideDefaultMethod() throws Exception {
                 runTest("compiler/testData/codegen/box/inlineClasses/sealed/overrideDefaultMethod.kt");
+            }
+
+            @TestMetadata("overrideDefaultMethodDefault.kt")
+            public void ignoreOverrideDefaultMethodDefault() throws Exception {
+                runTest("compiler/testData/codegen/box/inlineClasses/sealed/overrideDefaultMethodDefault.kt");
+            }
+
+            @TestMetadata("overrideDefaultMethodParam.kt")
+            public void ignoreOverrideDefaultMethodParam() throws Exception {
+                runTest("compiler/testData/codegen/box/inlineClasses/sealed/overrideDefaultMethodParam.kt");
             }
 
             @TestMetadata("result.kt")
