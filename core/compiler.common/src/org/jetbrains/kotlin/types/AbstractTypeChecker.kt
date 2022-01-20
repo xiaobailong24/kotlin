@@ -276,7 +276,7 @@ object AbstractTypeChecker {
         }
 
         when {
-            subType.isIntegerLiteralType() && superType.isIntegerLiteralType() -> {
+            subType.isIntegerLiteralTypeOrCapturedOne() && superType.isIntegerLiteralTypeOrCapturedOne() -> {
                 return true
             }
 
