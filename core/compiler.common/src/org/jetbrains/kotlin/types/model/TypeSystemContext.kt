@@ -681,6 +681,11 @@ interface TypeSystemContext : TypeSystemOptimizationContext {
 
     fun SimpleTypeMarker.isIntegerLiteralType(): Boolean = typeConstructor().isIntegerLiteralTypeConstructor()
 
+    fun SimpleTypeMarker.isIntegerLiteralTypeOrCapturedOne(): Boolean = isIntegerLiteralType() || isCapturedIntegerLiteralType()
+
+    fun SimpleTypeMarker.isCapturedIntegerLiteralType(): Boolean =
+        this is CapturedTypeMarker && typeConstructor().projection().getType().upperBoundIfFlexible().isIntegerLiteralType()
+
     fun SimpleTypeMarker.possibleIntegerTypes(): Collection<KotlinTypeMarker>
 
     fun TypeConstructorMarker.isCommonFinalClassConstructor(): Boolean
