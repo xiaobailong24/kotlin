@@ -144,7 +144,6 @@ abstract class BasicWasmBoxTest(
             compileAndRun(
                 phaseConfig = phaseConfig,
                 sourceModule = sourceModule,
-                config = config,
                 testPackage = testPackage,
                 testFunction = TEST_FUNCTION,
                 dceEnabled = false,
@@ -161,7 +160,6 @@ abstract class BasicWasmBoxTest(
             compileAndRun(
                 phaseConfig = phaseConfig,
                 sourceModule = sourceModule,
-                config = config,
                 testPackage = testPackage,
                 testFunction = TEST_FUNCTION,
                 dceEnabled = true,
@@ -188,7 +186,6 @@ abstract class BasicWasmBoxTest(
     private fun compileAndRun(
         phaseConfig: PhaseConfig,
         sourceModule: ModulesStructure,
-        config: JsConfig,
         testPackage: String?,
         testFunction: String,
         dceEnabled: Boolean,
@@ -222,15 +219,7 @@ abstract class BasicWasmBoxTest(
             const wasmBinary = read(String.raw`${outputWasmFile.absoluteFile}`, 'binary');
             const wasmModule = new WebAssembly.Module(wasmBinary);
             wasmInstance = new WebAssembly.Instance(wasmModule, { runtime, js_code });
-            wasmInstance.exports.__init();
-
-            const ${sanitizeName(config.moduleId)} = wasmInstance.exports;
-            
-            wasmInstance.exports.startUnitTests?.();
-
-            const actualResult = wasmInstance.exports.$testFunction();
-            if (actualResult !== "OK")
-                throw `Wrong box result '${'$'}{actualResult}' (with DCE=${dceEnabled}); Expected "OK"`;
+            ${createJsRun(wasmInstance = "wasmInstance", testFunction = testFunction, dceEnabled = dceEnabled)}
         """.trimIndent()
         outputJsFile.write(compilerResult.js + "\n" + testRunner)
 
@@ -249,18 +238,30 @@ abstract class BasicWasmBoxTest(
             )
     }
 
+    private fun createJsRun(wasmInstance: String, testFunction: String, dceEnabled: Boolean) = """
+            let actualResult
+            try {
+                $wasmInstance.exports.__init();
+                $wasmInstance.exports.startUnitTests?.();
+                actualResult = $wasmInstance.exports.$testFunction();
+            } catch(e) {
+                console.log('Failed with exception!')
+                console.log('Message: ' + e.message)
+                console.log('Name:    ' + e.name)
+                console.log('Stack:')
+                console.log(e.stack)
+            }
+            if (actualResult !== "OK")
+                throw `Wrong box result '${'$'}{actualResult}' (with DCE=${dceEnabled}); Expected "OK"`;
+    """.trimIndent()
+
     private fun createDirectoryToRunInBrowser(directory: File, compilerResult: WasmCompilerResult, dceEnabled: Boolean) {
         val browserRunner =
             """
             const response = await fetch("index.wasm");
             const wasmBinary = await response.arrayBuffer();
             wasmInstance = (await WebAssembly.instantiate(wasmBinary, { runtime, js_code })).instance;
-            wasmInstance.exports.__init();
-            wasmInstance.exports.startUnitTests?.();
-
-            const actualResult = wasmInstance.exports.box();
-            if (actualResult !== "OK")
-                throw `Wrong box result '${'$'}{actualResult}' (with DCE=${dceEnabled}); Expected "OK"`;
+            ${createJsRun(wasmInstance = "wasmInstance", testFunction = "box", dceEnabled = dceEnabled)}
             console.log("Test passed!");    
             """.trimIndent()
 
