@@ -1,0 +1,66 @@
+package
+
+public fun foo(/*0*/ output: (ScrapingOffOutput) -> kotlin.Unit): kotlin.Unit
+public fun </*0*/ Event : kotlin.Any, /*1*/ Model, /*2*/ Output> presenter(/*0*/ output: ((Output) -> kotlin.Unit)? = ..., /*1*/ extraBufferCapacity: kotlin.Int = ..., /*2*/ presenterProvider: () -> Presenter<Flow<Event>, Model, Output>): PresentedData<Model, MutableSharedFlow<Event>>
+public fun </*0*/ Event : kotlin.Any, /*1*/ Model, /*2*/ Output> presenter(/*0*/ events: Event, /*1*/ output: ((Output) -> kotlin.Unit)? = ..., /*2*/ presenterProvider: () -> Presenter<Event, Model, Output>): Model
+
+public interface Flow</*0*/ out T> {
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public interface MutableSharedFlow</*0*/ T> {
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final data class PresentedData</*0*/ M, /*1*/ E> {
+    public constructor PresentedData</*0*/ M, /*1*/ E>(/*0*/ model: M, /*1*/ events: E)
+    public final val events: E
+    public final val model: M
+    public final operator /*synthesized*/ fun component1(): M
+    public final operator /*synthesized*/ fun component2(): E
+    public final /*synthesized*/ fun copy(/*0*/ model: M = ..., /*1*/ events: E = ...): PresentedData<M, E>
+    public open override /*1*/ /*synthesized*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*synthesized*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*synthesized*/ fun toString(): kotlin.String
+}
+
+public abstract class Presenter</*0*/ Events, /*1*/ Model, /*2*/ Output> {
+    public constructor Presenter</*0*/ Events, /*1*/ Model, /*2*/ Output>(/*0*/ outputExtraBufferCapacity: kotlin.Int = ...)
+    public abstract fun Present(/*0*/ events: Events): Model
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class ScrapingOffEvent {
+    public constructor ScrapingOffEvent()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class ScrapingOffModel {
+    public constructor ScrapingOffModel()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class ScrapingOffOutput {
+    public constructor ScrapingOffOutput()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+private final class ScrapingOffPresenter : Presenter<Flow<ScrapingOffEvent>, ScrapingOffModel, ScrapingOffOutput> {
+    public constructor ScrapingOffPresenter()
+    public open override /*1*/ fun Present(/*0*/ events: Flow<ScrapingOffEvent>): ScrapingOffModel
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}

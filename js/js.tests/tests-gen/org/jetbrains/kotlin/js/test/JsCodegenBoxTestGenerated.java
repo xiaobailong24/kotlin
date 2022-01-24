@@ -14882,6 +14882,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         }
 
         @Test
+        @TestMetadata("kt50107.kt")
+        public void testKt50107() throws Exception {
+            runTest("compiler/testData/codegen/box/inlineArgsInPlace/kt50107.kt");
+        }
+
+        @Test
         @TestMetadata("mapSet.kt")
         public void testMapSet() throws Exception {
             runTest("compiler/testData/codegen/box/inlineArgsInPlace/mapSet.kt");

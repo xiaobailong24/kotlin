@@ -1,0 +1,28 @@
+package
+
+public fun kotlin.collections.Collection<MyBoolean>.reduce(): MyBoolean
+public fun kotlin.collections.Collection<MyBoolean>.reduce2(): MyBoolean.True
+
+public sealed class MyBoolean {
+    protected constructor MyBoolean()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public final fun merge(/*0*/ other: MyBoolean): MyBoolean
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+
+    public object False : MyBoolean {
+        private constructor False()
+        public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+        public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+        public final override /*1*/ /*fake_override*/ fun merge(/*0*/ other: MyBoolean): MyBoolean
+        public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    }
+
+    public object True : MyBoolean {
+        private constructor True()
+        public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+        public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+        public final override /*1*/ /*fake_override*/ fun merge(/*0*/ other: MyBoolean): MyBoolean
+        public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    }
+}

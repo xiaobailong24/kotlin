@@ -12502,6 +12502,11 @@ public class IrCodegenBoxWasmTestGenerated extends AbstractIrCodegenBoxWasmTest 
             runTest("compiler/testData/codegen/box/inlineArgsInPlace/kt49407.kt");
         }
 
+        @TestMetadata("kt50107.kt")
+        public void testKt50107() throws Exception {
+            runTest("compiler/testData/codegen/box/inlineArgsInPlace/kt50107.kt");
+        }
+
         @TestMetadata("mapSet.kt")
         public void testMapSet() throws Exception {
             runTest("compiler/testData/codegen/box/inlineArgsInPlace/mapSet.kt");

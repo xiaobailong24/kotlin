@@ -1,0 +1,3 @@
+package
+
+public fun name(/*0*/ input: kotlin.collections.List<kotlin.Int>): kotlin.Int

@@ -1,0 +1,61 @@
+package
+
+public fun </*0*/ P, /*1*/ T, /*2*/ X> Lens<P, kotlin.collections.List<T>>.setEach(/*0*/ parent: P, /*1*/ path: Lens<T, X>, /*2*/ value: (T) -> X): P
+public fun </*0*/ P, /*1*/ T, /*2*/ X> Lens<P, kotlin.collections.List<T>>.setEach(/*0*/ parent: P, /*1*/ path: Lens<T, X>, /*2*/ value: X): P
+
+public interface Lens</*0*/ P, /*1*/ T> {
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public abstract fun get(/*0*/ p: P): T
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public abstract fun set(/*0*/ p: P, /*1*/ v: T): P
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final data class One {
+    public constructor One(/*0*/ list: kotlin.collections.List<Two>)
+    public final val list: kotlin.collections.List<Two>
+    public final operator /*synthesized*/ fun component1(): kotlin.collections.List<Two>
+    public final /*synthesized*/ fun copy(/*0*/ list: kotlin.collections.List<Two> = ...): One
+    public open override /*1*/ /*synthesized*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*synthesized*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*synthesized*/ fun toString(): kotlin.String
+}
+
+public object OverloadTest {
+    private constructor OverloadTest()
+    public final val func: (Two) -> kotlin.String
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public final fun test(/*0*/ p: One): One
+    public final fun testB(/*0*/ p: One): [ERROR : Error function type]
+    public final fun testC(/*0*/ p: One): One
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+
+    public object OneTwo : Lens<One, kotlin.collections.List<Two>> {
+        private constructor OneTwo()
+        public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+        public open override /*1*/ fun get(/*0*/ p: One): kotlin.collections.List<Two>
+        public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+        public open override /*1*/ fun set(/*0*/ p: One, /*1*/ v: kotlin.collections.List<Two>): One
+        public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    }
+
+    public object TwoString : Lens<Two, kotlin.String> {
+        private constructor TwoString()
+        public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+        public open override /*1*/ fun get(/*0*/ p: Two): kotlin.String
+        public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+        public open override /*1*/ fun set(/*0*/ p: Two, /*1*/ v: kotlin.String): Two
+        public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    }
+}
+
+public final data class Two {
+    public constructor Two(/*0*/ string: kotlin.String)
+    public final val string: kotlin.String
+    public final operator /*synthesized*/ fun component1(): kotlin.String
+    public final /*synthesized*/ fun copy(/*0*/ string: kotlin.String = ...): Two
+    public open override /*1*/ /*synthesized*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*synthesized*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*synthesized*/ fun toString(): kotlin.String
+}

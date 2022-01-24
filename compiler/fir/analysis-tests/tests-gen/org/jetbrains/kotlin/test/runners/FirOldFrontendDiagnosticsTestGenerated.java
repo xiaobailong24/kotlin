@@ -2797,6 +2797,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("kt49583.kt")
+            public void testKt49583() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/callableReference/kt49583.kt");
+            }
+
+            @Test
             @TestMetadata("kt7430_wrongClassOnLHS.kt")
             public void testKt7430_wrongClassOnLHS() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/callableReference/kt7430_wrongClassOnLHS.kt");
@@ -4292,6 +4298,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             @TestMetadata("kt47685.kt")
             public void testKt47685() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/cast/kt47685.kt");
+            }
+
+            @Test
+            @TestMetadata("kt49751.kt")
+            public void testKt49751() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/cast/kt49751.kt");
             }
 
             @Test
@@ -7081,6 +7093,36 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("kt49249.kt")
+            public void testKt49249() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/dataFlow/kt49249.kt");
+            }
+
+            @Test
+            @TestMetadata("kt49856.kt")
+            public void testKt49856() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/dataFlow/kt49856.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50160.kt")
+            public void testKt50160() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/dataFlow/kt50160.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50177.kt")
+            public void testKt50177() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/dataFlow/kt50177.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50517.kt")
+            public void testKt50517() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/dataFlow/kt50517.kt");
+            }
+
+            @Test
             @TestMetadata("WhenSubject.kt")
             public void testWhenSubject() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/dataFlow/WhenSubject.kt");
@@ -9622,6 +9664,22 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             @TestMetadata("withInvisibleSynthesized.kt")
             public void testWithInvisibleSynthesized() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/dynamicTypes/withInvisibleSynthesized.kt");
+            }
+        }
+
+        @Nested
+        @TestMetadata("compiler/testData/diagnostics/tests/elvis")
+        @TestDataPath("$PROJECT_ROOT")
+        public class Elvis {
+            @Test
+            public void testAllFilesPresentInElvis() throws Exception {
+                KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/diagnostics/tests/elvis"), Pattern.compile("^(.+)\\.kt$"), Pattern.compile("^(.+)\\.fir\\.kts?$"), true);
+            }
+
+            @Test
+            @TestMetadata("kt49961.kt")
+            public void testKt49961() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/elvis/kt49961.kt");
             }
         }
 
@@ -13703,6 +13761,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("kt37490.kt")
+            public void testKt37490() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt37490.kt");
+            }
+
+            @Test
             @TestMetadata("kt37853.kt")
             public void testKt37853() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt37853.kt");
@@ -13733,6 +13797,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("kt49223.kt")
+            public void testKt49223() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt49223.kt");
+            }
+
+            @Test
             @TestMetadata("kt49658.kt")
             public void testKt49658() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt49658.kt");
@@ -13742,6 +13812,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             @TestMetadata("kt49658Strict.kt")
             public void testKt49658Strict() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt49658Strict.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50232.kt")
+            public void testKt50232() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt50232.kt");
             }
 
             @Test
@@ -14378,6 +14454,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
                 }
 
                 @Test
+                @TestMetadata("kt45762.kt")
+                public void testKt45762() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/inference/capturedTypes/kt45762.kt");
+                }
+
+                @Test
                 @TestMetadata("kt46727.kt")
                 public void testKt46727() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/capturedTypes/kt46727.kt");
@@ -14393,6 +14475,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
                 @TestMetadata("kt49101.kt")
                 public void testKt49101() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/capturedTypes/kt49101.kt");
+                }
+
+                @Test
+                @TestMetadata("kt49700.kt")
+                public void testKt49700() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/inference/capturedTypes/kt49700.kt");
                 }
 
                 @Test
@@ -14801,6 +14889,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
                 @TestMetadata("kt36233.kt")
                 public void testKt36233() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/completion/kt36233.kt");
+                }
+
+                @Test
+                @TestMetadata("kt49328.kt")
+                public void testKt49328() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/inference/completion/kt49328.kt");
                 }
 
                 @Test
@@ -20692,6 +20786,22 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
         }
 
         @Nested
+        @TestMetadata("compiler/testData/diagnostics/tests/nonNullAssertion")
+        @TestDataPath("$PROJECT_ROOT")
+        public class NonNullAssertion {
+            @Test
+            public void testAllFilesPresentInNonNullAssertion() throws Exception {
+                KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/diagnostics/tests/nonNullAssertion"), Pattern.compile("^(.+)\\.kt$"), Pattern.compile("^(.+)\\.fir\\.kts?$"), true);
+            }
+
+            @Test
+            @TestMetadata("kt49881.kt")
+            public void testKt49881() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/nonNullAssertion/kt49881.kt");
+            }
+        }
+
+        @Nested
         @TestMetadata("compiler/testData/diagnostics/tests/nullabilityAndSmartCasts")
         @TestDataPath("$PROJECT_ROOT")
         public class NullabilityAndSmartCasts {
@@ -21740,6 +21850,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             @TestMetadata("kt2493.kt")
             public void testKt2493() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/overload/kt2493.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50386.kt")
+            public void testKt50386() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/overload/kt50386.kt");
             }
 
             @Test
@@ -24921,9 +25037,33 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("kt49608.kt")
+            public void testKt49608() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt49608.kt");
+            }
+
+            @Test
+            @TestMetadata("kt49725.kt")
+            public void testKt49725() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt49725.kt");
+            }
+
+            @Test
             @TestMetadata("kt49736.kt")
             public void testKt49736() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/resolve/kt49736.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50223.kt")
+            public void testKt50223() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt50223.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50560.kt")
+            public void testKt50560() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt50560.kt");
             }
 
             @Test
@@ -29841,6 +29981,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("kt47495.kt")
+            public void testKt47495() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/substitutions/kt47495.kt");
+            }
+
+            @Test
             @TestMetadata("kt4887.kt")
             public void testKt4887() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/substitutions/kt4887.kt");
@@ -32650,6 +32796,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             @TestMetadata("invisibleSetterOfJavaClassWithDisabledFeature.kt")
             public void testInvisibleSetterOfJavaClassWithDisabledFeature() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/visibility/invisibleSetterOfJavaClassWithDisabledFeature.kt");
+            }
+
+            @Test
+            @TestMetadata("kt49962.kt")
+            public void testKt49962() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/visibility/kt49962.kt");
             }
 
             @Test
