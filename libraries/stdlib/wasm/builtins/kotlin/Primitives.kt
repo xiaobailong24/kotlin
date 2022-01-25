@@ -1252,7 +1252,7 @@ public class Long private constructor(val value: Long) : Number(), Comparable<Lo
 
     /** Divides this value by the other value. */
     public operator fun div(other: Long): Long =
-        if (this == Long.MIN_VALUE) Long.MIN_VALUE else wasm_i64_div_s(this, other)
+        if (this == Long.MIN_VALUE && other == -1L) Long.MIN_VALUE else wasm_i64_div_s(this, other)
 
     /** Divides this value by the other value. */
     public inline operator fun div(other: Float): Float =
