@@ -61,6 +61,7 @@ val commonTestSources by task<Sync> {
 
     sources.forEach { path ->
         from("$rootDir/$path") {
+            exclude(listOf("libraries/stdlib/test/js/**"))
             into(path.dropLastWhile { it != '/' })
         }
     }
