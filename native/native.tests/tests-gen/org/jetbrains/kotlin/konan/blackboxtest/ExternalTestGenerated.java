@@ -12224,6 +12224,12 @@ public class ExternalTestGenerated extends AbstractExternalNativeBlackBoxTest {
             }
 
             @Test
+            @TestMetadata("kt48546.kt")
+            public void testKt48546() throws Exception {
+                runTest("compiler/testData/codegen/box/delegation/kt48546.kt");
+            }
+
+            @Test
             @TestMetadata("kt8154.kt")
             public void testKt8154() throws Exception {
                 runTest("compiler/testData/codegen/box/delegation/kt8154.kt");
@@ -15917,6 +15923,12 @@ public class ExternalTestGenerated extends AbstractExternalNativeBlackBoxTest {
             @TestMetadata("kt49407.kt")
             public void testKt49407() throws Exception {
                 runTest("compiler/testData/codegen/box/inlineArgsInPlace/kt49407.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50107.kt")
+            public void testKt50107() throws Exception {
+                runTest("compiler/testData/codegen/box/inlineArgsInPlace/kt50107.kt");
             }
 
             @Test
@@ -33656,6 +33668,18 @@ public class ExternalTestGenerated extends AbstractExternalNativeBlackBoxTest {
             @TestMetadata("kt21258_simple.kt")
             public void testKt21258_simple() throws Exception {
                 runTest("compiler/testData/codegen/box/syntheticAccessors/kt21258_simple.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47621.kt")
+            public void testKt47621() throws Exception {
+                runTest("compiler/testData/codegen/box/syntheticAccessors/kt47621.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47621_2.kt")
+            public void testKt47621_2() throws Exception {
+                runTest("compiler/testData/codegen/box/syntheticAccessors/kt47621_2.kt");
             }
 
             @Test

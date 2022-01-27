@@ -1,0 +1,11 @@
+package
+
+public fun superParent(/*0*/ a: Node?): Node?
+
+public final class Node {
+    public constructor Node(/*0*/ parent: Node?)
+    public final val parent: Node?
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}

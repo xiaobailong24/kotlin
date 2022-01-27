@@ -1297,6 +1297,36 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("kt47484.kt")
+            public void testKt47484() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/annotations/kt47484.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47484_2.kt")
+            public void testKt47484_2() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/annotations/kt47484_2.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47484_3.kt")
+            public void testKt47484_3() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/annotations/kt47484_3.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47484_4.kt")
+            public void testKt47484_4() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/annotations/kt47484_4.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47708.kt")
+            public void testKt47708() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/annotations/kt47708.kt");
+            }
+
+            @Test
             @TestMetadata("missingValOnParameter.kt")
             public void testMissingValOnParameter() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/annotations/missingValOnParameter.kt");
@@ -2794,6 +2824,18 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             @TestMetadata("kt46437.kt")
             public void testKt46437() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/callableReference/kt46437.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47378.kt")
+            public void testKt47378() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/callableReference/kt47378.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47497.kt")
+            public void testKt47497() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/callableReference/kt47497.kt");
             }
 
             @Test
@@ -4580,6 +4622,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             @TestMetadata("kt1940.kt")
             public void testKt1940() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/checkArguments/kt1940.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47979.kt")
+            public void testKt47979() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/checkArguments/kt47979.kt");
             }
 
             @Test
@@ -7099,6 +7147,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("kt41544.kt")
+            public void testKt41544() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/dataFlow/kt41544.kt");
+            }
+
+            @Test
             @TestMetadata("kt49249.kt")
             public void testKt49249() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/dataFlow/kt49249.kt");
@@ -8540,6 +8594,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             @TestMetadata("kt44843.kt")
             public void testKt44843() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/delegation/kt44843.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48487.kt")
+            public void testKt48487() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/delegation/kt48487.kt");
             }
 
             @Test
@@ -13791,15 +13851,51 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("kt42741.kt")
+            public void testKt42741() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt42741.kt");
+            }
+
+            @Test
             @TestMetadata("kt46515.kt")
             public void testKt46515() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt46515.kt");
             }
 
             @Test
+            @TestMetadata("kt47184.kt")
+            public void testKt47184() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt47184.kt");
+            }
+
+            @Test
             @TestMetadata("kt47316.kt")
             public void testKt47316() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt47316.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47664.kt")
+            public void testKt47664() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt47664.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48764.kt")
+            public void testKt48764() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt48764.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48935.kt")
+            public void testKt48935() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt48935.kt");
+            }
+
+            @Test
+            @TestMetadata("kt49045.kt")
+            public void testKt49045() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt49045.kt");
             }
 
             @Test
@@ -13824,6 +13920,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             @TestMetadata("kt50232.kt")
             public void testKt50232() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt50232.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50947.kt")
+            public void testKt50947() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt50947.kt");
             }
 
             @Test
@@ -14127,6 +14229,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
                 @TestMetadata("kt47744.kt")
                 public void testKt47744() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/builderInference/kt47744.kt");
+                }
+
+                @Test
+                @TestMetadata("kt48031.kt")
+                public void testKt48031() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/inference/builderInference/kt48031.kt");
                 }
 
                 @Test
@@ -21273,6 +21381,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("kt47815.kt")
+            public void testKt47815() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/objects/kt47815.kt");
+            }
+
+            @Test
             @TestMetadata("kt5527.kt")
             public void testKt5527() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/objects/kt5527.kt");
@@ -21542,6 +21656,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             @TestMetadata("forbiddenModOperatorConvention.kt")
             public void testForbiddenModOperatorConvention() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/operatorRem/forbiddenModOperatorConvention.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47895.kt")
+            public void testKt47895() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/operatorRem/kt47895.kt");
             }
 
             @Test
@@ -25049,6 +25169,30 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("kt47488.kt")
+            public void testKt47488() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt47488.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47839.kt")
+            public void testKt47839() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt47839.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47870.kt")
+            public void testKt47870() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt47870.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47884.kt")
+            public void testKt47884() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt47884.kt");
+            }
+
+            @Test
             @TestMetadata("kt49608.kt")
             public void testKt49608() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/resolve/kt49608.kt");
@@ -26018,6 +26162,18 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             @TestMetadata("kt17765.kt")
             public void testKt17765() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/samConversions/kt17765.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48838.kt")
+            public void testKt48838() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/samConversions/kt48838.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48840.kt")
+            public void testKt48840() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/samConversions/kt48840.kt");
             }
 
             @Test
@@ -31769,6 +31925,18 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("kt47472.kt")
+            public void testKt47472() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/typealias/kt47472.kt");
+            }
+
+            @Test
+            @TestMetadata("kt47473.kt")
+            public void testKt47473() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/typealias/kt47473.kt");
+            }
+
+            @Test
             @TestMetadata("localTypeAlias.kt")
             public void testLocalTypeAlias() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/typealias/localTypeAlias.kt");
@@ -32764,6 +32932,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             @TestMetadata("InvariantPosition.kt")
             public void testInvariantPosition() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/variance/InvariantPosition.kt");
+            }
+
+            @Test
+            @TestMetadata("kt49024.kt")
+            public void testKt49024() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/variance/kt49024.kt");
             }
 
             @Test

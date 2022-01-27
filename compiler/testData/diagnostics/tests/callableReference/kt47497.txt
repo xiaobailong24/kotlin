@@ -1,0 +1,5 @@
+package
+
+public fun </*0*/ T> bar(/*0*/ x: T): T
+public fun box(): kotlin.String
+public fun nullableFun(): ((kotlin.Int) -> kotlin.Int)?

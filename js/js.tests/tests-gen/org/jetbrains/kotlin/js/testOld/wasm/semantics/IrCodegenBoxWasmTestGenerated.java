@@ -1753,6 +1753,11 @@ public class IrCodegenBoxWasmTestGenerated extends AbstractIrCodegenBoxWasmTest 
             runTest("compiler/testData/codegen/box/callableReference/inlineArrayConstructors.kt");
         }
 
+        @TestMetadata("kt17817.kt")
+        public void testKt17817() throws Exception {
+            runTest("compiler/testData/codegen/box/callableReference/kt17817.kt");
+        }
+
         @TestMetadata("kt21014.kt")
         public void testKt21014() throws Exception {
             runTest("compiler/testData/codegen/box/callableReference/kt21014.kt");
@@ -1776,6 +1781,16 @@ public class IrCodegenBoxWasmTestGenerated extends AbstractIrCodegenBoxWasmTest 
         @TestMetadata("kt46902.kt")
         public void testKt46902() throws Exception {
             runTest("compiler/testData/codegen/box/callableReference/kt46902.kt");
+        }
+
+        @TestMetadata("kt47373.kt")
+        public void testKt47373() throws Exception {
+            runTest("compiler/testData/codegen/box/callableReference/kt47373.kt");
+        }
+
+        @TestMetadata("kt47490.kt")
+        public void testKt47490() throws Exception {
+            runTest("compiler/testData/codegen/box/callableReference/kt47490.kt");
         }
 
         @TestMetadata("kt47988.kt")
@@ -9309,6 +9324,11 @@ public class IrCodegenBoxWasmTestGenerated extends AbstractIrCodegenBoxWasmTest 
             runTest("compiler/testData/codegen/box/delegation/kt30102_comparable.kt");
         }
 
+        @TestMetadata("kt48546.kt")
+        public void testKt48546() throws Exception {
+            runTest("compiler/testData/codegen/box/delegation/kt48546.kt");
+        }
+
         @TestMetadata("kt8154.kt")
         public void testKt8154() throws Exception {
             runTest("compiler/testData/codegen/box/delegation/kt8154.kt");
@@ -10592,6 +10612,16 @@ public class IrCodegenBoxWasmTestGenerated extends AbstractIrCodegenBoxWasmTest 
         @TestMetadata("kt46952.kt")
         public void testKt46952() throws Exception {
             runTest("compiler/testData/codegen/box/extensionProperties/kt46952.kt");
+        }
+
+        @TestMetadata("kt47381.kt")
+        public void testKt47381() throws Exception {
+            runTest("compiler/testData/codegen/box/extensionProperties/kt47381.kt");
+        }
+
+        @TestMetadata("kt47382.kt")
+        public void testKt47382() throws Exception {
+            runTest("compiler/testData/codegen/box/extensionProperties/kt47382.kt");
         }
 
         @TestMetadata("kt9897.kt")
@@ -17394,6 +17424,11 @@ public class IrCodegenBoxWasmTestGenerated extends AbstractIrCodegenBoxWasmTest 
         @TestMetadata("inNestedCall.kt")
         public void testInNestedCall() throws Exception {
             runTest("compiler/testData/codegen/box/nothingValue/inNestedCall.kt");
+        }
+
+        @TestMetadata("kt47486.kt")
+        public void testKt47486() throws Exception {
+            runTest("compiler/testData/codegen/box/nothingValue/kt47486.kt");
         }
 
         @TestMetadata("nothingValueException.kt")
@@ -26239,6 +26274,16 @@ public class IrCodegenBoxWasmTestGenerated extends AbstractIrCodegenBoxWasmTest 
         @TestMetadata("kt21258_simple.kt")
         public void testKt21258_simple() throws Exception {
             runTest("compiler/testData/codegen/box/syntheticAccessors/kt21258_simple.kt");
+        }
+
+        @TestMetadata("kt47621.kt")
+        public void testKt47621() throws Exception {
+            runTest("compiler/testData/codegen/box/syntheticAccessors/kt47621.kt");
+        }
+
+        @TestMetadata("kt47621_2.kt")
+        public void testKt47621_2() throws Exception {
+            runTest("compiler/testData/codegen/box/syntheticAccessors/kt47621_2.kt");
         }
 
         @TestMetadata("kt49316.kt")

@@ -1,0 +1,1 @@
+val a = (<!FUNCTION_CALL_EXPECTED!>arrayOf<!>)<<!CANNOT_INFER_PARAMETER_TYPE!>String<!>>::<!UNRESOLVED_REFERENCE!>firstElement<!>

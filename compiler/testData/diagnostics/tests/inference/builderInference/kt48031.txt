@@ -1,0 +1,36 @@
+package
+
+public fun </*0*/ T> flowOf(/*0*/ vararg elements: T /*kotlin.Array<out T>*/): Flow<T>
+public fun invalidFlow(): Flow<Foo>
+@[ERROR : JvmName] /* annotation class not found */ public fun </*0*/ T> Flow<T>.debounce(/*0*/ timeout: (T) -> [ERROR : Duration]): Flow<T>
+@[ERROR : OptIn] /* annotation class not found */ @[ERROR : OverloadResolutionByLambdaReturnType] /* annotation class not found */ public fun </*0*/ T> Flow<T>.debounce(/*0*/ timeoutMillis: (T) -> kotlin.Long): Flow<T>
+
+public interface Flow</*0*/ out T> {
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public sealed class Foo {
+    protected constructor Foo()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+
+    public object A : Foo {
+        private constructor A()
+        public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+        public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+        public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    }
+
+    public final data class B : Foo {
+        public constructor B(/*0*/ a: kotlin.Int)
+        public final val a: kotlin.Int
+        public final operator /*synthesized*/ fun component1(): kotlin.Int
+        public final /*synthesized*/ fun copy(/*0*/ a: kotlin.Int = ...): Foo.B
+        public open override /*1*/ /*synthesized*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+        public open override /*1*/ /*synthesized*/ fun hashCode(): kotlin.Int
+        public open override /*1*/ /*synthesized*/ fun toString(): kotlin.String
+    }
+}

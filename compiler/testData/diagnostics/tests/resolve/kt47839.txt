@@ -1,0 +1,4 @@
+package
+
+public val operations: kotlin.collections.List<kotlin.Long.() -> kotlin.Unit>
+public fun </*0*/ T> T.id(): T
