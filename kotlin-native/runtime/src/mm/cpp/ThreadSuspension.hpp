@@ -15,7 +15,7 @@ namespace mm {
 
 namespace internal {
 
-extern std::atomic<bool> gSuspensionRequested;
+extern std::atomic<int> gSuspensionRequested;
 
 } // namespace internal
 

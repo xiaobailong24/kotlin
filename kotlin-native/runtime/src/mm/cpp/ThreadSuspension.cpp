@@ -48,7 +48,7 @@ THREAD_LOCAL_VARIABLE bool gSuspensionRequestedByCurrentThread = false;
 
 } // namespace
 
-std::atomic<bool> kotlin::mm::internal::gSuspensionRequested = false;
+std::atomic<int> kotlin::mm::internal::gSuspensionRequested = 0;
 
 NO_EXTERNAL_CALLS_CHECK void kotlin::mm::ThreadSuspensionData::suspendIfRequestedSlowPath() noexcept {
     std::unique_lock lock(gSuspensionMutex);
@@ -68,8 +68,8 @@ NO_EXTERNAL_CALLS_CHECK bool kotlin::mm::RequestThreadsSuspension() noexcept {
     RuntimeAssert(gSuspensionRequestedByCurrentThread == false, "Current thread already suspended threads.");
     {
         std::unique_lock lock(gSuspensionMutex);
-        bool actual = false;
-        internal::gSuspensionRequested.compare_exchange_strong(actual, true);
+        int actual = 0;
+        internal::gSuspensionRequested.compare_exchange_strong(actual, 1);
         if (actual) {
             return false;
         }
@@ -90,7 +90,7 @@ NO_INLINE void kotlin::mm::SuspendIfRequestedSlowPath() noexcept {
     mm::ThreadRegistry::Instance().CurrentThreadData()->suspensionData().suspendIfRequestedSlowPath();
 }
 
-ALWAYS_INLINE void kotlin::mm::SuspendIfRequested() noexcept {
+NO_INLINE void kotlin::mm::SuspendIfRequested() noexcept {
     if (IsThreadSuspensionRequested()) {
         SuspendIfRequestedSlowPath();
     }
@@ -103,7 +103,7 @@ void kotlin::mm::ResumeThreads() noexcept {
     // https://en.cppreference.com/w/cpp/thread/condition_variable
     {
         std::unique_lock lock(gSuspensionMutex);
-        internal::gSuspensionRequested = false;
+        internal::gSuspensionRequested = 0;
     }
     gSuspensionRequestedByCurrentThread = false;
     gSuspendsionCondVar.notify_all();

@@ -568,7 +568,7 @@ extern "C" void CheckGlobalsAccessible() {
     // Always accessible
 }
 
-extern "C" RUNTIME_NOTHROW ALWAYS_INLINE void Kotlin_mm_safePointFunctionPrologue() {
+extern "C" RUNTIME_NOTHROW NO_INLINE void Kotlin_mm_safePointFunctionPrologue() {
     auto* threadData = mm::ThreadRegistry::Instance().CurrentThreadData();
     AssertThreadState(threadData, ThreadState::kRunnable);
     threadData->gc().SafePointFunctionPrologue();

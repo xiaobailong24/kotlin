@@ -78,6 +78,8 @@ void LLVMAddObjCARCContractPass(LLVMPassManagerRef passManagerRef);
 
 void LLVMKotlinInitializeTargets();
 
+LLVMBasicBlockRef LLVMSplitBasicBlock(LLVMBasicBlockRef block, LLVMValueRef inst);
+
 # ifdef __cplusplus
 }
 # endif

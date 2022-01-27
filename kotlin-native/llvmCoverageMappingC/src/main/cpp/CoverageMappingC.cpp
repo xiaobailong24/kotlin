@@ -237,6 +237,13 @@ void LLVMAddObjCARCContractPass(LLVMPassManagerRef passManagerRef) {
     passManager->add(createObjCARCContractPass());
 }
 
+LLVMBasicBlockRef LLVMSplitBasicBlock(LLVMBasicBlockRef block, LLVMValueRef inst) {
+    auto* blockPtr = cast<llvm::BasicBlock>(unwrap(block));
+    return wrap(blockPtr->splitBasicBlock(cast<llvm::Instruction>(unwrap(inst))));
+}
+
+
+
 void LLVMKotlinInitializeTargets() {
 #define INIT_LLVM_TARGET(TargetName) \
     LLVMInitialize##TargetName##TargetInfo();\
