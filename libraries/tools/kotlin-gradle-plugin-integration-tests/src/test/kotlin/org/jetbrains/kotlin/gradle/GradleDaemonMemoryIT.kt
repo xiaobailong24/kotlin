@@ -51,7 +51,8 @@ class GradleDaemonMemoryIT : KGPDaemonsBaseTest() {
             }
 
             // ensure that the maximum of the used memory established after several first builds doesn't raise significantly in the subsequent builds
-            val establishedMaximum = usedMemory.take(buildCount / 2).maxOrNull()!!
+            val measurePoints = usedMemory.take(buildCount / 2)
+            val establishedMaximum = measurePoints.sorted().run { sum() / count() }
             val totalMaximum = usedMemory.maxOrNull()!!
 
             val maxGrowth = totalMaximum - establishedMaximum
