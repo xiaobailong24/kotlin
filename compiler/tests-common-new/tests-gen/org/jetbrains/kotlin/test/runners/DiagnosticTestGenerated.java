@@ -37269,6 +37269,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("assertThatOnMap.kt")
+            public void testAssertThatOnMap() throws Exception {
+                runTest("compiler/testData/diagnostics/testsWithStdLib/java/assertThatOnMap.kt");
+            }
+
+            @Test
             @TestMetadata("checkEnhancedUpperBounds.kt")
             public void testCheckEnhancedUpperBounds() throws Exception {
                 runTest("compiler/testData/diagnostics/testsWithStdLib/java/checkEnhancedUpperBounds.kt");

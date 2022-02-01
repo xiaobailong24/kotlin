@@ -37179,6 +37179,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             }
 
             @Test
+            @TestMetadata("assertThatOnMap.kt")
+            public void testAssertThatOnMap() throws Exception {
+                runTest("compiler/testData/diagnostics/testsWithStdLib/java/assertThatOnMap.kt");
+            }
+
+            @Test
             @TestMetadata("checkEnhancedUpperBounds.kt")
             public void testCheckEnhancedUpperBounds() throws Exception {
                 runTest("compiler/testData/diagnostics/testsWithStdLib/java/checkEnhancedUpperBounds.kt");
