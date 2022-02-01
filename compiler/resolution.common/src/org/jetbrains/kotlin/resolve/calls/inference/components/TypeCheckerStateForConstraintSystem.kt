@@ -174,9 +174,9 @@ abstract class TypeCheckerStateForConstraintSystem(
      *
      * T?
      *
-     * Foo <: T? -- Foo & Any <: T -- Foo!! <: T
-     * Foo? <: T? -- Foo? & Any <: T -- Foo!! <: T
-     * (Foo..Bar) <: T? -- (Foo..Bar) & Any <: T -- (Foo..Bar)!! <: T
+     * Foo <: T? -- Foo & Any <: T
+     * Foo? <: T? -- Foo? & Any <: T -- Foo & Any <: T
+     * (Foo..Bar) <: T? -- (Foo..Bar) & Any <: T
      *
      * T!
      *
@@ -249,12 +249,11 @@ abstract class TypeCheckerStateForConstraintSystem(
                 when (subType) {
                     is SimpleTypeMarker ->
                         // Foo <: T! -- (Foo!! .. Foo) <: T
-                        subType.createConstraintPartForLowerBoundAndFlexibleTypeVariable()
+                        subType
 
                     is FlexibleTypeMarker ->
                         // (Foo..Bar) <: T! -- (Foo!! .. Bar) <: T
-                        createFlexibleType(subType.lowerBound().makeSimpleTypeDefinitelyNotNullOrNotNull(), subType.upperBound())
-
+                        subType
                     else -> error("sealed")
                 }
             }
@@ -281,8 +280,6 @@ abstract class TypeCheckerStateForConstraintSystem(
         val typeVariableLowerBound = typeVariable.lowerBoundIfFlexible()
         val simplifiedSuperType = if (typeVariableLowerBound.isDefinitelyNotNullType()) {
             superType.withNullability(true)
-        } else if (typeVariable.isFlexible() && superType is SimpleTypeMarker) {
-            createFlexibleType(superType, superType.withNullability(true))
         } else superType
 
         addUpperConstraint(typeVariableLowerBound.typeConstructor(), simplifiedSuperType)
