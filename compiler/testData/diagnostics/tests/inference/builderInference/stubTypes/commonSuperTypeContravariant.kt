@@ -62,7 +62,7 @@ fun test() {
             select4(this@build.get(), <!TYPE_MISMATCH("In<String>; In<Int?>")!>getIn()<!>)
             select4(get(), <!TYPE_MISMATCH("In<Int>; In<String>!")!>Test.foo(this@build.getIn())<!>)
             select4(Test.foo(this@build.get()), <!TYPE_MISMATCH("In<String>; In<Int?>!")!>Test.foo(getIn())<!>)
-            select4(Test.foo(get()), <!TYPE_MISMATCH("In<Int?>; In<String>")!>this@build.getIn()<!>)
+            select4(Test.foo(get()), <!TYPE_MISMATCH("In<Int!>; In<String>")!>this@build.getIn()<!>)
 
             select4(id(Test.foo(this@build.get())), <!TYPE_MISMATCH("In<String>; In<Int?>")!>getIn()<!>)
             ""
