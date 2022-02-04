@@ -1,0 +1,29 @@
+package
+
+package test {
+
+    package test.generation {
+
+        public final class ResolvedNames {
+            public constructor ResolvedNames()
+            public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+            public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+            public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+
+            public final inner class tester {
+                public constructor tester()
+                public final val TestClass: test.generation.ResolvedNames.tester._TestClass
+                public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+                public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+                public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+
+                public final inner class _TestClass {
+                    public constructor _TestClass()
+                    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+                    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+                    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+                }
+            }
+        }
+    }
+}

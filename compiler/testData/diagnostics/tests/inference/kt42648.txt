@@ -1,0 +1,5 @@
+package
+
+public fun main(): kotlin.Unit
+public fun takeLambda(/*0*/ block: () -> kotlin.Int): kotlin.Unit
+@[ERROR : JvmName] /* annotation class not found */ public fun takeLambda(/*0*/ block: () -> kotlin.String): kotlin.Unit

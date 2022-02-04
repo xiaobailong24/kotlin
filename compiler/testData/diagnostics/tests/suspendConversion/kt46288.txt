@@ -1,0 +1,6 @@
+package
+
+public fun main(): kotlin.Unit
+public fun parameterFunc(/*0*/ func: suspend () -> kotlin.Unit): kotlin.Unit
+public fun testFunc(): kotlin.Unit
+public fun (suspend () -> kotlin.Unit).extensionFunc(): kotlin.Unit

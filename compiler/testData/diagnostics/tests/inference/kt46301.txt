@@ -1,0 +1,36 @@
+package
+
+public fun ok(/*0*/ a: A): B
+public fun problem(/*0*/ a: A): B
+
+public sealed interface A {
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public sealed interface B {
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final data class X : A, B {
+    public constructor X(/*0*/ something: kotlin.String)
+    public final val something: kotlin.String
+    public final operator /*synthesized*/ fun component1(): kotlin.String
+    public final /*synthesized*/ fun copy(/*0*/ something: kotlin.String = ...): X
+    public open override /*2*/ /*synthesized*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*2*/ /*synthesized*/ fun hashCode(): kotlin.Int
+    public open override /*2*/ /*synthesized*/ fun toString(): kotlin.String
+}
+
+public final data class Y : A, B {
+    public constructor Y(/*0*/ something: kotlin.String)
+    public final val something: kotlin.String
+    public final operator /*synthesized*/ fun component1(): kotlin.String
+    public final /*synthesized*/ fun copy(/*0*/ something: kotlin.String = ...): Y
+    public open override /*2*/ /*synthesized*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*2*/ /*synthesized*/ fun hashCode(): kotlin.Int
+    public open override /*2*/ /*synthesized*/ fun toString(): kotlin.String
+}

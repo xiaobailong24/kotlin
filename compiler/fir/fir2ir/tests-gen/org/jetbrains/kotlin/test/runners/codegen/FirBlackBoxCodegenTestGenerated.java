@@ -246,6 +246,18 @@ public class FirBlackBoxCodegenTestGenerated extends AbstractFirBlackBoxCodegenT
         }
 
         @Test
+        @TestMetadata("kt43553.kt")
+        public void testKt43553() throws Exception {
+            runTest("compiler/testData/codegen/box/annotations/kt43553.kt");
+        }
+
+        @Test
+        @TestMetadata("kt43553_2.kt")
+        public void testKt43553_2() throws Exception {
+            runTest("compiler/testData/codegen/box/annotations/kt43553_2.kt");
+        }
+
+        @Test
         @TestMetadata("mustBeDocumented.kt")
         public void testMustBeDocumented() throws Exception {
             runTest("compiler/testData/codegen/box/annotations/mustBeDocumented.kt");
@@ -18792,6 +18804,12 @@ public class FirBlackBoxCodegenTestGenerated extends AbstractFirBlackBoxCodegenT
         }
 
         @Test
+        @TestMetadata("kt28109.kt")
+        public void testKt28109() throws Exception {
+            runTest("compiler/testData/codegen/box/increment/kt28109.kt");
+        }
+
+        @Test
         @TestMetadata("kt36956.kt")
         public void testKt36956() throws Exception {
             runTest("compiler/testData/codegen/box/increment/kt36956.kt");
@@ -19027,6 +19045,12 @@ public class FirBlackBoxCodegenTestGenerated extends AbstractFirBlackBoxCodegenT
         @TestMetadata("kt45118.kt")
         public void testKt45118() throws Exception {
             runTest("compiler/testData/codegen/box/inference/kt45118.kt");
+        }
+
+        @Test
+        @TestMetadata("kt46136.kt")
+        public void testKt46136() throws Exception {
+            runTest("compiler/testData/codegen/box/inference/kt46136.kt");
         }
 
         @Test
@@ -24506,6 +24530,12 @@ public class FirBlackBoxCodegenTestGenerated extends AbstractFirBlackBoxCodegenT
         }
 
         @Test
+        @TestMetadata("kt42573.kt")
+        public void testKt42573() throws Exception {
+            runTest("compiler/testData/codegen/box/javaInterop/kt42573.kt");
+        }
+
+        @Test
         @TestMetadata("kt43217.kt")
         public void testKt43217() throws Exception {
             runTest("compiler/testData/codegen/box/javaInterop/kt43217.kt");
@@ -26669,6 +26699,12 @@ public class FirBlackBoxCodegenTestGenerated extends AbstractFirBlackBoxCodegenT
         @TestMetadata("kt23974.kt")
         public void testKt23974() throws Exception {
             runTest("compiler/testData/codegen/box/jvmName/kt23974.kt");
+        }
+
+        @Test
+        @TestMetadata("kt42224.kt")
+        public void testKt42224() throws Exception {
+            runTest("compiler/testData/codegen/box/jvmName/kt42224.kt");
         }
 
         @Test

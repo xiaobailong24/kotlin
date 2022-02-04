@@ -4337,6 +4337,18 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             }
 
             @Test
+            @TestMetadata("kt41330.kt")
+            public void testKt41330() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/cast/kt41330.kt");
+            }
+
+            @Test
+            @TestMetadata("kt41971.kt")
+            public void testKt41971() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/cast/kt41971.kt");
+            }
+
+            @Test
             @TestMetadata("kt47685.kt")
             public void testKt47685() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/cast/kt47685.kt");
@@ -4658,6 +4670,28 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             @TestMetadata("twoLambdasFunction.kt")
             public void testTwoLambdasFunction() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/checkArguments/twoLambdasFunction.kt");
+            }
+        }
+
+        @Nested
+        @TestMetadata("compiler/testData/diagnostics/tests/checkers")
+        @TestDataPath("$PROJECT_ROOT")
+        public class Checkers {
+            @Test
+            public void testAllFilesPresentInCheckers() throws Exception {
+                KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/diagnostics/tests/checkers"), Pattern.compile("^(.+)\\.kt$"), Pattern.compile("^(.+)\\.fir\\.kts?$"), true);
+            }
+
+            @Test
+            @TestMetadata("kt44392.kt")
+            public void testKt44392() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/checkers/kt44392.kt");
+            }
+
+            @Test
+            @TestMetadata("kt44467.kt")
+            public void testKt44467() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/checkers/kt44467.kt");
             }
         }
 
@@ -4998,6 +5032,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             @Test
             public void testAllFilesPresentInConstantEvaluator() throws Exception {
                 KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/diagnostics/tests/constantEvaluator"), Pattern.compile("^(.+)\\.kt$"), Pattern.compile("^(.+)\\.fir\\.kts?$"), true);
+            }
+
+            @Test
+            @TestMetadata("kt51065.kt")
+            public void testKt51065() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/constantEvaluator/kt51065.kt");
             }
 
             @Nested
@@ -7147,6 +7187,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             }
 
             @Test
+            @TestMetadata("kt46383.kt")
+            public void testKt46383() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/dataFlow/kt46383.kt");
+            }
+
+            @Test
             @TestMetadata("kt49249.kt")
             public void testKt49249() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/dataFlow/kt49249.kt");
@@ -8588,6 +8634,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             @TestMetadata("kt44843.kt")
             public void testKt44843() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/delegation/kt44843.kt");
+            }
+
+            @Test
+            @TestMetadata("kt46387.kt")
+            public void testKt46387() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/delegation/kt46387.kt");
             }
 
             @Test
@@ -13845,15 +13897,63 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             }
 
             @Test
+            @TestMetadata("kt41167.kt")
+            public void testKt41167() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt41167.kt");
+            }
+
+            @Test
+            @TestMetadata("kt42624.kt")
+            public void testKt42624() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt42624.kt");
+            }
+
+            @Test
+            @TestMetadata("kt42648.kt")
+            public void testKt42648() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt42648.kt");
+            }
+
+            @Test
             @TestMetadata("kt42741.kt")
             public void testKt42741() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt42741.kt");
             }
 
             @Test
+            @TestMetadata("kt43541.kt")
+            public void testKt43541() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt43541.kt");
+            }
+
+            @Test
+            @TestMetadata("kt44574.kt")
+            public void testKt44574() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt44574.kt");
+            }
+
+            @Test
+            @TestMetadata("kt45461.kt")
+            public void testKt45461() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt45461.kt");
+            }
+
+            @Test
+            @TestMetadata("kt46301.kt")
+            public void testKt46301() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt46301.kt");
+            }
+
+            @Test
             @TestMetadata("kt46515.kt")
             public void testKt46515() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt46515.kt");
+            }
+
+            @Test
+            @TestMetadata("kt46675.kt")
+            public void testKt46675() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt46675.kt");
             }
 
             @Test
@@ -13920,6 +14020,24 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             @TestMetadata("kt50947.kt")
             public void testKt50947() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt50947.kt");
+            }
+
+            @Test
+            @TestMetadata("kt51024.kt")
+            public void testKt51024() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt51024.kt");
+            }
+
+            @Test
+            @TestMetadata("kt51045.kt")
+            public void testKt51045() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt51045.kt");
+            }
+
+            @Test
+            @TestMetadata("kt51068.kt")
+            public void testKt51068() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt51068.kt");
             }
 
             @Test
@@ -14217,6 +14335,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
                 @TestMetadata("equalityChecksOnIntegerTypesProgressive.kt")
                 public void testEqualityChecksOnIntegerTypesProgressive() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/builderInference/equalityChecksOnIntegerTypesProgressive.kt");
+                }
+
+                @Test
+                @TestMetadata("kt44214.kt")
+                public void testKt44214() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/inference/builderInference/kt44214.kt");
                 }
 
                 @Test
@@ -22633,6 +22757,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             }
 
             @Test
+            @TestMetadata("kt45953.kt")
+            public void testKt45953() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/platformTypes/kt45953.kt");
+            }
+
+            @Test
             @TestMetadata("methodTypeParameterDefaultBound.kt")
             public void testMethodTypeParameterDefaultBound() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/platformTypes/methodTypeParameterDefaultBound.kt");
@@ -25157,6 +25287,60 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             }
 
             @Test
+            @TestMetadata("kt42449.kt")
+            public void testKt42449() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt42449.kt");
+            }
+
+            @Test
+            @TestMetadata("kt42715.kt")
+            public void testKt42715() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt42715.kt");
+            }
+
+            @Test
+            @TestMetadata("kt43603.kt")
+            public void testKt43603() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt43603.kt");
+            }
+
+            @Test
+            @TestMetadata("kt43603_2.kt")
+            public void testKt43603_2() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt43603_2.kt");
+            }
+
+            @Test
+            @TestMetadata("kt43619.kt")
+            public void testKt43619() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt43619.kt");
+            }
+
+            @Test
+            @TestMetadata("kt43623.kt")
+            public void testKt43623() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt43623.kt");
+            }
+
+            @Test
+            @TestMetadata("kt44445.kt")
+            public void testKt44445() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt44445.kt");
+            }
+
+            @Test
+            @TestMetadata("kt46570.kt")
+            public void testKt46570() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt46570.kt");
+            }
+
+            @Test
+            @TestMetadata("kt46717.kt")
+            public void testKt46717() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/resolve/kt46717.kt");
+            }
+
+            @Test
             @TestMetadata("kt47488.kt")
             public void testKt47488() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/resolve/kt47488.kt");
@@ -26153,6 +26337,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             }
 
             @Test
+            @TestMetadata("kt41721.kt")
+            public void testKt41721() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/samConversions/kt41721.kt");
+            }
+
+            @Test
             @TestMetadata("kt48838.kt")
             public void testKt48838() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/samConversions/kt48838.kt");
@@ -26382,6 +26572,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             @TestMetadata("kt37.kt")
             public void testKt37() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/scopes/kt37.kt");
+            }
+
+            @Test
+            @TestMetadata("kt50675.kt")
+            public void testKt50675() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/scopes/kt50675.kt");
             }
 
             @Test
@@ -30300,6 +30496,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
                 KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/diagnostics/tests/suppress"), Pattern.compile("^(.+)\\.kt$"), Pattern.compile("^(.+)\\.fir\\.kts?$"), true);
             }
 
+            @Test
+            @TestMetadata("kt43936.kt")
+            public void testKt43936() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/suppress/kt43936.kt");
+            }
+
             @Nested
             @TestMetadata("compiler/testData/diagnostics/tests/suppress/allWarnings")
             @TestDataPath("$PROJECT_ROOT")
@@ -30548,6 +30750,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             @TestMetadata("chainedFunSuspendConversionForSimpleExpression.kt")
             public void testChainedFunSuspendConversionForSimpleExpression() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/suspendConversion/chainedFunSuspendConversionForSimpleExpression.kt");
+            }
+
+            @Test
+            @TestMetadata("kt46288.kt")
+            public void testKt46288() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/suspendConversion/kt46288.kt");
             }
 
             @Test
@@ -32264,6 +32472,12 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
             @TestMetadata("chainedUnitSuspendConversion.kt")
             public void testChainedUnitSuspendConversion() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/unitConversion/chainedUnitSuspendConversion.kt");
+            }
+
+            @Test
+            @TestMetadata("kt46023.kt")
+            public void testKt46023() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/unitConversion/kt46023.kt");
             }
 
             @Test

@@ -110,6 +110,8 @@ private fun checkExpressionArgument(
         return resolvedExpression
     }
 
+    val x = argumentType.constructor.supertypes
+
     if (!csBuilder.addSubtypeConstraintIfCompatible(argumentType, expectedType, position)) {
         if (!isReceiver) {
             diagnosticsHolder.addDiagnosticIfNotNull(

@@ -147,12 +147,13 @@ class SignatureEnhancement(private val typeEnhancement: JavaTypeEnhancement) {
             additionalUserData != null
         ) {
             @Suppress("UNCHECKED_CAST")
-            return this.enhance(
+            val a = this.enhance(
                 receiverTypeEnhancement ?: extensionReceiverParameter?.type,
                 valueParameterEnhancements.mapIndexed { index, enhanced -> enhanced ?: valueParameters[index].type },
                 returnTypeEnhancement ?: returnType!!,
                 additionalUserData
             ) as D
+            return a
         }
 
         return this
