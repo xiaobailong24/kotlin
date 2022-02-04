@@ -1,7 +1,6 @@
 import plugins.KotlinBuildPublishingPlugin
 
 plugins {
-    id("java-gradle-plugin")
     id("gradle-plugin-common-configuration")
     id("com.gradle.plugin-publish")
 }
@@ -39,8 +38,6 @@ pluginBundle {
         }
     }
 }
-
-publishPluginMarkers()
 
 // Disable releasing for this plugin
 // It is not intended to be released publicly

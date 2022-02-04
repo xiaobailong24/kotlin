@@ -62,8 +62,6 @@ pluginBundle {
     }
 }
 
-PluginMarkersKt.publishPluginMarkers(project, true)
-
 // Disable releasing for this plugin
 // It is not intended to be released publicly
 tasks.withType(PublishToMavenRepository)
