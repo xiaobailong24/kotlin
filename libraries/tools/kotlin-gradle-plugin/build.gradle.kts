@@ -54,8 +54,8 @@ dependencies {
     commonImplementation(project(":native:kotlin-klib-commonizer-api"))
     commonImplementation(project(":kotlin-tooling-metadata"))
     commonImplementation(project(":kotlin-project-model"))
-    commonImplementation("com.google.code.gson:gson")
-    commonImplementation("com.google.guava:guava")
+    commonImplementation(commonDependency("com.google.code.gson:gson"))
+    commonImplementation(commonDependency("com.google.guava:guava"))
     commonImplementation("de.undercouch:gradle-download-task:4.1.1")
     commonImplementation("com.github.gundy:semver4j:0.16.4:nodeps") {
         exclude(group = "*")
