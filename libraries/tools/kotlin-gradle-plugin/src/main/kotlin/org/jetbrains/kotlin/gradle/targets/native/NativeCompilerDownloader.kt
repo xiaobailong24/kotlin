@@ -112,14 +112,23 @@ class NativeCompilerDownloader(
 
     private fun downloadAndExtract() {
         val repoUrl = buildString {
-            append("$BASE_DOWNLOAD_URL/")
-            append(if (compilerVersion.meta == MetaVersion.DEV) "dev/" else "releases/")
-            append("$compilerVersion/")
-            append(simpleOsName)
+            append("$BASE_DOWNLOAD_URL/") //https://download.jetbrains.com/kotlin/native/builds/
+            append(if (compilerVersion.meta == MetaVersion.DEV) "dev/" else "releases/") //dev/
+            append("$compilerVersion/")  //1.7.0-dev-1017/
+            append(simpleOsName) //linux-x86_64
         }
-        val dependencyUrl = "$repoUrl/$dependencyFileName"
+        val dependencyUrl = "$repoUrl/$dependencyFileName" //  repoUrl/kotlin-native-prebuilt-linux-x86_64-1.7.0-dev-1017.tar.gz
 
-        val repo = setupRepo(repoUrl)
+        val kotlinBuildNumber = System.getProperty("versions.kotlin-native")
+
+        logger.lifecycle("System.getProperty(\"versions.kotlin-native\") = $kotlinBuildNumber")
+
+        val compilerArtifactName = "kotlin-native-dist-linux-x86_64-${kotlinBuildNumber}.tar.gz"
+        val compilerConfiguration = "Kotlin_BuildPlayground_Moon_KotlinNativeDist_linux_x64_DIST?mode=builds#all-projects"
+        val downloadUrlDirectory = "https://buildserver.labs.intellij.net/guestAuth/app/rest/builds/buildType:(id:$compilerConfiguration),status:success/artifacts/content/$compilerArtifactName"
+
+
+        val repo = setupRepo(downloadUrlDirectory)
 
         val compilerDependency = project.dependencies.create(
             mapOf(
@@ -133,7 +142,8 @@ class NativeCompilerDownloader(
         logger.lifecycle("\nPlease wait while Kotlin/Native compiler $compilerVersion is being installed.")
 
         val suffix = project.probeRemoteFileLength(dependencyUrl, probingTimeoutMs = 200)?.let { " (${formatContentLength(it)})" }.orEmpty()
-        logger.lifecycle("Download $dependencyUrl$suffix")
+    //    DEBBUG: Download https://download.jetbrains.com/kotlin/native/builds/dev/1.7.0-dev-1016/linux-x86_64/kotlin-native-prebuilt-linux-x86_64-1.7.0-dev-1016.tar.gz
+        logger.lifecycle("DEBBUG: Download $dependencyUrl$suffix (suffix = $suffix)")
         val archive = logger.lifecycleWithDuration("Download $dependencyUrl finished,") {
             configuration.files.single()
         }
