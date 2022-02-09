@@ -50,7 +50,7 @@ fun test() {
             select1(this@build.get(), <!TYPE_MISMATCH("In<String>; In<Int?>")!>getIn()<!>)
             select1(get(), <!TYPE_MISMATCH("In<Int?>; In<String>!")!>Test.foo(this@build.getIn())<!>)
             select1(Test.foo(this@build.get()), <!TYPE_MISMATCH("In<String!>; In<Int?>!")!>Test.foo(getIn())<!>)
-            select1(Test.foo(get()), <!TYPE_MISMATCH("In<Int?>; In<String>")!>this@build.getIn()<!>)
+            select1(Test.foo(get()), <!TYPE_MISMATCH("In<Int!>; In<String>")!>this@build.getIn()<!>)
             select2(this@build.get(), <!TYPE_MISMATCH("In<String?>; In<Int?>")!>getIn()<!>)
             select2(get(), <!TYPE_MISMATCH("In<Int?>; In<String>!")!>Test.foo(this@build.getIn())<!>)
             select2(Test.foo(this@build.get()), <!TYPE_MISMATCH("In<String?>; In<Int?>!")!>Test.foo(getIn())<!>)
@@ -73,12 +73,12 @@ fun test() {
         emit(if (true) "" else null)
         <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String?")!>select2(get(), getIn())<!>
         <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String?")!>select2(get(), Test.foo(getIn()))<!>
-        <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String?")!>select2(Test.foo(get()), Test.foo(getIn()))<!>
-        <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String?")!>select2(Test.foo(get()), getIn())<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("(kotlin.String..kotlin.String?)")!>select2(Test.foo(get()), Test.foo(getIn()))<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("(kotlin.String..kotlin.String?)")!>select2(Test.foo(get()), getIn())<!>
         <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>select3(get(), getIn())<!>
         <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String")!>select3(get(), Test.foo(getIn()))<!>
-        <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String?")!>select3(Test.foo(get()), Test.foo(getIn()))<!>
-        <!DEBUG_INFO_EXPRESSION_TYPE("kotlin.String?")!>select3(Test.foo(get()), getIn())<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("(kotlin.String..kotlin.String?)")!>select3(Test.foo(get()), Test.foo(getIn()))<!>
+        <!DEBUG_INFO_EXPRESSION_TYPE("(kotlin.String..kotlin.String?)")!>select3(Test.foo(get()), getIn())<!>
         ""
     }
 }

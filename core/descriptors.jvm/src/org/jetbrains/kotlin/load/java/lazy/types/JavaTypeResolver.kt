@@ -32,7 +32,9 @@ import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.Variance.*
-import org.jetbrains.kotlin.types.typeUtil.*
+import org.jetbrains.kotlin.types.typeUtil.createProjection
+import org.jetbrains.kotlin.types.typeUtil.hasTypeParameterRecursiveBounds
+import org.jetbrains.kotlin.types.typeUtil.replaceAnnotations
 import org.jetbrains.kotlin.utils.sure
 
 private val JAVA_LANG_CLASS_FQ_NAME: FqName = FqName("java.lang.Class")
@@ -130,7 +132,12 @@ class JavaTypeResolver(
 
         val arguments = computeArguments(javaType, attr, constructor)
 
-        return KotlinTypeFactory.simpleType(attributes, constructor, arguments, isNullable)
+        return KotlinTypeFactory.simpleType(attributes, constructor, arguments, isNullable).let {
+            if (!isNullable && constructor.declarationDescriptor is TypeParameterDescriptor)
+                it.makeSimpleTypeDefinitelyNotNullOrNotNull(useCorrectedNullabilityForTypeParameters = true)
+            else
+                it
+        }
     }
 
     private fun computeTypeConstructor(javaType: JavaClassifierType, attr: JavaTypeAttributes): TypeConstructor? {
