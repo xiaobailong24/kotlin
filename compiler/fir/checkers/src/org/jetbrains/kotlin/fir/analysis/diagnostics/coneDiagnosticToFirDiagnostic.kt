@@ -251,7 +251,6 @@ private fun mapInapplicableCandidateError(
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 private fun mapSystemHasContradictionError(
     session: FirSession,
     diagnostic: ConeConstraintSystemHasContradiction,
@@ -259,7 +258,7 @@ private fun mapSystemHasContradictionError(
     qualifiedAccessSource: KtSourceElement?,
 ): List<KtDiagnostic> {
     val errorsToIgnore = mutableSetOf<ConstraintSystemError>()
-    return buildList<KtDiagnostic> {
+    return buildList {
         for (error in diagnostic.candidate.system.errors) {
             addIfNotNull(
                 error.toDiagnostic(
