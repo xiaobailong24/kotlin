@@ -640,7 +640,7 @@ class DescriptorSerializer private constructor(
 
     fun typeId(type: KotlinType): Int = typeTable[type(type)]
 
-    internal fun type(type: KotlinType): ProtoBuf.Type.Builder {
+    internal fun type(type: KotlinType, isFlexibleBound: Boolean = false): ProtoBuf.Type.Builder {
         val builder = ProtoBuf.Type.newBuilder()
 
         if (type.isError) {
@@ -651,8 +651,8 @@ class DescriptorSerializer private constructor(
         if (type.isFlexible()) {
             val flexibleType = type.asFlexibleType()
 
-            val lowerBound = type(flexibleType.lowerBound)
-            val upperBound = type(flexibleType.upperBound)
+            val lowerBound = type(flexibleType.lowerBound, isFlexibleBound = true)
+            val upperBound = type(flexibleType.upperBound, isFlexibleBound = true)
             extension.serializeFlexibleType(flexibleType, lowerBound, upperBound)
             if (useTypeTable()) {
                 lowerBound.flexibleUpperBoundId = typeTable[upperBound]
@@ -680,7 +680,7 @@ class DescriptorSerializer private constructor(
                     builder.typeParameter = getTypeParameterId(descriptor)
                 }
 
-                if (type.unwrap() is DefinitelyNotNullType) {
+                if (type.unwrap() is DefinitelyNotNullType && !isFlexibleBound) {
                     metDefinitelyNotNullType = true
                     builder.flags = Flags.getTypeFlags(false, true)
                 }
