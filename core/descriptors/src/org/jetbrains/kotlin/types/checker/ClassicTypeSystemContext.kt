@@ -461,6 +461,10 @@ interface ClassicTypeSystemContext : TypeSystemInferenceExtensionContext, TypeSy
         return makeSimpleTypeDefinitelyNotNullOrNotNullInternal(this)
     }
 
+    override fun KotlinTypeMarker.isFinal(): Boolean {
+        require(this is KotlinType, this::errorMessage)
+        return !TypeUtils.canHaveSubtypes(KotlinTypeChecker.DEFAULT, this)
+    }
 
     override fun KotlinTypeMarker.removeAnnotations(): KotlinTypeMarker {
         require(this is UnwrappedType, this::errorMessage)
