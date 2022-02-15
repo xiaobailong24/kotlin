@@ -27,7 +27,11 @@ import org.jetbrains.kotlin.name.isSubpackageOf
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.util.Logger
 import org.jetbrains.kotlin.utils.KotlinPaths
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
 import kotlin.system.exitProcess
 
 fun incrementalCompilationIsEnabled(arguments: CommonCompilerArguments): Boolean {
@@ -97,4 +101,14 @@ fun MessageCollector.toLogger(): Logger =
         override fun log(message: String) {
             report(CompilerMessageSeverity.LOGGING, message)
         }
+    }
+
+fun File.hasConfigFile(configFile: String): Boolean =
+    if (isDirectory) File(this, "META-INF" + File.separator + configFile).exists()
+    else try {
+        ZipFile(this).use {
+            it.getEntry("META-INF/$configFile") != null
+        }
+    } catch (e: Throwable) {
+        false
     }

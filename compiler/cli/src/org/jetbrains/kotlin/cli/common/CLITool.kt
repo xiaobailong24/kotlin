@@ -27,6 +27,7 @@ import org.jetbrains.kotlin.cli.jvm.compiler.CompileEnvironmentException
 import org.jetbrains.kotlin.cli.jvm.compiler.setupIdeaStandaloneExecution
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import org.jetbrains.kotlin.config.Services
+import org.jetbrains.kotlin.utils.PathUtil
 import java.io.PrintStream
 import java.net.URL
 import java.net.URLConnection
@@ -48,7 +49,11 @@ abstract class CLITool<A : CommonToolArguments> {
     ): ExitCode {
         val arguments = createArguments()
         parseCommandLineArguments(args.asList(), arguments)
-        parseCommandLineArgumentsFromEnvironment(arguments)
+
+        if (isReadingSettingsFromEnvironmentAllowed) {
+            parseCommandLineArgumentsFromEnvironment(arguments)
+        }
+
         val collector = PrintingMessageCollector(errStream, messageRenderer, arguments.verbose)
 
         try {
@@ -127,6 +132,9 @@ abstract class CLITool<A : CommonToolArguments> {
     }
 
     abstract fun executableScriptFileName(): String
+
+    var isReadingSettingsFromEnvironmentAllowed =
+        PathUtil.getResourcePathForClass(this::class.java).hasConfigFile("allow-configuring-from-environment")
 
     companion object {
         private fun defaultMessageRenderer(): MessageRenderer =
