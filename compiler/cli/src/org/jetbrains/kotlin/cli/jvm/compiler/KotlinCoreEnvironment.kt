@@ -596,6 +596,16 @@ class KotlinCoreEnvironment private constructor(
         }
 
         private fun registerApplicationExtensionPointsAndExtensionsFrom(configuration: CompilerConfiguration, configFilePath: String) {
+            fun File.hasConfigFile(configFile: String): Boolean =
+                if (isDirectory) File(this, "META-INF" + File.separator + configFile).exists()
+                else try {
+                    ZipFile(this).use {
+                        it.getEntry("META-INF/$configFile") != null
+                    }
+                } catch (e: Throwable) {
+                    false
+                }
+
             val pluginRoot: File =
                 configuration.get(CLIConfigurationKeys.INTELLIJ_PLUGIN_ROOT)?.let(::File)
                     ?: PathUtil.getResourcePathForClass(this::class.java).takeIf { it.hasConfigFile(configFilePath) }

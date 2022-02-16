@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity.INFO
 import org.jetbrains.kotlin.cli.jvm.compiler.CompileEnvironmentException
 import org.jetbrains.kotlin.cli.jvm.compiler.setupIdeaStandaloneExecution
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
+import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.config.Services
 import org.jetbrains.kotlin.utils.PathUtil
 import java.io.PrintStream
@@ -133,8 +134,8 @@ abstract class CLITool<A : CommonToolArguments> {
 
     abstract fun executableScriptFileName(): String
 
-    var isReadingSettingsFromEnvironmentAllowed =
-        PathUtil.getResourcePathForClass(this::class.java).hasConfigFile("allow-configuring-from-environment")
+    var isReadingSettingsFromEnvironmentAllowed: Boolean =
+        this::class.java.classLoader.getResource(LanguageVersionSettings.RESOURCE_NAME_TO_ALLOW_READING_FROM_ENVIRONMENT) != null
 
     companion object {
         private fun defaultMessageRenderer(): MessageRenderer =

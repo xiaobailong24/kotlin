@@ -103,12 +103,3 @@ fun MessageCollector.toLogger(): Logger =
         }
     }
 
-fun File.hasConfigFile(configFile: String): Boolean =
-    if (isDirectory) File(this, "META-INF" + File.separator + configFile).exists()
-    else try {
-        ZipFile(this).use {
-            it.getEntry("META-INF/$configFile") != null
-        }
-    } catch (e: Throwable) {
-        false
-    }
