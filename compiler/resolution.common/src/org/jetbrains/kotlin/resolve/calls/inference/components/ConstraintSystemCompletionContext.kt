@@ -92,13 +92,6 @@ abstract class ConstraintSystemCompletionContext : VariableFixationFinder.Contex
         return false
     }
 
-    fun <A : PostponedResolvedAtomMarker> hasLambdaToAnalyze(
-        languageVersionSettings: LanguageVersionSettings,
-        postponedArguments: List<A>
-    ): Boolean {
-        return analyzeArgumentWithFixedParameterTypes(languageVersionSettings, postponedArguments) {}
-    }
-
     // Avoiding smart cast from filterIsInstanceOrNull looks dirty
     private fun <A : PostponedResolvedAtomMarker> findPostponedArgumentWithRevisableExpectedType(postponedArguments: List<A>): A? =
         postponedArguments.firstOrNull { argument -> argument is PostponedAtomWithRevisableExpectedType }

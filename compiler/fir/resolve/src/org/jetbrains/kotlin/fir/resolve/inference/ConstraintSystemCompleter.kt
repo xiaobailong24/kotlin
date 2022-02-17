@@ -69,11 +69,10 @@ class ConstraintSystemCompleter(components: BodyResolveComponents, private val c
             // TODO: This is very slow
             val postponedArguments = getOrderedNotAnalyzedPostponedArguments(topLevelAtoms)
 
-            if (completionMode == ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA && hasLambdaToAnalyze(
-                    languageVersionSettings,
-                    postponedArguments
-                )
-            ) return
+            if (completionMode == ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA) {
+                analyzeArgumentWithFixedParameterTypes(languageVersionSettings, postponedArguments) {}
+                return
+            }
 
             // Stage 1: analyze postponed arguments with fixed parameter types
             if (analyzeArgumentWithFixedParameterTypes(languageVersionSettings, postponedArguments, analyze))
