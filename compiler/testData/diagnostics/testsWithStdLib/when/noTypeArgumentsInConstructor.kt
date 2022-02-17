@@ -21,21 +21,21 @@ val test3: MutableList<Int> =
         }
 
 val test4: Collection<Int> =
-        listOf(1, 2, 3).flatMapTo(LinkedHashSet()) {
+        listOf(1, 2, 3).<!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>flatMapTo(LinkedHashSet()) {
             listOf(it)
-        }
+        }<!>
 
 val test5: Collection<Int> =
-        listOf(1, 2, 3).flatMapTo(LinkedHashSet()) { // TODO
+        listOf(1, 2, 3).<!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>flatMapTo(LinkedHashSet()) { // TODO
             if (true) listOf(it) else listOf(it)
-        }
+        }<!>
 
 val test6: Collection<Int> =
-        listOf(1, 2, 3).flatMapTo(LinkedHashSet<Int>()) {
+        listOf(1, 2, 3).<!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>flatMapTo(LinkedHashSet<Int>()) {
             if (true) listOf(it) else listOf(it)
-        }
+        }<!>
 
 val test7: Collection<Int> =
-        listOf(1, 2, 3).flatMapTo(LinkedHashSet()) {
+        listOf(1, 2, 3).<!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>flatMapTo(LinkedHashSet()) {
             select(listOf(it), listOf(it))
-        }
+        }<!>

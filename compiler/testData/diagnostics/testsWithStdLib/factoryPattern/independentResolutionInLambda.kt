@@ -36,7 +36,7 @@ interface C
 fun <K : Any> elvis(x: K?, y: K): K = y
 
 fun test(a: A) {
-    a.supertypes.asSequence().myFlatMap {
+    a.supertypes.asSequence().<!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>myFlatMap {
         elvis(it.descriptors, sequenceOf())
-    }
+    }<!>
 }

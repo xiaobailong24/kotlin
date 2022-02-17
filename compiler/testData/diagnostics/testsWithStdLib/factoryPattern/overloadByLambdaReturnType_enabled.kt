@@ -38,13 +38,13 @@ fun <K> create(x: K, f: (K) -> Int): Int = 1
 fun <T> create(x: T, f: (T) -> String): String = ""
 
 fun test_4() {
-    val x = create("") { "" }
+    val x = <!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>create("") { "" }<!>
     takeString(x)
 }
 
 fun test_5() {
-    val x = create("") { 1 }
-    takeInt(x)
+    val x = <!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>create("") { <!CONSTANT_EXPECTED_TYPE_MISMATCH, CONSTANT_EXPECTED_TYPE_MISMATCH!>1<!> }<!>
+    takeInt(<!TYPE_MISMATCH!>x<!>)
 }
 
 interface A

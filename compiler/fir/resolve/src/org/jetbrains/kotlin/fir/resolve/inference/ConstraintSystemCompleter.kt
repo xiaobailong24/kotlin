@@ -53,7 +53,10 @@ class ConstraintSystemCompleter(private val components: BodyResolveComponents, p
         completion@ while (true) {
             val postponedArguments = getOrderedNotAnalyzedPostponedArguments(topLevelAtoms) // TODO: This is very slow
 
-            if (completionMode == ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA && hasLambdaToAnalyze(postponedArguments)) return
+            if (completionMode == ConstraintSystemCompletionMode.UNTIL_FIRST_LAMBDA) {
+                analyzeArgumentWithFixedParameterTypes(postponedArguments) {}
+                return
+            }
 
             // Stage 1
             if (analyzeArgumentWithFixedParameterTypes(postponedArguments, analyze))
@@ -331,12 +334,6 @@ class ConstraintSystemCompleter(private val components: BodyResolveComponents, p
         }
 
         return false
-    }
-
-    private fun ConstraintSystemCompletionContext.hasLambdaToAnalyze(
-        postponedArguments: List<PostponedResolvedAtom>
-    ): Boolean {
-        return analyzeArgumentWithFixedParameterTypes(postponedArguments) {}
     }
 
     private fun getOrderedAllTypeVariables(

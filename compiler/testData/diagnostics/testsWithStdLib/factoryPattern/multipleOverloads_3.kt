@@ -31,25 +31,25 @@ interface DeclarationDescriptor {
 }
 
 fun test_1(name: Name, toplevelDescriptors: List<DeclarationDescriptor>): List<DeclarationDescriptor> {
-    val candidates = toplevelDescriptors.myFlatMap { container ->
+    val candidates = toplevelDescriptors.<!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>myFlatMap { container ->
         val nextCandidates = container.nextCandidates ?: return@myFlatMap emptyList()
         nextCandidates
-    }
+    }<!>
     return candidates
 }
 
 fun test_2(name: Name, toplevelDescriptors: List<DeclarationDescriptor>): List<DeclarationDescriptor> {
-    val candidates = toplevelDescriptors.myFlatMap { container ->
-        val nextCandidates = container.nextCandidatesSeq ?: return@myFlatMap sequenceOf()
-        nextCandidates
-    }
-    return candidates
+    val candidates = toplevelDescriptors.<!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>myFlatMap { container ->
+        val nextCandidates = container.nextCandidatesSeq ?: return@myFlatMap <!TYPE_MISMATCH, TYPE_MISMATCH!>sequenceOf()<!>
+        <!TYPE_MISMATCH, TYPE_MISMATCH!>nextCandidates<!>
+    }<!>
+    return <!DEBUG_INFO_ELEMENT_WITH_ERROR_TYPE!>candidates<!>
 }
 
 fun test_3(name: Name, toplevelDescriptors: List<DeclarationDescriptor>): List<DeclarationDescriptor> {
-    val candidates = toplevelDescriptors.myFlatMap { container ->
+    val candidates = toplevelDescriptors.<!CANDIDATE_CHOSEN_USING_OVERLOAD_RESOLUTION_BY_LAMBDA_ANNOTATION!>myFlatMap { container ->
         val nextCandidates = container.nextCandidatesSeq!!
-        nextCandidates
-    }
-    return candidates
+        <!TYPE_MISMATCH, TYPE_MISMATCH!>nextCandidates<!>
+    }<!>
+    return <!DEBUG_INFO_ELEMENT_WITH_ERROR_TYPE!>candidates<!>
 }
