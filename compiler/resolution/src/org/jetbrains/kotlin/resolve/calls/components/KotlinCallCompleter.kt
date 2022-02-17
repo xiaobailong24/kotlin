@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.resolve.calls.tower.CandidateFactory
 import org.jetbrains.kotlin.resolve.calls.tower.forceResolution
 import org.jetbrains.kotlin.types.ErrorUtils
+import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.TypeUtils
 import org.jetbrains.kotlin.types.UnwrappedType
 import org.jetbrains.kotlin.types.model.safeSubstitute
@@ -292,14 +293,22 @@ class KotlinCallCompleter(
         return candidate ?: factory.createErrorCandidate().forceResolution()
     }
 
-    private fun CallableReferenceResolutionCandidate.substitutedReflectionType(): UnwrappedType {
-        return resolvedCall.freshVariablesSubstitutor.safeSubstitute(this.reflectionCandidateType)
+    private fun UnwrappedType.buildSubstitutedType(candidate: ResolutionCandidate): UnwrappedType {
+        val substitutedTypeWithTypeVariables = candidate.resolvedCall.freshVariablesSubstitutor.safeSubstitute(this)
+        val inferredVariablesSubstitutor = candidate.getSystem().getBuilder().buildCurrentSubstitutor()
+        val substitutedType = inferredVariablesSubstitutor.safeSubstitute(
+            candidate.getSystem().asConstraintSystemCompleterContext(),
+            substitutedTypeWithTypeVariables
+        ) as KotlinType
+
+        return substitutedType.unwrap()
     }
 
-    private fun ResolutionCandidate.substitutedReturnType(): UnwrappedType? {
-        val returnType = resolvedCall.candidateDescriptor.returnType?.unwrap() ?: return null
-        return resolvedCall.freshVariablesSubstitutor.safeSubstitute(returnType)
-    }
+    private fun CallableReferenceResolutionCandidate.substitutedReflectionType(): UnwrappedType =
+        reflectionCandidateType.buildSubstitutedType(this)
+
+    private fun ResolutionCandidate.substitutedReturnType(): UnwrappedType? =
+        resolvedCall.candidateDescriptor.returnType?.unwrap()?.buildSubstitutedType(this)
 
     private fun ResolutionCandidate.addExpectedTypeConstraint(
         returnType: UnwrappedType?,
