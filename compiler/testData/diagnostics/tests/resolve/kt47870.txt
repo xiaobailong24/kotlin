@@ -1,0 +1,27 @@
+package
+
+public final class KotlinChildOfJavaSuper : example.JavaSuper {
+    public constructor KotlinChildOfJavaSuper()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    @example.JavaSuper.Foo(value = "should work") public final fun usesFoo(): kotlin.String
+}
+
+package example {
+
+    public abstract class JavaSuper {
+        public constructor JavaSuper()
+        public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+        public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+        public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+
+        protected/*protected static*/ final annotation class Foo : kotlin.Annotation {
+            protected/*protected and package*/ constructor Foo(/*0*/ value: kotlin.String = ...)
+            public final val value: kotlin.String
+            public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+            public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+            public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+        }
+    }
+}

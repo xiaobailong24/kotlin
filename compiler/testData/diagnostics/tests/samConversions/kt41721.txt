@@ -1,0 +1,26 @@
+package
+
+public fun f(/*0*/ x: A<*>, /*1*/ x2: B<*>): kotlin.Unit
+
+public open class A</*0*/ T : kotlin.Any!> {
+    public constructor A</*0*/ T : kotlin.Any!>()
+    public open fun call(/*0*/ vararg block: SAM<T!>! /*kotlin.Array<(out) SAM<T!>!>!*/): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public open class B</*0*/ T : kotlin.Any!> {
+    public constructor B</*0*/ T : kotlin.Any!>()
+    public open fun call(/*0*/ block: SAM<T!>!): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public interface SAM</*0*/ T : kotlin.Any!> {
+    public abstract fun apply(/*0*/ x: T!): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}

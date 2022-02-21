@@ -1,0 +1,18 @@
+package
+
+public final class Delegater {
+    public constructor Delegater()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public final inline operator fun </*0*/ reified T> provideDelegate(/*0*/ receiver: kotlin.Any?, /*1*/ property: kotlin.reflect.KProperty<*>): kotlin.properties.ReadWriteProperty<kotlin.Any?, T?>
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class MyClass {
+    public constructor MyClass(/*0*/ delegater: Delegater)
+    private final val delegated: kotlin.String?
+    public final val delegater: Delegater
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}

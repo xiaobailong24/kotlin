@@ -1,0 +1,40 @@
+package
+
+public fun </*0*/ PropsT, /*1*/ StateT, /*2*/ OutputT> BaseRenderContext<PropsT, StateT, OutputT>.preferredEventHandler(/*0*/ update: WorkflowAction<PropsT, StateT, OutputT>.Updater.() -> kotlin.Unit): () -> kotlin.Unit
+public fun </*0*/ EventT, /*1*/ PropsT, /*2*/ StateT, /*3*/ OutputT> BaseRenderContext<PropsT, StateT, OutputT>.preferredEventHandler(/*0*/ update: WorkflowAction<PropsT, StateT, OutputT>.Updater.(EventT) -> kotlin.Unit): () -> kotlin.Unit
+
+public final class BaseRenderContext</*0*/ out PropsT, /*1*/ StateT, /*2*/ in OutputT> {
+    public constructor BaseRenderContext</*0*/ out PropsT, /*1*/ StateT, /*2*/ in OutputT>()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    public final fun yuckyEventHandler(/*0*/ update: WorkflowAction<PropsT, StateT, OutputT>.Updater.() -> kotlin.Unit): () -> kotlin.Unit
+    public final fun </*0*/ EventT> yuckyEventHandler(/*0*/ update: WorkflowAction<PropsT, StateT, OutputT>.Updater.(EventT) -> kotlin.Unit): () -> kotlin.Unit
+}
+
+public object Thingy {
+    private constructor Thingy()
+    public final val context: BaseRenderContext<kotlin.String, kotlin.String, kotlin.String>
+    public final val preferredNull: () -> kotlin.Unit
+    public final val preferredOne: () -> kotlin.Unit
+    public final val yuckyNull: () -> kotlin.Unit
+    public final val yuckyOne: () -> kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public abstract class WorkflowAction</*0*/ in PropsT, /*1*/ StateT, /*2*/ out OutputT> {
+    public constructor WorkflowAction</*0*/ in PropsT, /*1*/ StateT, /*2*/ out OutputT>()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    public abstract fun WorkflowAction<PropsT, StateT, OutputT>.Updater.apply(): kotlin.Unit
+
+    public final inner class Updater /*captured type parameters: /*0*/ in PropsT, /*1*/ StateT, /*2*/ out OutputT*/ {
+        public constructor Updater()
+        public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+        public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+        public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    }
+}

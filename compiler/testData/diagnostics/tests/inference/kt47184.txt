@@ -1,0 +1,10 @@
+package
+
+public final class Test</*0*/ T : kotlin.Byte> {
+    public constructor Test</*0*/ T : kotlin.Byte>()
+    public final fun bar(/*0*/ x: kotlin.Byte): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public final fun test(/*0*/ z: T): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}

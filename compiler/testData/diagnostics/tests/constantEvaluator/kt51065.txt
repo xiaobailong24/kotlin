@@ -1,0 +1,8 @@
+package
+
+public const val IO_SIZE1: kotlin.UInt = 256.toUInt()
+public const val IO_SIZE2: kotlin.UInt
+public const val IO_SIZE3: kotlin.UInt
+public const val IO_SIZE4: kotlin.UInt
+public const val IO_SIZE5: kotlin.UInt
+public const val IO_SIZE6: kotlin.UInt

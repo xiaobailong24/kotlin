@@ -1,0 +1,4 @@
+package
+
+public fun compiles(): kotlin.Unit
+public fun `does not compile`(): kotlin.Unit

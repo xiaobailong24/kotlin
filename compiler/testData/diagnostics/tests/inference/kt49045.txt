@@ -1,0 +1,32 @@
+package
+
+public fun getFoo(): Wrapper<Foo?>
+public fun Bar.toFoo(): Foo
+
+public final class Bar {
+    public constructor Bar(/*0*/ bar: kotlin.String)
+    public final val bar: kotlin.String
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final data class Foo {
+    public constructor Foo(/*0*/ foo: kotlin.String)
+    public final val foo: kotlin.String
+    public final operator /*synthesized*/ fun component1(): kotlin.String
+    public final /*synthesized*/ fun copy(/*0*/ foo: kotlin.String = ...): Foo
+    public open override /*1*/ /*synthesized*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*synthesized*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*synthesized*/ fun toString(): kotlin.String
+}
+
+public final class Wrapper</*0*/ T> {
+    public constructor Wrapper</*0*/ T>(/*0*/ wrapped: T)
+    public final val wrapped: T
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public final fun </*0*/ A> map(/*0*/ f: (T) -> A): Wrapper<A>
+    public final fun swapWrappedValue(/*0*/ f: (T) -> Wrapper<T>): Wrapper<T>
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}

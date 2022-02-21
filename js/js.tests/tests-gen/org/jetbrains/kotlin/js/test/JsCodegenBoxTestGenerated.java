@@ -42,6 +42,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         }
 
         @Test
+        @TestMetadata("kt43553.kt")
+        public void testKt43553() throws Exception {
+            runTest("compiler/testData/codegen/box/annotations/kt43553.kt");
+        }
+
+        @Test
         @TestMetadata("nestedAnnotation.kt")
         public void testNestedAnnotation() throws Exception {
             runTest("compiler/testData/codegen/box/annotations/nestedAnnotation.kt");
@@ -1918,6 +1924,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         }
 
         @Test
+        @TestMetadata("kt17817.kt")
+        public void testKt17817() throws Exception {
+            runTest("compiler/testData/codegen/box/callableReference/kt17817.kt");
+        }
+
+        @Test
         @TestMetadata("kt21014.kt")
         public void testKt21014() throws Exception {
             runTest("compiler/testData/codegen/box/callableReference/kt21014.kt");
@@ -1945,6 +1957,18 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         @TestMetadata("kt46902.kt")
         public void testKt46902() throws Exception {
             runTest("compiler/testData/codegen/box/callableReference/kt46902.kt");
+        }
+
+        @Test
+        @TestMetadata("kt47373.kt")
+        public void testKt47373() throws Exception {
+            runTest("compiler/testData/codegen/box/callableReference/kt47373.kt");
+        }
+
+        @Test
+        @TestMetadata("kt47490.kt")
+        public void testKt47490() throws Exception {
+            runTest("compiler/testData/codegen/box/callableReference/kt47490.kt");
         }
 
         @Test
@@ -11268,6 +11292,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         }
 
         @Test
+        @TestMetadata("kt48546.kt")
+        public void testKt48546() throws Exception {
+            runTest("compiler/testData/codegen/box/delegation/kt48546.kt");
+        }
+
+        @Test
         @TestMetadata("kt8154.kt")
         public void testKt8154() throws Exception {
             runTest("compiler/testData/codegen/box/delegation/kt8154.kt");
@@ -12705,6 +12735,18 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         @TestMetadata("kt46952.kt")
         public void testKt46952() throws Exception {
             runTest("compiler/testData/codegen/box/extensionProperties/kt46952.kt");
+        }
+
+        @Test
+        @TestMetadata("kt47381.kt")
+        public void testKt47381() throws Exception {
+            runTest("compiler/testData/codegen/box/extensionProperties/kt47381.kt");
+        }
+
+        @Test
+        @TestMetadata("kt47382.kt")
+        public void testKt47382() throws Exception {
+            runTest("compiler/testData/codegen/box/extensionProperties/kt47382.kt");
         }
 
         @Test
@@ -14334,6 +14376,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         }
 
         @Test
+        @TestMetadata("kt28109.kt")
+        public void testKt28109() throws Exception {
+            runTest("compiler/testData/codegen/box/increment/kt28109.kt");
+        }
+
+        @Test
         @TestMetadata("kt36956.kt")
         public void testKt36956() throws Exception {
             runTest("compiler/testData/codegen/box/increment/kt36956.kt");
@@ -14539,6 +14587,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         @TestMetadata("kt45118.kt")
         public void testKt45118() throws Exception {
             runTest("compiler/testData/codegen/box/inference/kt45118.kt");
+        }
+
+        @Test
+        @TestMetadata("kt46136.kt")
+        public void testKt46136() throws Exception {
+            runTest("compiler/testData/codegen/box/inference/kt46136.kt");
         }
 
         @Test
@@ -14889,6 +14943,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         @TestMetadata("kt49407.kt")
         public void testKt49407() throws Exception {
             runTest("compiler/testData/codegen/box/inlineArgsInPlace/kt49407.kt");
+        }
+
+        @Test
+        @TestMetadata("kt50107.kt")
+        public void testKt50107() throws Exception {
+            runTest("compiler/testData/codegen/box/inlineArgsInPlace/kt50107.kt");
         }
 
         @Test
@@ -20453,6 +20513,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
             KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/javaInterop"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JS, true);
         }
 
+        @Test
+        @TestMetadata("kt42573.kt")
+        public void testKt42573() throws Exception {
+            runTest("compiler/testData/codegen/box/javaInterop/kt42573.kt");
+        }
+
         @Nested
         @TestMetadata("compiler/testData/codegen/box/javaInterop/generics")
         @TestDataPath("$PROJECT_ROOT")
@@ -20787,6 +20853,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         @Test
         public void testAllFilesPresentInJvmName() throws Exception {
             KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/jvmName"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.JS, true);
+        }
+
+        @Test
+        @TestMetadata("kt42224.kt")
+        public void testKt42224() throws Exception {
+            runTest("compiler/testData/codegen/box/jvmName/kt42224.kt");
         }
 
         @Nested
@@ -22161,6 +22233,12 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         @TestMetadata("inNestedCall.kt")
         public void testInNestedCall() throws Exception {
             runTest("compiler/testData/codegen/box/nothingValue/inNestedCall.kt");
+        }
+
+        @Test
+        @TestMetadata("kt47486.kt")
+        public void testKt47486() throws Exception {
+            runTest("compiler/testData/codegen/box/nothingValue/kt47486.kt");
         }
 
         @Test
@@ -33391,6 +33469,18 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         @TestMetadata("kt21258_simple.kt")
         public void testKt21258_simple() throws Exception {
             runTest("compiler/testData/codegen/box/syntheticAccessors/kt21258_simple.kt");
+        }
+
+        @Test
+        @TestMetadata("kt47621.kt")
+        public void testKt47621() throws Exception {
+            runTest("compiler/testData/codegen/box/syntheticAccessors/kt47621.kt");
+        }
+
+        @Test
+        @TestMetadata("kt47621_2.kt")
+        public void testKt47621_2() throws Exception {
+            runTest("compiler/testData/codegen/box/syntheticAccessors/kt47621_2.kt");
         }
 
         @Test

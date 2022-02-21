@@ -1,0 +1,18 @@
+package
+
+public fun nullTypeArg(/*0*/ invP: SomeGene<kotlin.Any>, /*1*/ inP: SomeGene<in kotlin.Any>, /*2*/ outP: SomeGene<out kotlin.Any>): kotlin.Unit
+
+public interface SomeFace</*0*/ T> {
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class SomeGene</*0*/ T> {
+    public constructor SomeGene</*0*/ T>()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public final fun setFace(/*0*/ face: SomeFace<T>?): kotlin.Unit
+    public final fun setString(/*0*/ string: kotlin.String?): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}

@@ -856,6 +856,12 @@ public class ForeignAnnotationsCompiledJavaWithPsiClassReadingTestGenerated exte
             }
 
             @Test
+            @TestMetadata("fpUselessNotNullAssertions.kt")
+            public void testFpUselessNotNullAssertions() throws Exception {
+                runTest("compiler/testData/diagnostics/foreignAnnotationsTests/java8Tests/jsr305/fpUselessNotNullAssertions.kt");
+            }
+
+            @Test
             @TestMetadata("overrideWithTypeUseInClasspath.kt")
             public void testOverrideWithTypeUseInClasspath() throws Exception {
                 runTest("compiler/testData/diagnostics/foreignAnnotationsTests/java8Tests/jsr305/overrideWithTypeUseInClasspath.kt");

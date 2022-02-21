@@ -1,4 +1,4 @@
-// JSR305_GLOBAL_REPORT: warn
+// JSR305_GLOBAL_REPORT: strict
 
 // FILE: J.java
 public class J {

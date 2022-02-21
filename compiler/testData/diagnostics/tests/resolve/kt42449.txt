@@ -1,0 +1,26 @@
+package
+
+public fun foo(/*0*/ other: NodePropertyDescriptor<*, *, *>): kotlin.Unit
+
+public final class Node {
+    public constructor Node()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class NodePropertyDescriptor</*0*/ TNode : Node, /*1*/ TProperty : kotlin.Any, /*2*/ TPropertyVal : TProperty?> {
+    public constructor NodePropertyDescriptor</*0*/ TNode : Node, /*1*/ TProperty : kotlin.Any, /*2*/ TPropertyVal : TProperty?>(/*0*/ description: kotlin.String, /*1*/ propertyRef: NodePropertyRef<TNode, TProperty, TPropertyVal>)
+    public final val description: kotlin.String
+    public final val propertyRef: NodePropertyRef<TNode, TProperty, TPropertyVal>
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}
+
+public final class NodePropertyRef</*0*/ T, /*1*/ U, /*2*/ V> {
+    public constructor NodePropertyRef</*0*/ T, /*1*/ U, /*2*/ V>()
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+}

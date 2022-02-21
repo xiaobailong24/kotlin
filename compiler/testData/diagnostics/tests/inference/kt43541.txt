@@ -1,0 +1,19 @@
+package
+
+public object Test {
+    private constructor Test()
+    private final fun booleanFunction(/*0*/ b: kotlin.Boolean): kotlin.Unit
+    public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+    public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+    @kotlin.jvm.JvmStatic public final fun main(/*0*/ args: kotlin.collections.List<kotlin.String>): kotlin.Unit
+    public final fun </*0*/ T : kotlin.Number> number(): T
+    public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+
+    public final class Generic</*0*/ T : kotlin.Number> {
+        public constructor Generic</*0*/ T : kotlin.Number>()
+        public open override /*1*/ /*fake_override*/ fun equals(/*0*/ other: kotlin.Any?): kotlin.Boolean
+        public open override /*1*/ /*fake_override*/ fun hashCode(): kotlin.Int
+        public final fun number(): T
+        public open override /*1*/ /*fake_override*/ fun toString(): kotlin.String
+    }
+}
