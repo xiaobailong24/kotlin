@@ -153,6 +153,11 @@ internal fun Annotated.findSerializableAnnotationDeclaration(): KtAnnotationEntr
     return lazyDesc?.annotationEntry
 }
 
+internal fun Annotated.findAnnotationDeclaration(fqName: FqName): KtAnnotationEntry? {
+    val lazyDesc = annotations.findAnnotation(fqName) as? LazyAnnotationDescriptor
+    return lazyDesc?.annotationEntry
+}
+
 // For abstract classes marked with @Serializable,
 // methods are generated anyway although they shouldn't have
 // generated $serializer and use Polymorphic one.
