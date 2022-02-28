@@ -2,17 +2,18 @@ abstract class Base() {
     init {
         foo()
     }
-
     abstract fun foo()
 }
 
-class Derived(val x: String) : Base() {
+class C(val some: Int)
+
+class Derived(val x: C) : Base() {
     override fun foo() {
-        x?.length
+        x?.some
     }
 }
 
 fun box(): String {
-    Derived("")
+    Derived(C(42))
     return "OK"
 }

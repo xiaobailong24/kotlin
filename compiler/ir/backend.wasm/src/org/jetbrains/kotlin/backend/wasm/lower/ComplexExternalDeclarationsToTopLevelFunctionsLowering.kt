@@ -24,6 +24,9 @@ import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrCallImpl
 import org.jetbrains.kotlin.ir.expressions.impl.IrConstImpl
 import org.jetbrains.kotlin.ir.types.IrType
+import org.jetbrains.kotlin.ir.types.isNullable
+import org.jetbrains.kotlin.ir.types.isPrimitiveType
+import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.*
 import org.jetbrains.kotlin.name.Name
@@ -196,7 +199,6 @@ class ComplexExternalDeclarationsToTopLevelFunctionsLowering(val context: WasmBa
         val dispatchReceiver = function.dispatchReceiverParameter
         val numValueParameters = function.valueParameters.size
 
-
         val numDefaultParameters =
             numDefaultParametersForExternalFunction(function)
 
@@ -238,6 +240,14 @@ class ComplexExternalDeclarationsToTopLevelFunctionsLowering(val context: WasmBa
             }
             append(")")
         }
+
+        //Parameters with defaults could be omitted on call site with null
+        function.valueParameters.forEach {
+            if (it.defaultValue != null && !it.type.isPrimitiveType() && !it.type.isNullable()) {
+                it.type = it.type.makeNullable()
+            }
+        }
+
         val res = createExternalJsFunction(
             name,
             "_\$external_fun",
