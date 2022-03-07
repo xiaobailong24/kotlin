@@ -22272,12 +22272,20 @@ public class NativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTest 
                 @UseExtTestCaseGroupProvider()
                 public class Casts {
                     public Casts() {
+                        register("compiler/testData/codegen/box/inlineClasses/sealed/casts/class.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
                         register("compiler/testData/codegen/box/inlineClasses/sealed/casts/object.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
                     }
 
                     @Test
                     public void testAllFilesPresentInCasts() throws Exception {
                         KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/codegen/box/inlineClasses/sealed/casts"), Pattern.compile("^(.+)\\.kt$"), null, TargetBackend.NATIVE, true);
+                    }
+
+                    @Test
+                    @TestMetadata("class.kt")
+                    public void testClass() throws Exception {
+                        // There is a registered source transformer for the testcase: TransformersFunctions.getRemoveOptionalJvmInlineAnnotation()
+                        runTest("compiler/testData/codegen/box/inlineClasses/sealed/casts/class.kt");
                     }
 
                     @Test
@@ -22334,7 +22342,10 @@ public class NativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTest 
                 @UseExtTestCaseGroupProvider()
                 public class ReturnType {
                     public ReturnType() {
-                        register("compiler/testData/codegen/box/inlineClasses/sealed/returnType/parent.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
+                        register("compiler/testData/codegen/box/inlineClasses/sealed/returnType/nullableParentWithClass.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
+                        register("compiler/testData/codegen/box/inlineClasses/sealed/returnType/nullableParentWithObject.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
+                        register("compiler/testData/codegen/box/inlineClasses/sealed/returnType/parentWithClass.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
+                        register("compiler/testData/codegen/box/inlineClasses/sealed/returnType/parentWithObject.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
                     }
 
                     @Test
@@ -22343,10 +22354,31 @@ public class NativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTest 
                     }
 
                     @Test
-                    @TestMetadata("parent.kt")
-                    public void testParent() throws Exception {
+                    @TestMetadata("nullableParentWithClass.kt")
+                    public void testNullableParentWithClass() throws Exception {
                         // There is a registered source transformer for the testcase: TransformersFunctions.getRemoveOptionalJvmInlineAnnotation()
-                        runTest("compiler/testData/codegen/box/inlineClasses/sealed/returnType/parent.kt");
+                        runTest("compiler/testData/codegen/box/inlineClasses/sealed/returnType/nullableParentWithClass.kt");
+                    }
+
+                    @Test
+                    @TestMetadata("nullableParentWithObject.kt")
+                    public void testNullableParentWithObject() throws Exception {
+                        // There is a registered source transformer for the testcase: TransformersFunctions.getRemoveOptionalJvmInlineAnnotation()
+                        runTest("compiler/testData/codegen/box/inlineClasses/sealed/returnType/nullableParentWithObject.kt");
+                    }
+
+                    @Test
+                    @TestMetadata("parentWithClass.kt")
+                    public void testParentWithClass() throws Exception {
+                        // There is a registered source transformer for the testcase: TransformersFunctions.getRemoveOptionalJvmInlineAnnotation()
+                        runTest("compiler/testData/codegen/box/inlineClasses/sealed/returnType/parentWithClass.kt");
+                    }
+
+                    @Test
+                    @TestMetadata("parentWithObject.kt")
+                    public void testParentWithObject() throws Exception {
+                        // There is a registered source transformer for the testcase: TransformersFunctions.getRemoveOptionalJvmInlineAnnotation()
+                        runTest("compiler/testData/codegen/box/inlineClasses/sealed/returnType/parentWithObject.kt");
                     }
                 }
             }
