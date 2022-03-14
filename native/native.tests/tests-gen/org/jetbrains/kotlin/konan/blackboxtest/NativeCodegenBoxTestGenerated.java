@@ -22273,6 +22273,7 @@ public class NativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTest 
                 public class Casts {
                     public Casts() {
                         register("compiler/testData/codegen/box/inlineClasses/sealed/casts/class.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
+                        register("compiler/testData/codegen/box/inlineClasses/sealed/casts/interface.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
                         register("compiler/testData/codegen/box/inlineClasses/sealed/casts/object.kt", TransformersFunctions.getRemoveOptionalJvmInlineAnnotation());
                     }
 
@@ -22286,6 +22287,13 @@ public class NativeCodegenBoxTestGenerated extends AbstractNativeCodegenBoxTest 
                     public void testClass() throws Exception {
                         // There is a registered source transformer for the testcase: TransformersFunctions.getRemoveOptionalJvmInlineAnnotation()
                         runTest("compiler/testData/codegen/box/inlineClasses/sealed/casts/class.kt");
+                    }
+
+                    @Test
+                    @TestMetadata("interface.kt")
+                    public void testInterface() throws Exception {
+                        // There is a registered source transformer for the testcase: TransformersFunctions.getRemoveOptionalJvmInlineAnnotation()
+                        runTest("compiler/testData/codegen/box/inlineClasses/sealed/casts/interface.kt");
                     }
 
                     @Test
