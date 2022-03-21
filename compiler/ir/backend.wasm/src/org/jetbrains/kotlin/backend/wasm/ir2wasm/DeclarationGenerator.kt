@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.ir.expressions.IrBlockBody
 import org.jetbrains.kotlin.ir.expressions.IrConst
 import org.jetbrains.kotlin.ir.expressions.IrConstKind
 import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrFunctionSymbol
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.IrElementVisitorVoid
@@ -30,7 +31,8 @@ import org.jetbrains.kotlin.ir.visitors.acceptVoid
 import org.jetbrains.kotlin.name.parentOrNull
 import org.jetbrains.kotlin.wasm.ir.*
 
-class DeclarationGenerator(val context: WasmModuleCodegenContext, private val allowIncompleteImplementations: Boolean) : IrElementVisitorVoid {
+class DeclarationGenerator(val context: WasmModuleCodegenContext, private val allowIncompleteImplementations: Boolean) :
+    IrElementVisitorVoid {
 
     // Shortcuts
     private val backendContext: WasmBackendContext = context.backendContext
@@ -167,11 +169,43 @@ class DeclarationGenerator(val context: WasmModuleCodegenContext, private val al
         }
     }
 
+    private fun getRtt(
+        name: String,
+        type: WasmStructDeclaration,
+        typeSymbol: WasmSymbol<WasmTypeDeclaration>,
+        metadata: ClassMetadata,
+        referenceRtt: (IrClassSymbol) -> WasmSymbol<WasmGlobal>,
+    ): WasmGlobal {
+        val initBody = buildWasmExpression {
+            val superClass = metadata.superClass
+            if (superClass != null) {
+                val superRTT = referenceRtt(superClass.klass.symbol)
+                buildGetGlobal(superRTT)
+                buildRttSub(typeSymbol)
+            } else {
+                buildRttCanon(typeSymbol)
+            }
+        }
+
+        var depth = 0
+        var subMetadata = metadata
+        while (true) {
+            subMetadata = subMetadata.superClass ?: break
+            depth++
+        }
+
+        return WasmGlobal(
+            name = "rtt_of_$name",
+            isMutable = false,
+            type = WasmRtt(depth, WasmSymbol(type)),
+            init = initBody
+        )
+    }
+
     override fun visitClass(declaration: IrClass) {
         if (declaration.isAnnotationClass) return
         if (declaration.isExternal) return
         val symbol = declaration.symbol
-
 
         // Handle arrays
         declaration.getWasmArrayAnnotation()?.let { wasmArrayAnnotation ->
@@ -201,48 +235,81 @@ class DeclarationGenerator(val context: WasmModuleCodegenContext, private val al
             context.registerInterface(symbol)
         } else {
             val nameStr = declaration.fqNameWhenAvailable.toString()
+            val metadata = context.getClassMetadata(symbol)
+
+            val vtableFields = metadata.virtualMethods.map {
+                WasmStructFieldDeclaration(
+                    name = it.signature.name.asString(),
+                    type = WasmRefNullType(WasmHeapType.Type(context.referenceFunctionType(it.function.symbol))),
+                    isMutable = false
+                )
+            }
+
+            val vtableName = "$nameStr.vtable"
+            val vtableStruct = WasmStructDeclaration(
+                name = vtableName,
+                fields = vtableFields,
+            )
+            context.defineVTableGcType(symbol, vtableStruct)
+
+            val vTableTypeSymbol = context.referenceVTableGcType(symbol)
+            val vTableRtt = getRtt(
+                name = vtableName,
+                type = vtableStruct,
+                typeSymbol = vTableTypeSymbol,
+                metadata = metadata,
+                referenceRtt = context::referenceClassVTableRTT
+            )
+            context.defineVTableRTT(symbol, vTableRtt)
+
+            val vtableGcType = WasmRefNullType(WasmHeapType.Type(vTableTypeSymbol))
+
+            if (declaration.modality != Modality.ABSTRACT) {
+                val initVTableGlobal = buildWasmExpression {
+                    buildRefNull(vtableGcType.heapType)
+                }
+                context.defineGlobal(symbol, WasmGlobal(vtableName, vtableGcType, true, initVTableGlobal))
+
+                context.vtableInitFunctionBuilder {
+                    metadata.virtualMethods.forEachIndexed { i, method ->
+                        if (method.function.modality != Modality.ABSTRACT) {
+                            buildInstr(WasmOp.REF_FUNC, WasmImmediate.FuncIdx(context.referenceFunction(method.function.symbol)))
+                        } else {
+                            buildRefNull(vtableFields[i].type.getHeapType()) //This erased by DCE so abstract version appeared
+                        }
+                    }
+                    buildGetGlobal(context.referenceClassVTableRTT(symbol))
+                    buildStructNew(vTableTypeSymbol)
+                    buildSetGlobal(context.referenceGlobal(symbol))
+                }
+            }
+
+            val fields = mutableListOf<WasmStructFieldDeclaration>()
+            fields.add(WasmStructFieldDeclaration("vtable", vtableGcType, false))
+            declaration.allFields(irBuiltIns).mapTo(fields) {
+                WasmStructFieldDeclaration(
+                    name = it.name.toString(),
+                    type = context.transformFieldType(it.type),
+                    isMutable = true
+                )
+            }
+
             val structType = WasmStructDeclaration(
                 name = nameStr,
-                fields = declaration.allFields(irBuiltIns).map {
-                    WasmStructFieldDeclaration(
-                        name = it.name.toString(),
-                        type = context.transformFieldType(it.type),
-                        isMutable = true
-                    )
-                }
+                fields = fields
             )
 
             context.defineGcType(symbol, structType)
 
-            var depth = 0
-            val metadata = context.getClassMetadata(symbol)
-            var subMetadata = metadata
-            while (true) {
-                subMetadata = subMetadata.superClass ?: break
-                depth++
-            }
-
-            val initBody = mutableListOf<WasmInstr>()
-            val wasmExpressionGenerator = WasmIrExpressionBuilder(initBody)
-
-            val wasmGcType = context.referenceGcType(symbol)
-            val superClass = metadata.superClass
-            if (superClass != null) {
-                val superRTT = context.referenceClassRTT(superClass.klass.symbol)
-                wasmExpressionGenerator.buildGetGlobal(superRTT)
-                wasmExpressionGenerator.buildRttSub(wasmGcType)
-            } else {
-                wasmExpressionGenerator.buildRttCanon(wasmGcType)
-            }
-
-            val rtt = WasmGlobal(
-                name = "rtt_of_$nameStr",
-                isMutable = false,
-                type = WasmRtt(depth, WasmSymbol(structType)),
-                init = initBody
+            val rtt = getRtt(
+                name = nameStr,
+                type = structType,
+                typeSymbol = context.referenceGcType(symbol),
+                metadata = metadata,
+                referenceRtt = context::referenceClassRTT
             )
-
             context.defineRTT(symbol, rtt)
+
             context.registerClass(symbol)
             context.generateTypeInfo(symbol, binaryDataStruct(metadata))
 

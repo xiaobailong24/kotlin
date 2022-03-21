@@ -10,15 +10,10 @@ import org.jetbrains.kotlin.backend.wasm.lower.WasmSignature
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.declarations.IrField
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
-import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
-import org.jetbrains.kotlin.ir.symbols.IrFieldSymbol
-import org.jetbrains.kotlin.ir.symbols.IrFunctionSymbol
-import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
+import org.jetbrains.kotlin.ir.symbols.*
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.defaultType
-import org.jetbrains.kotlin.ir.types.getClass
 import org.jetbrains.kotlin.ir.types.isNothing
-import org.jetbrains.kotlin.ir.util.isFunction
 import org.jetbrains.kotlin.ir.util.parentAsClass
 import org.jetbrains.kotlin.wasm.ir.*
 
@@ -98,16 +93,24 @@ class WasmModuleCodegenContextImpl(
         wasmFragment.functions.define(irFunction, wasmFunction)
     }
 
-    override fun defineGlobal(irField: IrFieldSymbol, wasmGlobal: WasmGlobal) {
-        wasmFragment.globals.define(irField, wasmGlobal)
+    override fun defineGlobal(irSymbol: IrSymbol, wasmGlobal: WasmGlobal) {
+        wasmFragment.globals.define(irSymbol, wasmGlobal)
     }
 
     override fun defineGcType(irClass: IrClassSymbol, wasmType: WasmTypeDeclaration) {
         wasmFragment.gcTypes.define(irClass, wasmType)
     }
 
+    override fun defineVTableGcType(irClass: IrClassSymbol, wasmType: WasmTypeDeclaration) {
+        wasmFragment.vTableGcTypes.define(irClass, wasmType)
+    }
+
     override fun defineRTT(irClass: IrClassSymbol, wasmGlobal: WasmGlobal) {
         wasmFragment.runtimeTypes.define(irClass, wasmGlobal)
+    }
+
+    override fun defineVTableRTT(irClass: IrClassSymbol, wasmGlobal: WasmGlobal) {
+        wasmFragment.runtimeVTableTypes.define(irClass, wasmGlobal)
     }
 
     override fun defineFunctionType(irFunction: IrFunctionSymbol, wasmFunctionType: WasmFunctionType) {
@@ -146,8 +149,8 @@ class WasmModuleCodegenContextImpl(
     override fun referenceFunction(irFunction: IrFunctionSymbol): WasmSymbol<WasmFunction> =
         wasmFragment.functions.reference(irFunction)
 
-    override fun referenceGlobal(irField: IrFieldSymbol): WasmSymbol<WasmGlobal> =
-        wasmFragment.globals.reference(irField)
+    override fun referenceGlobal(irSymbol: IrSymbol): WasmSymbol<WasmGlobal> =
+        wasmFragment.globals.reference(irSymbol)
 
     override fun referenceGcType(irClass: IrClassSymbol): WasmSymbol<WasmTypeDeclaration> {
         val type = irClass.defaultType
@@ -157,8 +160,19 @@ class WasmModuleCodegenContextImpl(
         return wasmFragment.gcTypes.reference(irClass)
     }
 
+    override fun referenceVTableGcType(irClass: IrClassSymbol): WasmSymbol<WasmTypeDeclaration> {
+        val type = irClass.defaultType
+        require(!type.isNothing()) {
+            "Can't reference Nothing type"
+        }
+        return wasmFragment.vTableGcTypes.reference(irClass)
+    }
+
     override fun referenceClassRTT(irClass: IrClassSymbol): WasmSymbol<WasmGlobal> =
         wasmFragment.runtimeTypes.reference(irClass)
+
+    override fun referenceClassVTableRTT(irClass: IrClassSymbol): WasmSymbol<WasmGlobal> =
+        wasmFragment.runtimeVTableTypes.reference(irClass)
 
     override fun referenceFunctionType(irFunction: IrFunctionSymbol): WasmSymbol<WasmFunctionType> =
         wasmFragment.functionTypes.reference(irFunction)
@@ -194,12 +208,16 @@ class WasmModuleCodegenContextImpl(
     override fun getStructFieldRef(field: IrField): WasmSymbol<Int> {
         val klass = field.parentAsClass
         val metadata = getClassMetadata(klass.symbol)
-        val fieldId = metadata.fields.indexOf(field)
+        val fieldId = metadata.fields.indexOf(field) + 1 //Implicit vtable field
         return WasmSymbol(fieldId)
     }
 
     override fun addJsFun(importName: String, jsCode: String) {
         wasmFragment.jsFuns +=
             WasmCompiledModuleFragment.JsCodeSnippet(importName = importName, jsCode = jsCode)
+    }
+
+    override fun vtableInitFunctionBuilder(body: WasmExpressionBuilder.() -> Unit) {
+        wasmFragment.vtableInitFunctionBuilder.body()
     }
 }

@@ -5,9 +5,11 @@
 
 package org.jetbrains.kotlin.backend.wasm.ir2wasm
 
-import org.jetbrains.kotlin.backend.common.push
 import org.jetbrains.kotlin.backend.wasm.lower.WasmSignature
+import org.jetbrains.kotlin.backend.wasm.lower.wasmSignature
+import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.IrBuiltIns
+import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrDeclarationWithName
 import org.jetbrains.kotlin.ir.declarations.IrExternalPackageFragment
 import org.jetbrains.kotlin.ir.symbols.*
@@ -16,13 +18,16 @@ import org.jetbrains.kotlin.ir.util.getPackageFragment
 import org.jetbrains.kotlin.wasm.ir.*
 
 class WasmCompiledModuleFragment(val irBuiltIns: IrBuiltIns) {
+
     val functions =
         ReferencableAndDefinable<IrFunctionSymbol, WasmFunction>()
     val globals =
-        ReferencableAndDefinable<IrFieldSymbol, WasmGlobal>()
+        ReferencableAndDefinable<IrSymbol, WasmGlobal>()
     val functionTypes =
         ReferencableAndDefinable<IrFunctionSymbol, WasmFunctionType>()
     val gcTypes =
+        ReferencableAndDefinable<IrClassSymbol, WasmTypeDeclaration>()
+    val vTableGcTypes =
         ReferencableAndDefinable<IrClassSymbol, WasmTypeDeclaration>()
     val classIds =
         ReferencableElements<IrClassSymbol, Int>()
@@ -37,6 +42,10 @@ class WasmCompiledModuleFragment(val irBuiltIns: IrBuiltIns) {
 
     val runtimeTypes =
         ReferencableAndDefinable<IrClassSymbol, WasmGlobal>()
+    val runtimeVTableTypes =
+        ReferencableAndDefinable<IrClassSymbol, WasmGlobal>()
+
+    val vtableInitFunctionBuilder = WasmIrExpressionBuilder(mutableListOf())
 
     val tagFuncType = WasmFunctionType(
         "ex_handling_tag",
@@ -46,7 +55,6 @@ class WasmCompiledModuleFragment(val irBuiltIns: IrBuiltIns) {
         emptyList()
     )
     val tag = WasmTag(tagFuncType)
-
 
     val classes = mutableListOf<IrClassSymbol>()
     val interfaces = mutableListOf<IrClassSymbol>()
@@ -126,7 +134,9 @@ class WasmCompiledModuleFragment(val irBuiltIns: IrBuiltIns) {
         bind(globals.unbound, globals.defined)
         bind(functionTypes.unbound, functionTypes.defined)
         bind(gcTypes.unbound, gcTypes.defined)
+        bind(vTableGcTypes.unbound, vTableGcTypes.defined)
         bind(runtimeTypes.unbound, runtimeTypes.defined)
+        bind(runtimeVTableTypes.unbound, runtimeVTableTypes.defined)
 
         val klassIds = mutableMapOf<IrClassSymbol, Int>()
         var currentDataSectionAddress = 0
@@ -261,9 +271,14 @@ class WasmCompiledModuleFragment(val irBuiltIns: IrBuiltIns) {
             )
         }
 
+        val vtableInitFunctionType = WasmFunctionType("__vtable_init_t", emptyList(), emptyList())
+        val vtableInitFunction =
+            WasmFunction.Defined("__vtable_init", vtableInitFunctionType, instructions = vtableInitFunctionBuilder.expression)
+
         val masterInitFunctionType = WasmFunctionType("__init_t", emptyList(), emptyList())
         val masterInitFunction = WasmFunction.Defined("__init", masterInitFunctionType)
         with(WasmIrExpressionBuilder(masterInitFunction.instructions)) {
+            buildCall(WasmSymbol(vtableInitFunction))
             initFunctions.sortedBy { it.priority }.forEach {
                 buildCall(WasmSymbol(it.function))
             }
@@ -286,16 +301,17 @@ class WasmCompiledModuleFragment(val irBuiltIns: IrBuiltIns) {
 
         // Sorting by depth for a valid init order
         val sortedRttGlobals = runtimeTypes.elements.sortedBy { (it.type as WasmRtt).depth }
+        val sortedRttVTableGlobals = runtimeVTableTypes.elements.sortedBy { (it.type as WasmRtt).depth }
 
         val module = WasmModule(
-            functionTypes = functionTypes.elements + tagFuncType + masterInitFunctionType,
-            gcTypes = gcTypes.elements,
+            functionTypes = functionTypes.elements + tagFuncType + masterInitFunctionType + vtableInitFunctionType,
+            gcTypes = gcTypes.elements + vTableGcTypes.elements,
             importsInOrder = importedFunctions,
             importedFunctions = importedFunctions,
-            definedFunctions = functions.elements.filterIsInstance<WasmFunction.Defined>() + masterInitFunction,
+            definedFunctions = functions.elements.filterIsInstance<WasmFunction.Defined>() + masterInitFunction + vtableInitFunction,
             tables = listOf(table) + interfaceMethodTables.elements,
             memories = listOf(memory),
-            globals = globals.elements + sortedRttGlobals,
+            globals = sortedRttGlobals + sortedRttVTableGlobals + globals.elements,
             exports = exports,
             startFunction = null,  // Module is initialized via export call
             elements = listOf(elements) + interfaceTableElements,

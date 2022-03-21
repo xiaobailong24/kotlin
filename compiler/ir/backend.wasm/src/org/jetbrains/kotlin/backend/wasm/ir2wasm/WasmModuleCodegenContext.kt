@@ -5,10 +5,7 @@
 
 package org.jetbrains.kotlin.backend.wasm.ir2wasm
 
-import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
-import org.jetbrains.kotlin.ir.symbols.IrFieldSymbol
-import org.jetbrains.kotlin.ir.symbols.IrFunctionSymbol
-import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
+import org.jetbrains.kotlin.ir.symbols.*
 import org.jetbrains.kotlin.wasm.ir.*
 
 /**
@@ -16,12 +13,16 @@ import org.jetbrains.kotlin.wasm.ir.*
  */
 interface WasmModuleCodegenContext : WasmBaseCodegenContext {
     fun defineFunction(irFunction: IrFunctionSymbol, wasmFunction: WasmFunction)
-    fun defineGlobal(irField: IrFieldSymbol, wasmGlobal: WasmGlobal)
+    fun defineGlobal(irSymbol: IrSymbol, wasmGlobal: WasmGlobal)
     fun defineGcType(irClass: IrClassSymbol, wasmType: WasmTypeDeclaration)
+    fun defineVTableGcType(irClass: IrClassSymbol, wasmType: WasmTypeDeclaration)
     fun defineRTT(irClass: IrClassSymbol, wasmGlobal: WasmGlobal)
+    fun defineVTableRTT(irClass: IrClassSymbol, wasmGlobal: WasmGlobal)
     fun defineFunctionType(irFunction: IrFunctionSymbol, wasmFunctionType: WasmFunctionType)
     fun defineInterfaceMethodTable(irFunction: IrFunctionSymbol, wasmTable: WasmTable)
     fun addJsFun(importName: String, jsCode: String)
+
+    fun vtableInitFunctionBuilder(body: WasmExpressionBuilder.() -> Unit)
 
     fun registerInitFunction(wasmFunction: WasmFunction, priority: String)
     fun addExport(wasmExport: WasmExport<*>)

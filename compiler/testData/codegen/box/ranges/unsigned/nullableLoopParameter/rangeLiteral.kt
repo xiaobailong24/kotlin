@@ -3,14 +3,19 @@
 // IGNORE_LIGHT_ANALYSIS
 // WITH_STDLIB
 
-fun box(): String {
-    var result = 0u
-    for (i: UInt? in 1u..3u) {
-        result = sum(result, i)
-    }
-    return if (result == 6u) "OK" else "fail: $result"
+abstract class CLASSS {
+    abstract fun foo()
 }
 
-fun sum(i: UInt, z: UInt?): UInt {
-    return i + z!!
+class DERIVED : CLASSS() {
+    override fun foo() = Unit
+}
+
+fun frrrrr(c: CLASSS) {
+    c.foo()
+}
+
+fun box(): String {
+    frrrrr(DERIVED())
+    return "OK"
 }
