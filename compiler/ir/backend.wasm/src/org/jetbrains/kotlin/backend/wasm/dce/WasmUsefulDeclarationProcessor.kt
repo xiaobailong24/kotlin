@@ -98,11 +98,8 @@ internal class WasmUsefulDeclarationProcessor(
             val isSuperCall = expression.superQualifierSymbol != null
             if (function is IrSimpleFunction && function.isOverridable && !isSuperCall) {
                 val klass = function.parentAsClass
-                if (!klass.isInterface) {
-                    context.wasmSymbols.getVirtualMethodId.owner.enqueue(data, "call on class receiver")
-                } else {
+                if (klass.isInterface) {
                     klass.enqueue(data, "receiver class")
-                    context.wasmSymbols.getInterfaceImplId.owner.enqueue(data, "call on interface receiver")
                 }
                 function.enqueue(data, "method call")
             }
