@@ -9,10 +9,7 @@ import org.jetbrains.kotlin.backend.wasm.WasmBackendContext
 import org.jetbrains.kotlin.backend.wasm.lower.WasmSignature
 import org.jetbrains.kotlin.ir.declarations.IrField
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
-import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
-import org.jetbrains.kotlin.ir.symbols.IrFieldSymbol
-import org.jetbrains.kotlin.ir.symbols.IrFunctionSymbol
-import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
+import org.jetbrains.kotlin.ir.symbols.*
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.wasm.ir.*
 
@@ -22,8 +19,9 @@ interface WasmBaseCodegenContext {
     val scratchMemAddr: WasmSymbol<Int>
 
     fun referenceFunction(irFunction: IrFunctionSymbol): WasmSymbol<WasmFunction>
-    fun referenceGlobal(irField: IrFieldSymbol): WasmSymbol<WasmGlobal>
+    fun referenceGlobal(irSymbol: IrSymbol): WasmSymbol<WasmGlobal>
     fun referenceGcType(irClass: IrClassSymbol): WasmSymbol<WasmTypeDeclaration>
+    fun referenceVTableGcType(irClass: IrClassSymbol): WasmSymbol<WasmTypeDeclaration>
     fun referenceFunctionType(irFunction: IrFunctionSymbol): WasmSymbol<WasmFunctionType>
 
     fun referenceClassId(irClass: IrClassSymbol): WasmSymbol<Int>

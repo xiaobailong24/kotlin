@@ -204,16 +204,55 @@ class DeclarationGenerator(val context: WasmModuleCodegenContext, private val al
             val nameStr = declaration.fqNameWhenAvailable.toString()
             val metadata = context.getClassMetadata(symbol)
             val superClass = metadata.superClass
+
+            //VTable global declaration
+            val vtableFields = metadata.virtualMethods.map {
+                WasmStructFieldDeclaration(
+                    name = it.signature.name.asString(),
+                    type = WasmRefNullType(WasmHeapType.Type(context.referenceFunctionType(it.function.symbol))),
+                    isMutable = false
+                )
+            }
+
+            val vtableName = "$nameStr.vtable"
+            val vtableStruct = WasmStructDeclaration(
+                name = vtableName,
+                fields = vtableFields,
+                superType = superClass?.let { context.referenceVTableGcType(superClass.klass.symbol) }
+            )
+            context.defineVTableGcType(symbol, vtableStruct)
+
+            val vtableTypeReference = context.referenceVTableGcType(symbol)
+            val vtableGcType = WasmRefType(WasmHeapType.Type(vtableTypeReference))
+
+            if (declaration.modality != Modality.ABSTRACT) {
+                val initVTableGlobal = buildWasmExpression {
+                    metadata.virtualMethods.forEachIndexed { i, method ->
+                        if (method.function.modality != Modality.ABSTRACT) {
+                            buildInstr(WasmOp.REF_FUNC, WasmImmediate.FuncIdx(context.referenceFunction(method.function.symbol)))
+                        } else {
+                            buildRefNull(vtableFields[i].type.getHeapType()) //This erased by DCE so abstract version appeared in non-abstract class
+                        }
+                    }
+                    buildStructNewWithoutRtt(vtableTypeReference)
+                }
+                context.defineGlobal(symbol, WasmGlobal(vtableName, vtableGcType, false, initVTableGlobal))
+            }
+            //End of VTable global declaration
+
+            val fields = mutableListOf<WasmStructFieldDeclaration>()
+            fields.add(WasmStructFieldDeclaration("vtable", vtableGcType, false))
+            declaration.allFields(irBuiltIns).mapTo(fields) {
+                WasmStructFieldDeclaration(
+                    name = it.name.toString(),
+                    type = context.transformFieldType(it.type),
+                    isMutable = true
+                )
+            }
             val structType = WasmStructDeclaration(
                 name = nameStr,
-                fields = declaration.allFields(irBuiltIns).map {
-                    WasmStructFieldDeclaration(
-                        name = it.name.toString(),
-                        type = context.transformFieldType(it.type),
-                        isMutable = true
-                    )
-                },
-                superClass?.let { context.referenceGcType(superClass.klass.symbol) }
+                fields = fields,
+                superType = superClass?.let { context.referenceGcType(superClass.klass.symbol) }
             )
 
             context.defineGcType(symbol, structType)
