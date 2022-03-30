@@ -1,0 +1,7 @@
+/kt45461_7.kt:5:25: warning: parameter 'foo' is never used
+    fun <S : T> takeFoo(foo: Foo<in S>) {}
+                        ^
+/kt45461_7.kt:8:23: warning: 'Int' is a final type, and thus a value of the type parameter is predetermined
+fun <K : L, L : N, N: Int> main() {
+                      ^
+
