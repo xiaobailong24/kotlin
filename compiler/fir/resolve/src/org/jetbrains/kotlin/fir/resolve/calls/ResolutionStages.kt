@@ -34,6 +34,7 @@ import org.jetbrains.kotlin.fir.visibilityChecker
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.types.model.EmptyIntersectionTypeKind
 import org.jetbrains.kotlin.resolve.calls.tasks.ExplicitReceiverKind.*
 import org.jetbrains.kotlin.resolve.calls.tower.CandidateApplicability
 import org.jetbrains.kotlin.resolve.deprecation.DeprecationLevelValue
@@ -487,17 +488,16 @@ internal object CheckLowPriorityInOverloadResolution : CheckerStage() {
 internal object CheckIncompatibleTypeVariableUpperBounds : ResolutionStage() {
     override suspend fun check(candidate: Candidate, callInfo: CallInfo, sink: CheckerSink, context: ResolutionContext) =
         with(candidate.system.asConstraintSystemCompleterContext()) {
-            val typeVariables = candidate.system.notFixedTypeVariables.values
+            val typeVariables = candidate.system.notFixedTypeVariables.values.takeIf { it.isNotEmpty() } ?: return
 
-            for (variableWithConstraints in typeVariables) {
-                val upperTypes = variableWithConstraints.constraints.extractUpperTypes()
-
-                if (upperTypes.isEmptyIntersection()) {
+            for (typeVariable in typeVariables) {
+                val upperTypes = typeVariable.constraints.extractUpperTypes().map { it.withNullability(false) }
+                if (upperTypes.determineEmptyIntersectionTypeKind() == EmptyIntersectionTypeKind.MULTIPLE_CLASSES) {
                     sink.yieldDiagnostic(
                         @Suppress("UNCHECKED_CAST")
                         InferredEmptyIntersectionDiagnostic(
                             upperTypes as Collection<ConeKotlinType>,
-                            variableWithConstraints.typeVariable as ConeTypeVariable
+                            typeVariable.typeVariable as ConeTypeVariable
                         )
                     )
                 }

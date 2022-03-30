@@ -89,6 +89,10 @@ object BuilderInferencePosition : ConstraintPosition() {
     override fun toString(): String = "For builder inference call"
 }
 
+object TypeParametersIntersectionEmptyCheckingPosition : ConstraintPosition() {
+    override fun toString(): String = "For checking whether some types including a type parameter form an empty intersection type"
+}
+
 // TODO: should be used only in SimpleConstraintSystemImpl
 object SimpleConstraintSystemConstraintPosition : ConstraintPosition()
 

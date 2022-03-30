@@ -44,7 +44,6 @@ class ResultTypeResolver(
         return createCapturedStarProjectionForSelfType(typeVariableConstructor, typesForRecursiveTypeParameters)
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun Context.getDefaultType(
         direction: ResolveDirection,
         constraints: List<Constraint>,

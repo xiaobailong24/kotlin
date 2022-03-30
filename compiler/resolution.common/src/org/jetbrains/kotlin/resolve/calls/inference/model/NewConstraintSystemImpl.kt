@@ -14,15 +14,16 @@ import org.jetbrains.kotlin.types.AbstractTypeApproximator
 import org.jetbrains.kotlin.types.AbstractTypeChecker
 import org.jetbrains.kotlin.types.TypeApproximatorConfiguration
 import org.jetbrains.kotlin.types.model.*
+import org.jetbrains.kotlin.types.model.EmptyIntersectionTypeKind
 import org.jetbrains.kotlin.utils.SmartList
 import org.jetbrains.kotlin.utils.SmartSet
 import org.jetbrains.kotlin.utils.addToStdlib.trimToSize
 import kotlin.math.max
 
 class NewConstraintSystemImpl(
-    private val constraintInjector: ConstraintInjector,
+    val constraintInjector: ConstraintInjector,
     val typeSystemContext: TypeSystemInferenceExtensionContext,
-    private val languageVersionSettings: LanguageVersionSettings,
+    val languageVersionSettings: LanguageVersionSettings,
 ) : ConstraintSystemCompletionContext(),
     TypeSystemInferenceExtensionContext by typeSystemContext,
     NewConstraintSystem,
@@ -31,7 +32,7 @@ class NewConstraintSystemImpl(
     ResultTypeResolver.Context,
     PostponedArgumentsAnalyzerContext
 {
-    private val utilContext = constraintInjector.constraintIncorporator.utilContext
+    val utilContext = constraintInjector.constraintIncorporator.utilContext
 
     private val postponedComputationsAfterAllVariablesAreFixed = mutableListOf<() -> Unit>()
 
@@ -439,16 +440,16 @@ class NewConstraintSystemImpl(
         doPostponedComputationsIfAllVariablesAreFixed()
     }
 
-    private fun checkInferredEmptyIntersection(variable: TypeVariableMarker, resultType: KotlinTypeMarker) {
+    fun checkInferredEmptyIntersection(variable: TypeVariableMarker, resultType: KotlinTypeMarker) {
         val intersectionTypeConstructor = resultType.typeConstructor().takeIf { it is IntersectionTypeConstructorMarker } ?: return
         val isInferredEmptyIntersectionForbidden =
             languageVersionSettings.supportsFeature(LanguageFeature.ForbidInferringTypeVariablesIntoEmptyIntersection)
-        val intersectionComponents = intersectionTypeConstructor.supertypes()
+        val upperTypes = intersectionTypeConstructor.supertypes().toList()
 
-        if (intersectionComponents.isEmptyIntersection()) {
+        if (upperTypes.determineEmptyIntersectionTypeKind() == EmptyIntersectionTypeKind.MULTIPLE_CLASSES) {
             val errorFactory =
                 if (isInferredEmptyIntersectionForbidden) ::InferredEmptyIntersectionError else ::InferredEmptyIntersectionWarning
-            addError(errorFactory(intersectionComponents, variable))
+            addError(errorFactory(upperTypes, variable))
         }
     }
 

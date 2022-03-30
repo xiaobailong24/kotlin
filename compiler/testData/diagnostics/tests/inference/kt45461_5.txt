@@ -1,6 +1,6 @@
 package
 
-public fun </*0*/ K : L, /*1*/ L : N, /*2*/ N : kotlin.Int> main(): kotlin.Unit
+public fun </*0*/ K : L, /*1*/ L : N, /*2*/ N : kotlin.Number> main(): kotlin.Unit
 
 public final class Bar</*0*/ T> {
     public constructor Bar</*0*/ T>()

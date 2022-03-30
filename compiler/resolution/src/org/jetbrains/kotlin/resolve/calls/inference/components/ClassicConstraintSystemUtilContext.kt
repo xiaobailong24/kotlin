@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.types.typeUtil.unCapture as unCaptureKotlinType
 class ClassicConstraintSystemUtilContext(
     val kotlinTypeRefiner: KotlinTypeRefiner,
     val builtIns: KotlinBuiltIns,
+    val resultTypeResolver: ResultTypeResolver,
 ) : ConstraintSystemUtilContext {
     override fun TypeVariableMarker.shouldBeFlexible(): Boolean {
         return this is TypeVariableFromCallableDescriptor && this.originalTypeParameter.shouldBeFlexible()
@@ -48,6 +49,11 @@ class ClassicConstraintSystemUtilContext(
         require(this is KotlinType)
         return kotlinTypeRefiner.refineType(this)
     }
+
+    override fun VariableWithConstraints.findResultType(
+        context: ConstraintSystemCompletionContext,
+        direction: TypeVariableDirectionCalculator.ResolveDirection,
+    ): KotlinTypeMarker = resultTypeResolver.findResultType(context, this, direction)
 
     override fun createArgumentConstraintPosition(argument: PostponedAtomWithRevisableExpectedType): ArgumentConstraintPosition<*> {
         require(argument is ResolvedAtom)

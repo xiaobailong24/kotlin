@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.types.model
 
-import org.jetbrains.kotlin.types.AbstractTypeChecker
 import org.jetbrains.kotlin.types.TypeCheckerState
 import org.jetbrains.kotlin.types.Variance
 import kotlin.contracts.ExperimentalContracts
@@ -35,6 +34,7 @@ interface CapturedTypeConstructorMarker : TypeConstructorMarker
 interface IntersectionTypeConstructorMarker : TypeConstructorMarker
 
 interface TypeSubstitutorMarker
+interface ConstraintSystemMarker
 
 interface AnnotationMarker
 
@@ -152,13 +152,15 @@ interface TypeSystemInferenceExtensionContextDelegate : TypeSystemInferenceExten
 interface TypeSystemInferenceExtensionContext : TypeSystemContext, TypeSystemBuiltInsContext, TypeSystemCommonSuperTypesContext {
     fun KotlinTypeMarker.contains(predicate: (KotlinTypeMarker) -> Boolean): Boolean
 
+    fun ConstraintSystemMarker.generateConstraints(parameters: List<TypeParameterMarker>)
+
     fun TypeConstructorMarker.isUnitTypeConstructor(): Boolean
 
     fun TypeConstructorMarker.getApproximatedIntegerLiteralType(): KotlinTypeMarker
 
     fun TypeConstructorMarker.isCapturedTypeConstructor(): Boolean
 
-    fun TypeConstructorMarker.isTypeParameterTypeConstructor(): Boolean
+    fun List<KotlinTypeMarker>.determineEmptyIntersectionTypeKind(): EmptyIntersectionTypeKind
 
     fun Collection<KotlinTypeMarker>.singleBestRepresentative(): KotlinTypeMarker?
 
@@ -263,7 +265,7 @@ interface TypeSystemInferenceExtensionContext : TypeSystemContext, TypeSystemBui
 
     fun getKFunctionTypeConstructor(parametersNumber: Int, isSuspend: Boolean): TypeConstructorMarker
 
-    private fun KotlinTypeMarker.extractTypeVariables(to: MutableSet<TypeVariableTypeConstructorMarker>) {
+    private fun <T> KotlinTypeMarker.extractTypeOf(to: MutableSet<T>, getIfApplicable: (TypeConstructorMarker) -> T?) {
         for (i in 0 until argumentsCount()) {
             val argument = getArgument(i)
 
@@ -271,16 +273,38 @@ interface TypeSystemInferenceExtensionContext : TypeSystemContext, TypeSystemBui
 
             val argumentType = argument.getType()
             val argumentTypeConstructor = argumentType.typeConstructor()
-            if (argumentTypeConstructor is TypeVariableTypeConstructorMarker) {
-                to.add(argumentTypeConstructor)
+            val argumentToAdd = getIfApplicable(argumentTypeConstructor)
+
+            if (argumentToAdd != null) {
+                to.add(argumentToAdd)
             } else if (argumentType.argumentsCount() != 0) {
-                argumentType.extractTypeVariables(to)
+                argumentType.extractTypeOf(to, getIfApplicable)
             }
         }
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    fun KotlinTypeMarker.extractTypeVariables() = buildSet { extractTypeVariables(this) }
+    fun KotlinTypeMarker.extractTypeVariables(): Set<TypeVariableTypeConstructorMarker> =
+        buildSet {
+            extractTypeOf(this) { it as? TypeVariableTypeConstructorMarker }
+        }
+
+    fun KotlinTypeMarker.extractTypeParameters(): Set<TypeParameterMarker> =
+        buildSet {
+            extractTypeOf(this) { it.getTypeParameterClassifier() }
+        }
+
+    fun KotlinTypeMarker.extractAllDependantTypeParameters(to: MutableSet<TypeParameterMarker>) {
+        val thisTypeParameter = typeConstructor().getTypeParameterClassifier()
+        val extractedTypeParameters = extractTypeParameters().let { if (thisTypeParameter != null) it + thisTypeParameter else it }
+
+        extractedTypeParameters.map { typeParameter ->
+            if (typeParameter in to) return@map
+            to.add(typeParameter)
+            typeParameter.getUpperBounds().map { it.extractAllDependantTypeParameters(to) }
+        }
+    }
+
+    fun KotlinTypeMarker.extractAllDependantTypeParameters(): Set<TypeParameterMarker>
 
     /**
      * For case Foo <: (T..T?) return LowerBound for new constraint LowerBound <: T
@@ -389,6 +413,7 @@ interface TypeSystemContext : TypeSystemOptimizationContext {
     fun TypeConstructorMarker.isLocalType(): Boolean
     fun TypeConstructorMarker.isAnonymous(): Boolean
     fun TypeConstructorMarker.getTypeParameterClassifier(): TypeParameterMarker?
+    fun TypeConstructorMarker.isTypeParameterTypeConstructor(): Boolean
 
     val TypeVariableTypeConstructorMarker.typeParameter: TypeParameterMarker?
 
@@ -545,3 +570,5 @@ fun requireOrDescribe(condition: Boolean, value: Any?) {
 
 @RequiresOptIn("This kinds of type is obsolete and should not be used until you really need it")
 annotation class ObsoleteTypeKind
+
+enum class EmptyIntersectionTypeKind { NOT_EMPTY_INTERSECTION, MULTIPLE_CLASSES, SINGLE_CLASS }

@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.resolve.calls.inference.components
 
 import org.jetbrains.kotlin.resolve.calls.inference.model.ArgumentConstraintPosition
 import org.jetbrains.kotlin.resolve.calls.inference.model.FixVariableConstraintPosition
+import org.jetbrains.kotlin.resolve.calls.inference.model.VariableWithConstraints
 import org.jetbrains.kotlin.resolve.calls.model.PostponedAtomWithRevisableExpectedType
 import org.jetbrains.kotlin.types.model.KotlinTypeMarker
 import org.jetbrains.kotlin.types.model.TypeVariableMarker
@@ -22,6 +23,10 @@ interface ConstraintSystemUtilContext {
     fun KotlinTypeMarker.unCapture(): KotlinTypeMarker
     fun TypeVariableMarker.isReified(): Boolean
     fun KotlinTypeMarker.refineType(): KotlinTypeMarker
+    fun VariableWithConstraints.findResultType(
+        context: ConstraintSystemCompletionContext,
+        direction: TypeVariableDirectionCalculator.ResolveDirection = TypeVariableDirectionCalculator.ResolveDirection.UNKNOWN,
+    ): KotlinTypeMarker
 
     // PostponedArgumentInputTypesResolver
     fun createArgumentConstraintPosition(argument: PostponedAtomWithRevisableExpectedType): ArgumentConstraintPosition<*>

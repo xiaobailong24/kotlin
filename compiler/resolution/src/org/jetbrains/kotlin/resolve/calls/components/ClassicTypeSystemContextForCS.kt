@@ -6,8 +6,8 @@
 package org.jetbrains.kotlin.resolve.calls.components
 
 import org.jetbrains.kotlin.builtins.KotlinBuiltIns
-import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.config.LanguageVersionSettings
+import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor
 import org.jetbrains.kotlin.resolve.calls.inference.components.ConstraintInjector
 import org.jetbrains.kotlin.resolve.calls.inference.components.EmptySubstitutor
 import org.jetbrains.kotlin.resolve.calls.inference.components.NewTypeSubstitutor
@@ -30,6 +30,14 @@ class ClassicTypeSystemContextForCS(
     override fun TypeVariableMarker.defaultType(): SimpleTypeMarker {
         require(this is NewTypeVariable, this::errorMessage)
         return this.defaultType
+    }
+
+    override fun ConstraintSystemMarker.generateConstraints(parameters: List<TypeParameterMarker>) {
+        @Suppress("UNCHECKED_CAST")
+        parameters as List<TypeParameterDescriptor>
+        CreateFreshVariablesSubstitutor.createToFreshVariableSubstitutorAndAddInitialConstraints(
+            parameters, this as NewConstraintSystemImpl
+        )
     }
 
     override fun TypeVariableMarker.freshTypeConstructor(): TypeConstructorMarker {

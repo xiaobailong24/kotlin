@@ -13793,6 +13793,18 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("kt45461_10.kt")
+            public void testKt45461_10() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt45461_10.kt");
+            }
+
+            @Test
+            @TestMetadata("kt45461_11.kt")
+            public void testKt45461_11() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt45461_11.kt");
+            }
+
+            @Test
             @TestMetadata("kt45461_2.kt")
             public void testKt45461_2() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt45461_2.kt");
@@ -13817,6 +13829,30 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("kt45461_6.kt")
+            public void testKt45461_6() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt45461_6.kt");
+            }
+
+            @Test
+            @TestMetadata("kt45461_7.kt")
+            public void testKt45461_7() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt45461_7.kt");
+            }
+
+            @Test
+            @TestMetadata("kt45461_8.kt")
+            public void testKt45461_8() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt45461_8.kt");
+            }
+
+            @Test
+            @TestMetadata("kt45461_9.kt")
+            public void testKt45461_9() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt45461_9.kt");
+            }
+
+            @Test
             @TestMetadata("kt46515.kt")
             public void testKt46515() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt46515.kt");
@@ -13838,6 +13874,36 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             @TestMetadata("kt48935.kt")
             public void testKt48935() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt48935.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48935_2.kt")
+            public void testKt48935_2() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt48935_2.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48935_3.kt")
+            public void testKt48935_3() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt48935_3.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48935_4.kt")
+            public void testKt48935_4() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt48935_4.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48935_5.kt")
+            public void testKt48935_5() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt48935_5.kt");
+            }
+
+            @Test
+            @TestMetadata("kt48935_6.kt")
+            public void testKt48935_6() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/inference/kt48935_6.kt");
             }
 
             @Test
@@ -16403,6 +16469,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
                 @TestMetadata("nonNullUpperBound.kt")
                 public void testNonNullUpperBound() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/upperBounds/nonNullUpperBound.kt");
+                }
+
+                @Test
+                @TestMetadata("nullableEmptyIntersection.kt")
+                public void testNullableEmptyIntersection() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/inference/upperBounds/nullableEmptyIntersection.kt");
                 }
 
                 @Test

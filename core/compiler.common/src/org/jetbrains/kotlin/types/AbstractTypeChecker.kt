@@ -205,6 +205,16 @@ object AbstractTypeChecker {
         return isSubtypeOf(context.newTypeCheckerState(true, stubTypesEqualToAnything), subType, superType)
     }
 
+    fun isRelatedBySubtypingTo(
+        context: TypeCheckerProviderContext,
+        a: KotlinTypeMarker,
+        b: KotlinTypeMarker,
+        stubTypesEqualToAnything: Boolean = true
+    ): Boolean {
+        val typeCheckerContext = context.newTypeCheckerState(true, stubTypesEqualToAnything)
+        return isSubtypeOf(typeCheckerContext, a, b) || isSubtypeOf(typeCheckerContext, b, a)
+    }
+
     fun isSubtypeOfClass(
         state: TypeCheckerState,
         typeConstructor: TypeConstructorMarker,

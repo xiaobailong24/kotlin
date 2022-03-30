@@ -9,29 +9,31 @@ import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSessionComponent
 import org.jetbrains.kotlin.fir.NoMutableState
 import org.jetbrains.kotlin.fir.languageVersionSettings
-import org.jetbrains.kotlin.fir.types.ConeInferenceContext
 import org.jetbrains.kotlin.fir.types.typeApproximator
 import org.jetbrains.kotlin.fir.types.typeContext
 import org.jetbrains.kotlin.resolve.calls.inference.components.*
 import org.jetbrains.kotlin.resolve.calls.inference.model.NewConstraintSystemImpl
+import org.jetbrains.kotlin.types.model.TypeSystemInferenceExtensionContext
 
 @NoMutableState
 class InferenceComponents(val session: FirSession) : FirSessionComponent {
-    private val typeContext: ConeInferenceContext = session.typeContext
+    private val typeContext: TypeSystemInferenceExtensionContext = ConeInferenceContextForCs(session.typeContext)
     private val approximator = session.typeApproximator
 
     val trivialConstraintTypeInferenceOracle = TrivialConstraintTypeInferenceOracle.create(typeContext)
-    private val incorporator = ConstraintIncorporator(approximator, trivialConstraintTypeInferenceOracle, ConeConstraintSystemUtilContext)
+    val resultTypeResolver = ResultTypeResolver(approximator, trivialConstraintTypeInferenceOracle, session.languageVersionSettings)
+    val utilContext = ConeConstraintSystemUtilContext(resultTypeResolver)
+    private val incorporator = ConstraintIncorporator(approximator, trivialConstraintTypeInferenceOracle, utilContext)
     private val injector = ConstraintInjector(
         incorporator,
         approximator,
         session.languageVersionSettings,
     )
-    val resultTypeResolver = ResultTypeResolver(approximator, trivialConstraintTypeInferenceOracle, session.languageVersionSettings)
+
     val variableFixationFinder = VariableFixationFinder(trivialConstraintTypeInferenceOracle, session.languageVersionSettings)
     val postponedArgumentInputTypesResolver =
         PostponedArgumentInputTypesResolver(
-            resultTypeResolver, variableFixationFinder, ConeConstraintSystemUtilContext, session.languageVersionSettings
+            resultTypeResolver, variableFixationFinder, utilContext, session.languageVersionSettings
         )
 
     val constraintSystemFactory = ConstraintSystemFactory()

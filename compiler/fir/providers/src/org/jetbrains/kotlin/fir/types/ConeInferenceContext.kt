@@ -388,6 +388,10 @@ interface ConeInferenceContext : TypeSystemInferenceExtensionContext, ConeTypeCo
         return this is ConeCapturedTypeConstructor
     }
 
+    override fun List<KotlinTypeMarker>.determineEmptyIntersectionTypeKind(): EmptyIntersectionTypeKind {
+        TODO()
+    }
+
     override fun TypeConstructorMarker.isTypeParameterTypeConstructor(): Boolean {
         return this.getTypeParameterClassifier() != null
     }
@@ -547,4 +551,8 @@ interface ConeInferenceContext : TypeSystemInferenceExtensionContext, ConeTypeCo
 
     override fun SimpleTypeMarker.createConstraintPartForLowerBoundAndFlexibleTypeVariable(): KotlinTypeMarker =
         createFlexibleType(this.makeSimpleTypeDefinitelyNotNullOrNotNull(), this.withNullability(true))
+
+    override fun KotlinTypeMarker.extractAllDependantTypeParameters(): Set<TypeParameterMarker> = buildSet {
+        extractAllDependantTypeParameters(this)
+    }
 }

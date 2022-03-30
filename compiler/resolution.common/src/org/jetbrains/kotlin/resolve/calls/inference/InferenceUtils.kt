@@ -80,3 +80,5 @@ fun NewConstraintSystemImpl.registerTypeVariableIfNotPresent(
         builder.registerVariable(typeVariable)
     }
 }
+
+enum class EmptyIntersectionTypeKind { NOT_EMPTY_INTERSECTION, MULTIPLE_CLASSES, SINGLE_CLASS }

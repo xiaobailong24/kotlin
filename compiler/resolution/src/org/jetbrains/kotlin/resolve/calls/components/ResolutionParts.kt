@@ -34,6 +34,7 @@ import org.jetbrains.kotlin.utils.SmartList
 import org.jetbrains.kotlin.utils.addToStdlib.cast
 import org.jetbrains.kotlin.utils.addToStdlib.compactIfPossible
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
+import org.jetbrains.kotlin.types.model.EmptyIntersectionTypeKind
 
 internal object CheckVisibility : ResolutionPart() {
     override fun ResolutionCandidate.process(workIndex: Int) {
@@ -222,36 +223,21 @@ internal object CreateFreshVariablesSubstitutor : ResolutionPart() {
         return knownTypeParametersSubstitutor.composeWith(NewTypeSubstitutorByConstructorMap(knownTypeParameterByTypeVariable))
     }
 
+    fun TypeVariableFromCallableDescriptor.addSubtypeConstraint(
+        csBuilder: ConstraintSystemOperation,
+        substitutor: FreshVariableNewTypeSubstitutor,
+        upperBound: KotlinType,
+        position: DeclaredUpperBoundConstraintPositionImpl,
+    ) {
+        csBuilder.addSubtypeConstraint(defaultType, substitutor.safeSubstitute(upperBound.unwrap()), position)
+    }
+
     fun createToFreshVariableSubstitutorAndAddInitialConstraints(
         candidateDescriptor: CallableDescriptor,
         csBuilder: ConstraintSystemOperation
     ): FreshVariableNewTypeSubstitutor {
         val typeParameters = candidateDescriptor.typeParameters
-
-        val freshTypeVariables = typeParameters.map { TypeVariableFromCallableDescriptor(it) }
-
-        val toFreshVariables = FreshVariableNewTypeSubstitutor(freshTypeVariables)
-
-        for (freshVariable in freshTypeVariables) {
-            csBuilder.registerVariable(freshVariable)
-        }
-
-        fun TypeVariableFromCallableDescriptor.addSubtypeConstraint(
-            upperBound: KotlinType,
-            position: DeclaredUpperBoundConstraintPositionImpl
-        ) {
-            csBuilder.addSubtypeConstraint(defaultType, toFreshVariables.safeSubstitute(upperBound.unwrap()), position)
-        }
-
-        for (index in typeParameters.indices) {
-            val typeParameter = typeParameters[index]
-            val freshVariable = freshTypeVariables[index]
-            val position = DeclaredUpperBoundConstraintPositionImpl(typeParameter)
-
-            for (upperBound in typeParameter.upperBounds) {
-                freshVariable.addSubtypeConstraint(upperBound, position)
-            }
-        }
+        val substitutor = createToFreshVariableSubstitutorAndAddInitialConstraints(typeParameters, csBuilder)
 
         if (candidateDescriptor is TypeAliasConstructorDescriptor) {
             val typeAliasDescriptor = candidateDescriptor.typeAliasDescriptor
@@ -259,7 +245,7 @@ internal object CreateFreshVariablesSubstitutor : ResolutionPart() {
             val originalTypeParameters = candidateDescriptor.underlyingConstructorDescriptor.typeParameters
             for (index in typeParameters.indices) {
                 val typeParameter = typeParameters[index]
-                val freshVariable = freshTypeVariables[index]
+                val freshVariable = substitutor.freshVariables[index]
                 val typeMapping = originalTypes.mapIndexedNotNull { i: Int, kotlinType: KotlinType ->
                     if (kotlinType == typeParameter.defaultType) i else null
                 }
@@ -269,11 +255,36 @@ internal object CreateFreshVariablesSubstitutor : ResolutionPart() {
                     val originalTypeParameter = originalTypeParameters.getOrNull(originalIndex) ?: continue
                     val position = DeclaredUpperBoundConstraintPositionImpl(originalTypeParameter)
                     for (upperBound in originalTypeParameter.upperBounds) {
-                        freshVariable.addSubtypeConstraint(upperBound, position)
+                        freshVariable.addSubtypeConstraint(csBuilder, substitutor, upperBound, position)
                     }
                 }
             }
         }
+
+        return substitutor
+    }
+
+    fun createToFreshVariableSubstitutorAndAddInitialConstraints(
+        typeParameters: List<TypeParameterDescriptor>,
+        csBuilder: ConstraintSystemOperation,
+    ): FreshVariableNewTypeSubstitutor {
+        val freshTypeVariables = typeParameters.map { TypeVariableFromCallableDescriptor(it) }
+        val toFreshVariables = FreshVariableNewTypeSubstitutor(freshTypeVariables)
+
+        for (freshVariable in freshTypeVariables) {
+            csBuilder.registerVariable(freshVariable)
+        }
+
+        for (index in typeParameters.indices) {
+            val typeParameter = typeParameters[index]
+            val freshVariable = freshTypeVariables[index]
+            val position = DeclaredUpperBoundConstraintPositionImpl(typeParameter)
+
+            for (upperBound in typeParameter.upperBounds) {
+                freshVariable.addSubtypeConstraint(csBuilder, toFreshVariables, upperBound, position)
+            }
+        }
+
         return toFreshVariables
     }
 }
@@ -903,18 +914,17 @@ internal object CheckContextReceiversResolutionPart : ResolutionPart() {
 
 internal object CheckIncompatibleTypeVariableUpperBounds : ResolutionPart() {
     override fun ResolutionCandidate.process(workIndex: Int) = with(getSystem().asConstraintSystemCompleterContext()) {
-        val typeVariables = getSystem().getBuilder().currentStorage().notFixedTypeVariables.values
+        val typeVariables = getSystem().getBuilder().currentStorage().notFixedTypeVariables.values.takeIf { it.isNotEmpty() } ?: return
 
-        for (variableWithConstraints in typeVariables) {
-            val upperTypes = variableWithConstraints.constraints.extractUpperTypes()
-
-            if (upperTypes.isEmptyIntersection()) {
+        for (typeVariable in typeVariables) {
+            val upperTypes = typeVariable.constraints.extractUpperTypes().map { it.withNullability(false) }
+            if (upperTypes.determineEmptyIntersectionTypeKind() == EmptyIntersectionTypeKind.MULTIPLE_CLASSES) {
                 val isInferredEmptyIntersectionForbidden =
                     callComponents.languageVersionSettings.supportsFeature(LanguageFeature.ForbidInferringTypeVariablesIntoEmptyIntersection)
 
                 val errorFactory =
                     if (isInferredEmptyIntersectionForbidden) ::InferredEmptyIntersectionError else ::InferredEmptyIntersectionWarning
-                addError(errorFactory(upperTypes, variableWithConstraints.typeVariable))
+                addError(errorFactory(upperTypes, typeVariable.typeVariable))
             }
         }
     }

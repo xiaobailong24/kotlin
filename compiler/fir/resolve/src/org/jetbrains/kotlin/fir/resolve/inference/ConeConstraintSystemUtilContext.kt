@@ -11,15 +11,15 @@ import org.jetbrains.kotlin.fir.resolve.inference.model.ConeFixVariableConstrain
 import org.jetbrains.kotlin.fir.types.ConeKotlinType
 import org.jetbrains.kotlin.fir.types.coneType
 import org.jetbrains.kotlin.fir.types.coneTypeSafe
-import org.jetbrains.kotlin.resolve.calls.inference.components.ConstraintSystemUtilContext
-import org.jetbrains.kotlin.resolve.calls.inference.components.PostponedArgumentInputTypesResolver
+import org.jetbrains.kotlin.resolve.calls.inference.components.*
 import org.jetbrains.kotlin.resolve.calls.inference.model.ArgumentConstraintPosition
 import org.jetbrains.kotlin.resolve.calls.inference.model.FixVariableConstraintPosition
+import org.jetbrains.kotlin.resolve.calls.inference.model.VariableWithConstraints
 import org.jetbrains.kotlin.resolve.calls.model.PostponedAtomWithRevisableExpectedType
 import org.jetbrains.kotlin.types.model.KotlinTypeMarker
 import org.jetbrains.kotlin.types.model.TypeVariableMarker
 
-object ConeConstraintSystemUtilContext : ConstraintSystemUtilContext {
+class ConeConstraintSystemUtilContext(val resultTypeResolver: ResultTypeResolver) : ConstraintSystemUtilContext {
     override fun TypeVariableMarker.shouldBeFlexible(): Boolean {
         // TODO
         return false
@@ -43,6 +43,11 @@ object ConeConstraintSystemUtilContext : ConstraintSystemUtilContext {
     override fun KotlinTypeMarker.refineType(): KotlinTypeMarker {
         return this
     }
+
+    override fun VariableWithConstraints.findResultType(
+        context: ConstraintSystemCompletionContext,
+        direction: TypeVariableDirectionCalculator.ResolveDirection,
+    ): KotlinTypeMarker = resultTypeResolver.findResultType(context, this, direction)
 
     override fun createArgumentConstraintPosition(argument: PostponedAtomWithRevisableExpectedType): ArgumentConstraintPosition<*> {
         require(argument is PostponedResolvedAtom) {

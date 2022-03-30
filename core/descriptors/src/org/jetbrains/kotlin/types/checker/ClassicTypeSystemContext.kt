@@ -604,6 +604,10 @@ interface ClassicTypeSystemContext : TypeSystemInferenceExtensionContext, TypeSy
         errorSupportedOnlyInTypeInference()
     }
 
+    override fun ConstraintSystemMarker.generateConstraints(parameters: List<TypeParameterMarker>) {
+        errorSupportedOnlyInTypeInference()
+    }
+
     override fun typeSubstitutorByTypeConstructor(map: Map<TypeConstructorMarker, KotlinTypeMarker>): TypeSubstitutorMarker {
         errorSupportedOnlyInTypeInference()
     }
@@ -713,6 +717,61 @@ interface ClassicTypeSystemContext : TypeSystemInferenceExtensionContext, TypeSy
 
     override fun TypeConstructorMarker.isCapturedTypeConstructor(): Boolean {
         return this is NewCapturedTypeConstructor
+    }
+
+    private fun TypeConstructorMarker.isDefinitelyClass() = isClassTypeConstructor() && !isInterface()
+
+    fun List<KotlinTypeMarker>.extractAllDependantTypeParameters(): List<TypeParameterMarker> =
+        map { it.extractAllDependantTypeParameters().toList() }.flatten()
+
+    override fun List<KotlinTypeMarker>.determineEmptyIntersectionTypeKind(): EmptyIntersectionTypeKind {
+        val indexedComponents = withIndex()
+        val eraser = TypeParameterUpperBoundEraser(ErasureProjectionComputer())
+
+        for ((i, first) in indexedComponents) {
+            val containsTypeParameters = first.contains { it.typeConstructor().isTypeParameterTypeConstructor() }
+            val firstTypeConstructor = first.typeConstructor()
+            for ((j, second) in indexedComponents) {
+                if (i >= j) continue
+
+                val secondTypeConstructor = second.typeConstructor()
+
+                if (!firstTypeConstructor.isDefinitelyClass() && !firstTypeConstructor.isTypeParameterTypeConstructor())
+                    continue
+                if (!secondTypeConstructor.isDefinitelyClass() && !secondTypeConstructor.isTypeParameterTypeConstructor())
+                    continue
+
+                if (!containsTypeParameters && !second.contains { it.typeConstructor().isTypeParameterTypeConstructor() }) {
+                    if (AbstractTypeChecker.isRelatedBySubtypingTo(this@ClassicTypeSystemContext, first, second)) {
+                        continue
+                    } else {
+                        return EmptyIntersectionTypeKind.MULTIPLE_CLASSES
+                    }
+                } else {
+                    val typeParametersFromFirst = first.extractAllDependantTypeParameters().associate {
+                        it as TypeParameterDescriptor to
+                            TypeProjectionImpl(eraser.getErasedUpperBound(it, ErasureTypeAttributes(TypeUsage.COMMON)))
+                    }
+                    val typeParametersFromSecond = second.extractAllDependantTypeParameters().associate {
+                        it as TypeParameterDescriptor to
+                                TypeProjectionImpl(eraser.getErasedUpperBound(it, ErasureTypeAttributes(TypeUsage.COMMON)))
+                    }
+
+                    val f = TypeConstructorSubstitution.createByParametersMap(typeParametersFromFirst).buildSubstitutor()
+                    val s = TypeConstructorSubstitution.createByParametersMap(typeParametersFromSecond).buildSubstitutor()
+
+                    val firstSubstituted = f.safeSubstitute(first)
+                    val secondSubstituted = s.safeSubstitute(second)
+
+                    if (AbstractTypeChecker.isRelatedBySubtypingTo(this@ClassicTypeSystemContext, firstSubstituted, secondSubstituted)) {
+                        continue
+                    } else {
+                        return EmptyIntersectionTypeKind.MULTIPLE_CLASSES
+                    }
+                }
+            }
+        }
+        return EmptyIntersectionTypeKind.NOT_EMPTY_INTERSECTION
     }
 
     override fun TypeConstructorMarker.isTypeParameterTypeConstructor(): Boolean {
@@ -876,6 +935,10 @@ interface ClassicTypeSystemContext : TypeSystemInferenceExtensionContext, TypeSy
 
     override fun KotlinTypeMarker.isTypeVariableType(): Boolean {
         return this is UnwrappedType && constructor is NewTypeVariableConstructor
+    }
+
+    override fun KotlinTypeMarker.extractAllDependantTypeParameters(): Set<TypeParameterMarker> = buildSet {
+        extractAllDependantTypeParameters(this)
     }
 }
 
