@@ -18101,6 +18101,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             }
 
             @Test
+            @TestMetadata("flexibleTypeVariablePosition.kt")
+            public void testFlexibleTypeVariablePosition() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/j+k/flexibleTypeVariablePosition.kt");
+            }
+
+            @Test
             @TestMetadata("genericConstructorWithMultipleBounds.kt")
             public void testGenericConstructorWithMultipleBounds() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/j+k/genericConstructorWithMultipleBounds.kt");
@@ -19121,6 +19127,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
                 @TestMetadata("typeParameter.kt")
                 public void testTypeParameter() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/j+k/types/typeParameter.kt");
+                }
+
+                @Test
+                @TestMetadata("upperBoundsCheckAgainstSelfTypeInJava.kt")
+                public void testUpperBoundsCheckAgainstSelfTypeInJava() throws Exception {
+                    runTest("compiler/testData/diagnostics/tests/j+k/types/upperBoundsCheckAgainstSelfTypeInJava.kt");
                 }
 
                 @Test
@@ -23008,6 +23020,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             @TestMetadata("samConstructor.kt")
             public void testSamConstructor() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/platformTypes/samConstructor.kt");
+            }
+
+            @Test
+            @TestMetadata("starProjectionToFlexibleVariable.kt")
+            public void testStarProjectionToFlexibleVariable() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/platformTypes/starProjectionToFlexibleVariable.kt");
             }
 
             @Test
@@ -37820,6 +37838,12 @@ public class FirOldFrontendDiagnosticsTestGenerated extends AbstractFirDiagnosti
             @Test
             public void testAllFilesPresentInJava() throws Exception {
                 KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/diagnostics/testsWithStdLib/java"), Pattern.compile("^(.+)\\.kt$"), Pattern.compile("^(.+)\\.fir\\.kts?$"), true);
+            }
+
+            @Test
+            @TestMetadata("assertThatOnMap.kt")
+            public void testAssertThatOnMap() throws Exception {
+                runTest("compiler/testData/diagnostics/testsWithStdLib/java/assertThatOnMap.kt");
             }
 
             @Test
