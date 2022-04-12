@@ -17749,6 +17749,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
+            @TestMetadata("flexibleTypeVariablePosition.kt")
+            public void testFlexibleTypeVariablePosition() throws Exception {
+                runTest("compiler/testData/diagnostics/tests/j+k/flexibleTypeVariablePosition.kt");
+            }
+
+            @Test
             @TestMetadata("genericConstructorWithMultipleBounds.kt")
             public void testGenericConstructorWithMultipleBounds() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/j+k/genericConstructorWithMultipleBounds.kt");
@@ -37534,6 +37540,12 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             @Test
             public void testAllFilesPresentInJava() throws Exception {
                 KtTestUtil.assertAllTestsPresentByMetadataWithExcluded(this.getClass(), new File("compiler/testData/diagnostics/testsWithStdLib/java"), Pattern.compile("^(.+)\\.kt$"), Pattern.compile("^(.+)\\.fir\\.kts?$"), true);
+            }
+
+            @Test
+            @TestMetadata("assertThatOnMap.kt")
+            public void testAssertThatOnMap() throws Exception {
+                runTest("compiler/testData/diagnostics/testsWithStdLib/java/assertThatOnMap.kt");
             }
 
             @Test
