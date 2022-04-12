@@ -540,6 +540,5 @@ interface ConeInferenceContext : TypeSystemInferenceExtensionContext, ConeTypeCo
         return intersectionType.withAlternative(secondCandidate)
     }
 
-    override fun SimpleTypeMarker.createConstraintPartForLowerBoundAndFlexibleTypeVariable(): KotlinTypeMarker =
-        createFlexibleType(this.makeSimpleTypeDefinitelyNotNullOrNotNull(), this.withNullability(true))
+    override fun useRefinedBoundsForTypeVariableInFlexiblePosition(): Boolean = true
 }
