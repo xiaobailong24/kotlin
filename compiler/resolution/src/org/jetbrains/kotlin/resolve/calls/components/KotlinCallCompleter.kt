@@ -61,6 +61,7 @@ class KotlinCallCompleter(
                 }
             }
             is CallableReferenceResolutionCandidate -> candidate.substitutedReflectionType()
+            else -> TODO()
         }
 
         val completionMode = CompletionModeCalculator.computeCompletionMode(
