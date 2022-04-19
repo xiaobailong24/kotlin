@@ -66,10 +66,8 @@ internal abstract class JvmValueClassAbstractLowering(val context: JvmBackendCon
                 (it == irConstructor && declaration.modality != Modality.SEALED) ||
                         (it is IrFunction && it.isSpecificFieldGetter() && !it.visibility.isPublicAPI)
             }
-            if (declaration.modality != Modality.SEALED && !declaration.superTypes.any { it.isInlineClassType() }) {
-                buildPrimaryValueClassConstructor(declaration, irConstructor)
-                buildBoxFunction(declaration)
-                buildUnboxFunctions(declaration)
+            if (declaration.modality != Modality.SEALED && !declaration.isChildOfSealedInlineClass()) {
+                buildCommonAdditionalMethods(declaration, irConstructor)
                 buildSpecializedEqualsMethod(declaration)
             } else {
                 buildAdditionalMethodsForSealedInlineClass(declaration, irConstructor)
@@ -77,6 +75,12 @@ internal abstract class JvmValueClassAbstractLowering(val context: JvmBackendCon
         }
 
         return declaration
+    }
+
+    protected fun buildCommonAdditionalMethods(declaration: IrClass, irConstructor: IrConstructor) {
+        buildPrimaryValueClassConstructor(declaration, irConstructor)
+        buildBoxFunction(declaration)
+        buildUnboxFunctions(declaration)
     }
 
     protected open fun buildAdditionalMethodsForSealedInlineClass(declaration: IrClass, constructor: IrConstructor) {}
