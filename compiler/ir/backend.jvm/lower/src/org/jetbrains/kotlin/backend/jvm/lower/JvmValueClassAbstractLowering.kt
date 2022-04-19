@@ -72,14 +72,14 @@ internal abstract class JvmValueClassAbstractLowering(val context: JvmBackendCon
                 buildUnboxFunctions(declaration)
                 buildSpecializedEqualsMethod(declaration)
             } else {
-                buildAdditionalMethodsForSealedInlineClass(declaration)
+                buildAdditionalMethodsForSealedInlineClass(declaration, irConstructor)
             }
         }
 
         return declaration
     }
 
-    protected open fun buildAdditionalMethodsForSealedInlineClass(declaration: IrClass) {}
+    protected open fun buildAdditionalMethodsForSealedInlineClass(declaration: IrClass, constructor: IrConstructor) {}
 
     protected fun transformFunctionFlat(function: IrFunction): List<IrDeclaration>? {
         if (function is IrConstructor && function.isPrimary && function.constructedClass.isSpecificLoweringLogicApplicable()) {
