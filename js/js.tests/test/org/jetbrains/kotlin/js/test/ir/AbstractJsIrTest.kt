@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.test.backend.ir.IrBackendInput
 import org.jetbrains.kotlin.test.builders.TestConfigurationBuilder
 import org.jetbrains.kotlin.test.builders.configureJsArtifactsHandlersStep
 import org.jetbrains.kotlin.test.directives.JsEnvironmentConfigurationDirectives
+import org.jetbrains.kotlin.test.directives.LanguageSettingsDirectives
 import org.jetbrains.kotlin.test.frontend.classic.ClassicFrontend2IrConverter
 import org.jetbrains.kotlin.test.frontend.classic.ClassicFrontendFacade
 import org.jetbrains.kotlin.test.frontend.classic.ClassicFrontendOutputArtifact
@@ -64,6 +65,12 @@ abstract class AbstractJsIrTest(
                 useHandlers(
                     ::JsIrRecompiledArtifactsIdentityHandler,
                 )
+            }
+
+            forTestsMatching("${JsEnvironmentConfigurator.TEST_DATA_DIR_PATH}/box/closure/inlineAnonymousFunctions/*") {
+                defaultDirectives {
+                    LanguageSettingsDirectives.LANGUAGE with "+JsGenerateInlineAnonymousFunctions"
+                }
             }
         }
     }

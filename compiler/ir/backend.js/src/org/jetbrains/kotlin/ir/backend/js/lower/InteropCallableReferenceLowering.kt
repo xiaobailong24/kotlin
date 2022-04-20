@@ -10,6 +10,8 @@ import org.jetbrains.kotlin.backend.common.compilationException
 import org.jetbrains.kotlin.backend.common.ir.copyTo
 import org.jetbrains.kotlin.backend.common.ir.copyToWithoutSuperTypes
 import org.jetbrains.kotlin.backend.common.lower.LoweredStatementOrigins
+import org.jetbrains.kotlin.config.LanguageFeature
+import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
@@ -34,6 +36,9 @@ import org.jetbrains.kotlin.utils.addToStdlib.cast
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 class InteropCallableReferenceLowering(val context: JsIrBackendContext) : BodyLoweringPass {
+
+    val generateInlineAnonymousFunctions: Boolean
+        get() = context.configuration.languageVersionSettings.supportsFeature(LanguageFeature.JsGenerateInlineAnonymousFunctions)
 
     /**
      * A factory that creates [IrFunctionExpression] for lambdas being constructed.
@@ -122,7 +127,8 @@ class InteropCallableReferenceLowering(val context: JsIrBackendContext) : BodyLo
 
         val closureUsageAnalyser = ClosureUsageAnalyser()
 
-        irFile.acceptChildrenVoid(closureUsageAnalyser) // TODO: Only do this if lambda inlining is enabled with a feature flag!
+        if (generateInlineAnonymousFunctions)
+            irFile.acceptChildrenVoid(closureUsageAnalyser)
 
         val callableReferenceClassTransformer = CallableReferenceClassTransformer(
             ctorToFactoryMap,
@@ -318,8 +324,9 @@ class InteropCallableReferenceLowering(val context: JsIrBackendContext) : BodyLo
                     // This allows us to avoid allocating a new object each time the lambda is created.
                     liftLambda(ctorToFreeFunctionMap, lambdaInfo)
                 } else if (
+                    generateInlineAnonymousFunctions
                     // If the lambda constructor is called from more than one place, don't inline.
-                    closureUsageAnalyser.getLambdaConstructorCalls(lambdaClass.primaryConstructor!!.symbol).size == 1
+                    && closureUsageAnalyser.getLambdaConstructorCalls(lambdaClass.primaryConstructor!!.symbol).size == 1
                     // In-line anonymous functions that capture variables declared in loops are dangerous.
                     // See https://stackoverflow.com/questions/750486/javascript-closure-inside-loops-simple-practical-example
                     && !closureUsageAnalyser.lambdaCapturesVariablesDeclaredInLoops(lambdaClass)
