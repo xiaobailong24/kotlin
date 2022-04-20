@@ -8,6 +8,7 @@ package org.jetbrains.kotlin.fir.resolve.calls
 import org.jetbrains.kotlin.fir.FirSession
 import org.jetbrains.kotlin.fir.FirSessionComponent
 import org.jetbrains.kotlin.fir.resolve.inference.InferenceComponents
+import org.jetbrains.kotlin.fir.resolve.transformers.body.resolve.FirAbstractBodyResolveTransformer
 import org.jetbrains.kotlin.resolve.calls.results.TypeSpecificityComparator
 
 abstract class ConeCallConflictResolver {
@@ -25,7 +26,11 @@ abstract class ConeCallConflictResolver {
 }
 
 abstract class ConeCallConflictResolverFactory : FirSessionComponent {
-    abstract fun create(typeSpecificityComparator: TypeSpecificityComparator, components: InferenceComponents): ConeCallConflictResolver
+    abstract fun create(
+        typeSpecificityComparator: TypeSpecificityComparator,
+        components: InferenceComponents,
+        transformerComponents: FirAbstractBodyResolveTransformer.BodyResolveTransformerComponents
+    ): ConeCallConflictResolver
 }
 
 val FirSession.callConflictResolverFactory: ConeCallConflictResolverFactory by FirSession.sessionComponentAccessor()
