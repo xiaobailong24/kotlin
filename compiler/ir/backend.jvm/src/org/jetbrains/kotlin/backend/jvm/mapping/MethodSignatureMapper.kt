@@ -434,7 +434,9 @@ class MethodSignatureMapper(private val context: JvmBackendContext) {
 
         if (calleeInSealedInlineClassTop) {
             while (declaration.parentAsClass != calleeParent) {
-                declaration = declaration.overriddenSymbols.first().owner
+                declaration = declaration.overriddenSymbols.find { it.owner.parentAsClass == calleeParent }?.owner
+                    ?: declaration.overriddenSymbols.find { it.owner.parentAsClass.isInline }?.owner
+                            ?: error("Cannot find overridden of ${declaration.render()}")
             }
         }
 

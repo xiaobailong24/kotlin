@@ -6,10 +6,7 @@
 package org.jetbrains.kotlin.backend.jvm
 
 import org.jetbrains.kotlin.backend.common.BackendContext
-import org.jetbrains.kotlin.backend.common.ir.copyTo
-import org.jetbrains.kotlin.backend.common.ir.copyTypeParameters
-import org.jetbrains.kotlin.backend.common.ir.copyTypeParametersFrom
-import org.jetbrains.kotlin.backend.common.ir.createDispatchReceiverParameter
+import org.jetbrains.kotlin.backend.common.ir.*
 import org.jetbrains.kotlin.backend.jvm.ir.*
 import org.jetbrains.kotlin.codegen.state.KotlinTypeMapper
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
@@ -24,6 +21,7 @@ import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.impl.IrValueParameterSymbolImpl
 import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.types.IrType
+import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.types.impl.IrSimpleTypeImpl
 import org.jetbrains.kotlin.ir.types.impl.IrStarProjectionImpl
 import org.jetbrains.kotlin.ir.types.isInt
@@ -211,6 +209,42 @@ class MemoizedInlineClassReplacements(
             }
         }
 
+    /**
+     * For method in children of sealed inline classes we generate method in the top.
+     */
+    val getSealedInlineClassChildFunctionInTop: (Pair<IrClass, SimpleFunctionWithoutReceiver>) -> IrSimpleFunction =
+        storageManager.createMemoizedFunction { (top, method) ->
+            require(top.isInline && top.modality == Modality.SEALED) {
+                "Expected method in sealed inline class child"
+            }
+            irFactory.buildFun {
+                name = method.name
+                origin = JvmLoweredDeclarationOrigin.GENERATED_SEALED_INLINE_CLASS_METHOD
+                returnType = method.returnType
+            }.apply {
+                parent = top
+                copyTypeParameters(method.typeParameters)
+                val substitutionMap = method.typeParameters.map { it.symbol }.zip(typeParameters.map { it.defaultType }).toMap()
+
+                // Replace dispatch parameter from child to top
+                dispatchReceiverParameter = factory.createValueParameter(
+                    startOffset, endOffset, origin,
+                    IrValueParameterSymbolImpl(),
+                    name, -1,
+                    top.defaultType.substitute(substitutionMap),
+                    null, isCrossinline = false, isNoinline = false, isHidden = false, isAssignable = false
+                ).also { parameter ->
+                    parameter.parent = this
+                }
+                extensionReceiverParameter = method.extensionReceiver?.copyTo(this)
+
+                val shift = valueParameters.size
+                valueParameters = method.valueParameters.map {
+                    it.copyTo(this, index = it.index + shift, type = it.type.substitute(substitutionMap))
+                }
+            }
+        }
+
     private val specializedEqualsCache = storageManager.createCacheWithNotNullValues<IrClass, IrSimpleFunction>()
     fun getSpecializedEqualsMethod(irClass: IrClass, irBuiltIns: IrBuiltIns): IrSimpleFunction {
         require(irClass.isInline)
@@ -386,4 +420,12 @@ class MemoizedInlineClassReplacements(
 
         body()
     }
+
+    data class SimpleFunctionWithoutReceiver(
+        val name: Name,
+        val typeParameters: List<IrTypeParameter>,
+        val returnType: IrType,
+        val extensionReceiver: IrValueParameter?,
+        val valueParameters: List<IrValueParameter>,
+    )
 }
