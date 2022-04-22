@@ -95,6 +95,7 @@ open class DefaultCompilationDetails<T : KotlinCommonOptions>(
             lowerCamelCaseName(
                 target.disambiguationClassifier,
                 compilationPurpose.takeIf { it != KotlinCompilation.MAIN_COMPILATION_NAME },
+                "compilation",
             )
         )
 
