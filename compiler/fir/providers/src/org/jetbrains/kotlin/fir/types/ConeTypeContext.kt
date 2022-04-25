@@ -488,7 +488,8 @@ interface ConeTypeContext : TypeSystemContext, TypeSystemOptimizationContext, Ty
                 }
             }
             is ConeIntersectionType -> intersectedTypes.all { it.isNullableType() }
-            is ConeClassLikeType -> directExpansionType(session)?.isNullableType() ?: false
+            is ConeClassLikeType ->
+                directExpansionType(session)?.let { expanded -> expanded !== this && expanded.isNullableType() } ?: false
             else -> false
         }
     }
