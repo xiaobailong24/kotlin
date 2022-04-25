@@ -33,12 +33,12 @@ fun ConeClassLikeType.fullyExpandedType(
             return cachedExpandedType
         }
 
-        val computedExpandedType = fullyExpandedTypeNoCache(useSiteSession, expandedConeType)
+        val computedExpandedType = fullyExpandedTypeNoCache(useSiteSession, expandedConeType) ?: return this
         this.cachedExpandedType = WeakPair(useSiteSession, computedExpandedType)
         return computedExpandedType
     }
 
-    return fullyExpandedTypeNoCache(useSiteSession, expandedConeType)
+    return fullyExpandedTypeNoCache(useSiteSession, expandedConeType) ?: this
 }
 
 fun ConeKotlinType.fullyExpandedType(
@@ -57,14 +57,24 @@ fun ConeSimpleKotlinType.fullyExpandedType(
     else -> this
 }
 
+/**
+ * @return null when type is based on type alias, but it's direct expansion is not resolved yet
+ */
 private fun ConeClassLikeType.fullyExpandedTypeNoCache(
     useSiteSession: FirSession,
     expandedConeType: (FirTypeAlias) -> ConeClassLikeType?,
-): ConeClassLikeType {
-    val directExpansionType = directExpansionType(useSiteSession, expandedConeType) ?: return this
-    return directExpansionType.fullyExpandedType(useSiteSession, expandedConeType)
+): ConeClassLikeType? {
+    val directExpansionType = directExpansionType(useSiteSession, expandedConeType) ?: return null
+
+    if (directExpansionType === this) return this
+    return directExpansionType.fullyExpandedTypeNoCache(useSiteSession, expandedConeType)
 }
 
+/**
+ * @return null when type is based on type alias, but it's direct expansion is not resolved yet
+ * @return `this` if the type is not based on type alias
+ * @return direct expansion otherwise
+ */
 fun ConeClassLikeType.directExpansionType(
     useSiteSession: FirSession,
     expandedConeType: (FirTypeAlias) -> ConeClassLikeType? = { alias ->
@@ -72,16 +82,17 @@ fun ConeClassLikeType.directExpansionType(
         alias.expandedConeType
     },
 ): ConeClassLikeType? {
-    val typeAliasSymbol = lookupTag.toSymbol(useSiteSession) as? FirTypeAliasSymbol ?: return null
+    val typeAliasSymbol = lookupTag.toSymbol(useSiteSession) as? FirTypeAliasSymbol ?: return this
     val typeAlias = typeAliasSymbol.fir
 
-    val resultType = expandedConeType(typeAlias)
-        ?.applyNullabilityFrom(useSiteSession, this)
-        ?.applyAttributesFrom(this)
-        ?: return null
+    val unsubstitutedExpandedType = expandedConeType(typeAlias) ?: return null
+
+    val resultType = unsubstitutedExpandedType
+        .applyNullabilityFrom(useSiteSession, this)
+        .applyAttributesFrom(this)
 
     if (resultType.typeArguments.isEmpty()) return resultType
-    return mapTypeAliasArguments(typeAlias, this, resultType, useSiteSession) as? ConeClassLikeType
+    return mapTypeAliasArguments(typeAlias, this, resultType, useSiteSession) as? ConeClassLikeType ?: this
 }
 
 private fun ConeClassLikeType.applyNullabilityFrom(
