@@ -19,6 +19,7 @@ package org.jetbrains.kotlin.jvm.compiler
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.util.io.FileUtil
 import org.jetbrains.kotlin.cli.common.modules.ModuleBuilder
+import org.jetbrains.kotlin.cli.common.setupOutputDirectory
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.codegen.GenerationUtils
@@ -76,7 +77,7 @@ abstract class AbstractCompileKotlinAgainstJavaTest : TestCaseWithTmpdir() {
         )
 
         environment.configuration.put(JVMConfigurationKeys.USE_JAVAC, true)
-        environment.configuration.put(JVMConfigurationKeys.OUTPUT_DIRECTORY, out)
+        environment.configuration.setupOutputDirectory(out)
         environment.registerJavac(emptyList(), bootClasspath = listOf(KtTestUtil.findMockJdkRtJar()))
 
         val analysisResult = JvmResolveUtil.analyze(environment)

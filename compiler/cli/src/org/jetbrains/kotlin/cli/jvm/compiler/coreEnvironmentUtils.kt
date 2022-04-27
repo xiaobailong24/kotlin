@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.cli.common.config.KotlinSourceRoot
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageLocation
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
+import org.jetbrains.kotlin.cli.common.setupOutputDirectory
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.CompilerConfigurationKey
 import org.jetbrains.kotlin.config.JVMConfigurationKeys
@@ -105,7 +106,7 @@ fun CompilerConfiguration.applyModuleProperties(module: Module, buildFile: File?
 
             checkKeyIsNull(JVMConfigurationKeys.OUTPUT_DIRECTORY, "OUTPUT_DIRECTORY")
             checkKeyIsNull(JVMConfigurationKeys.OUTPUT_JAR, "OUTPUT_JAR")
-            put(JVMConfigurationKeys.OUTPUT_DIRECTORY, File(module.getOutputDirectory()))
+            setupOutputDirectory(File(module.getOutputDirectory()), this.get(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY))
         }
     }
 }

@@ -258,10 +258,9 @@ fun CompilerConfiguration.configureModuleChunk(
     buildFile: File?
 ): ModuleChunk {
     val destination = arguments.destination?.let { File(it) }
+    val messageCollector = getNotNull(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY)
 
     return if (buildFile != null) {
-        val messageCollector = getNotNull(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY)
-
         fun strongWarning(message: String) {
             messageCollector.report(STRONG_WARNING, message)
         }
@@ -284,7 +283,7 @@ fun CompilerConfiguration.configureModuleChunk(
             if (destination.path.endsWith(".jar")) {
                 put(JVMConfigurationKeys.OUTPUT_JAR, destination)
             } else {
-                put(JVMConfigurationKeys.OUTPUT_DIRECTORY, destination)
+                setupOutputDirectory(destination, messageCollector)
             }
         }
 
