@@ -53,7 +53,7 @@ fun CompilerConfiguration.setupOutputDirectory(outputDir: File, messageCollector
     if (outputDir.path.isNotBlank()) {
         this.put(JVMConfigurationKeys.OUTPUT_DIRECTORY, outputDir)
     } else {
-        if (messageCollector != null || messageCollector == MessageCollector.NONE) {
+        if (messageCollector != null && messageCollector != MessageCollector.NONE) {
             messageCollector.report(CompilerMessageSeverity.ERROR, "Could not set empty output directory")
         } else {
             throw IllegalStateException("Could not set empty output directory")
