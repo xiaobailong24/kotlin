@@ -38,14 +38,16 @@ class ScriptingGradleSubplugin : Plugin<Project> {
         const val MISCONFIGURATION_MESSAGE_SUFFIX = "the plugin is probably applied by a mistake"
 
         fun configureForSourceSet(project: Project, sourceSetName: String) {
-            val discoveryConfiguration = project.configurations.maybeCreate(getDiscoveryClasspathConfigurationName(sourceSetName)).apply {
-                isVisible = false
-                isCanBeConsumed = false
-                description = "Script filename extensions discovery classpath configuration"
+            val discoveryConfigurationName = getDiscoveryClasspathConfigurationName(sourceSetName)
+            if (project.configurations.findByName(discoveryConfigurationName) == null) {
+                project.configurations.create(discoveryConfigurationName) {
+                    project.logger.info("$SCRIPTING_LOG_PREFIX created the scripting discovery configuration: ${it.name}}")
+                    it.isVisible = false
+                    it.isCanBeConsumed = false
+                    it.description = "Script filename extensions discovery classpath configuration"
+                    configureDiscoveryTransformation(project, it, getDiscoveryResultsConfigurationName(sourceSetName))
+                }
             }
-            project.logger.info("$SCRIPTING_LOG_PREFIX created the scripting discovery configuration: ${discoveryConfiguration.name}")
-
-            configureDiscoveryTransformation(project, discoveryConfiguration, getDiscoveryResultsConfigurationName(sourceSetName))
         }
     }
 
