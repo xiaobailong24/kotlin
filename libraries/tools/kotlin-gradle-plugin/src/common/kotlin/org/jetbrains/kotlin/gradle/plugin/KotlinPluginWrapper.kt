@@ -97,18 +97,21 @@ abstract class DefaultKotlinBasePlugin : KotlinBasePlugin {
     }
 
     private fun addKotlinCompilerConfiguration(project: Project) {
-        project
-            .configurations
-            .maybeCreate(COMPILER_CLASSPATH_CONFIGURATION_NAME)
-            .defaultDependencies {
-                it.addLater(
-                    project.objects.providerWithLazyConvention {
-                        project.dependencies.create(
-                            "$KOTLIN_MODULE_GROUP:$KOTLIN_COMPILER_EMBEDDABLE:${project.getKotlinPluginVersion()}"
+        if (project.configurations.findByName(COMPILER_CLASSPATH_CONFIGURATION_NAME) == null) {
+            project
+                .configurations
+                .create(COMPILER_CLASSPATH_CONFIGURATION_NAME) {configuration ->
+                    configuration.defaultDependencies {
+                        it.addLater(
+                            project.objects.providerWithLazyConvention {
+                                project.dependencies.create(
+                                    "$KOTLIN_MODULE_GROUP:$KOTLIN_COMPILER_EMBEDDABLE:${project.getKotlinPluginVersion()}"
+                                )
+                            }
                         )
                     }
-                )
-            }
+                }
+        }
         project
             .tasks
             .withType(AbstractKotlinCompileTool::class.java)
