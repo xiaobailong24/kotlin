@@ -268,9 +268,7 @@ open class DefaultCompilationDetails<T : KotlinCommonOptions>(
 
     override fun source(sourceSet: KotlinSourceSet) {
         if (directlyIncludedKotlinSourceSets.add(sourceSet)) {
-            target.project.whenEvaluated {
-                addExactSourceSetsEagerly(sourceSet.withDependsOnClosure)
-            }
+            addExactSourceSetsEagerly(sourceSet.withDependsOnClosure)
         }
     }
 

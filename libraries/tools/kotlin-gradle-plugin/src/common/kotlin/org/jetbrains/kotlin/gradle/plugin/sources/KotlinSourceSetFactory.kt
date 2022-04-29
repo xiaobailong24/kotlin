@@ -100,9 +100,7 @@ internal class DefaultKotlinSourceSetFactory(
                     attributes.attribute(Usage.USAGE_ATTRIBUTE, project.usageByName(KotlinUsages.KOTLIN_METADATA))
                 }
 
-                project.afterEvaluate {
-                    setJsCompilerIfNecessary(sourceSet, this@apply)
-                }
+                setJsCompilerIfNecessary(sourceSet, this@apply)
             }
         }
     }
