@@ -27,7 +27,6 @@ import org.gradle.api.publish.maven.MavenPom
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.api.tasks.Upload
 import org.gradle.api.tasks.compile.AbstractCompile
 import org.gradle.jvm.tasks.Jar
 import org.gradle.tooling.provider.model.ToolingModelBuilderRegistry
@@ -386,7 +385,9 @@ internal abstract class AbstractKotlinPlugin(
         configureProjectGlobalSettings(project)
         registry.register(KotlinModelBuilder(kotlinPluginVersion, null))
 
-        project.components.addAll(target.components)
+        project.components.addAllLater(
+            project.setProperty { target.components }
+        )
 
     }
 
