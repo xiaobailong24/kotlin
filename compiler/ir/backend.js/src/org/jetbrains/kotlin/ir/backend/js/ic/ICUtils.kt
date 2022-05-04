@@ -16,6 +16,8 @@ internal inline fun <T> File.ifExists(f: File.() -> T): T? = if (exists()) f() e
 internal fun File.recreate() {
     if (exists()) {
         delete()
+    } else {
+        parentFile?.mkdirs()
     }
     createNewFile()
 }
@@ -34,4 +36,25 @@ internal inline fun File.useCodedOutput(f: CodedOutputStream.() -> Unit) {
         out.f()
         out.flush()
     }
+}
+
+internal fun icError(msg: String): Nothing = error("IC internal error: $msg")
+
+
+internal fun notFoundIcError(what: String, libFile: KotlinLibraryFile? = null, srcFile: KotlinSourceFile? = null): Nothing {
+    val filePath = listOfNotNull(libFile?.path, srcFile?.path).joinToString(":") { File(it).name }
+    val msg = if (filePath.isEmpty()) what else "$what for $filePath"
+    icError("can not find $msg")
+}
+
+internal inline fun <E> buildListUntil(to: Int, builderAction: MutableList<E>.(Int) -> Unit): List<E> {
+    return buildList(to) { repeat(to) { builderAction(it) } }
+}
+
+internal inline fun <E> buildSetUntil(to: Int, builderAction: MutableSet<E>.(Int) -> Unit): Set<E> {
+    return buildSet(to) { repeat(to) { builderAction(it) } }
+}
+
+internal inline fun <K, V> buildMapUntil(to: Int, builderAction: MutableMap<K, V>.(Int) -> Unit): Map<K, V> {
+    return buildMap(to) { repeat(to) { builderAction(it) } }
 }
