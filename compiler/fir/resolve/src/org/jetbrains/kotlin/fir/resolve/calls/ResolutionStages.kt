@@ -586,7 +586,7 @@ internal object CheckIncompatibleTypeVariableUpperBounds : ResolutionStage() {
                 // TODO: consider reporting errors on bounded type variables by incompatible types but with other lower constraints
                 if (
                     variableWithConstraints.constraints.none { it.kind.isLower() }
-                    && upperTypes.computeEmptyIntersectionTypeKind().isDefinitelyEmpty()
+                    && candidate.system.getEmptyIntersectionTypeKind(upperTypes).isDefinitelyEmpty()
                 ) {
                     sink.yieldDiagnostic(
                         @Suppress("UNCHECKED_CAST")
