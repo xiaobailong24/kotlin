@@ -325,15 +325,19 @@ interface TypeSystemInferenceExtensionContext : TypeSystemContext, TypeSystemBui
 
         for (i in 0 until types.size) {
             val firstType = types[i]
+
             if (!firstType.mayCauseEmptyIntersection()) continue
 
             val firstSubstitutedType by lazy { firstType.eraseContainingTypeParameters() }
 
             for (j in i + 1 until types.size) {
                 val secondType = types[j]
+
                 if (!secondType.mayCauseEmptyIntersection()) continue
 
                 val secondSubstitutedType = secondType.eraseContainingTypeParameters()
+
+                if (!secondSubstitutedType.mayCauseEmptyIntersection() && !firstSubstitutedType.mayCauseEmptyIntersection()) continue
 
                 if (!canHaveCommonSubtype(firstSubstitutedType, secondSubstitutedType))
                     return EmptyIntersectionTypeKind.MULTIPLE_CLASSES
@@ -407,7 +411,7 @@ interface TypeSystemInferenceExtensionContext : TypeSystemContext, TypeSystemBui
             } else listOf(type)
 
         val expandedTypes = extractIntersectionComponentsIfNeeded(first) + extractIntersectionComponentsIfNeeded(second)
-        val typeCheckerState = newTypeCheckerState(errorTypesEqualToAnything = true, stubTypesEqualToAnything = true)
+        val typeCheckerState by lazy { newTypeCheckerState(errorTypesEqualToAnything = true, stubTypesEqualToAnything = true) }
 
         for (i in expandedTypes.indices) {
             val firstType = expandedTypes[i]
@@ -429,6 +433,12 @@ interface TypeSystemInferenceExtensionContext : TypeSystemContext, TypeSystemBui
                 if (AbstractTypeChecker.areRelatedBySubtyping(this, firstType, secondType))
                     continue
 
+                // If two classes aren't related by subtyping and no need to compare their type arguments, then they can't have a common subtype
+                if (
+                    firstTypeConstructor.isDefinitelyClassTypeConstructor() && secondTypeConstructor.isDefinitelyClassTypeConstructor()
+                    && (firstTypeConstructor.parametersCount() == 0 || secondTypeConstructor.parametersCount() == 0)
+                ) return false
+
                 val superTypeByFirstConstructor = AbstractTypeChecker.findCorrespondingSupertypes(
                     typeCheckerState, firstType.lowerBoundIfFlexible(), secondTypeConstructor
                 ).singleOrNull()
@@ -446,7 +456,7 @@ interface TypeSystemInferenceExtensionContext : TypeSystemContext, TypeSystemBui
                     return false
 
                 if (superTypeByFirstConstructor == null || superTypeBySecondConstructor == null)
-                    continue // first or second is actually subtype of another
+                    continue // don't have incompatible supertypes so can have a common subtype
 
                 if (!checkArgumentsOfTypesToBeAbleToHaveCommonSubtype(superTypeByFirstConstructor, superTypeBySecondConstructor))
                     return false
@@ -645,6 +655,8 @@ interface TypeSystemContext : TypeSystemOptimizationContext {
 
     fun KotlinTypeMarker.lowerBoundIfFlexible(): SimpleTypeMarker = this.asFlexibleType()?.lowerBound() ?: this.asSimpleType()!!
     fun KotlinTypeMarker.upperBoundIfFlexible(): SimpleTypeMarker = this.asFlexibleType()?.upperBound() ?: this.asSimpleType()!!
+
+    fun TypeConstructorMarker.isDefinitelyClassTypeConstructor(): Boolean = isClassTypeConstructor() && !isInterface()
 
     fun KotlinTypeMarker.isFlexible(): Boolean = asFlexibleType() != null
 
