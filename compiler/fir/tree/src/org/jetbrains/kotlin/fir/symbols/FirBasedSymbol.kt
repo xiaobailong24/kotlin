@@ -21,10 +21,7 @@ abstract class FirBasedSymbol<E : FirDeclaration> {
     @SymbolInternals
     val fir: E
         get() = _fir
-            ?: error("Fir is not initialized for type parameter")
-
-    @SymbolInternals
-    val isInitializedFir: Boolean get() = _fir != null
+            ?: error("Fir is not initialized for $this")
 
     fun bind(e: E) {
         _fir = e
