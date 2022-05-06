@@ -8,7 +8,6 @@ package org.jetbrains.kotlin.jvm.abi
 import com.intellij.mock.MockProject
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.cli.common.setupOutputDirectory
 import org.jetbrains.kotlin.codegen.extensions.ClassBuilderInterceptorExtension
 import org.jetbrains.kotlin.codegen.extensions.ClassFileFactoryFinalizerExtension
 import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
@@ -26,7 +25,7 @@ class JvmAbiComponentRegistrar : ComponentRegistrar {
                 "Legacy jvm-abi-gen does not support jar output."
             }
             val extension = JvmAbiAnalysisHandlerExtension(configuration.copy().apply {
-                setupOutputDirectory(File(outputPath), configuration.get(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY))
+                put(JVMConfigurationKeys.OUTPUT_DIRECTORY, File(outputPath))
             })
             AnalysisHandlerExtension.registerExtension(project, extension)
         } else {

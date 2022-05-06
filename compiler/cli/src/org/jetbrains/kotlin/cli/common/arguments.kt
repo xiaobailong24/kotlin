@@ -49,18 +49,6 @@ fun <A : CommonCompilerArguments> CompilerConfiguration.setupLanguageVersionSett
     languageVersionSettings = arguments.toLanguageVersionSettings(getNotNull(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY))
 }
 
-fun CompilerConfiguration.setupOutputDirectory(outputDir: File, messageCollector: MessageCollector? = null) {
-    if (outputDir.path.isNotBlank()) {
-        this.put(JVMConfigurationKeys.OUTPUT_DIRECTORY, outputDir)
-    } else {
-        if (messageCollector != null || messageCollector == MessageCollector.NONE) {
-            messageCollector.report(CompilerMessageSeverity.ERROR, "Could not set empty output directory")
-        } else {
-            throw IllegalStateException("Could not set empty output directory")
-        }
-    }
-}
-
 const val KOTLIN_HOME_PROPERTY = "kotlin.home"
 
 fun computeKotlinPaths(messageCollector: MessageCollector, arguments: CommonCompilerArguments): KotlinPaths? {

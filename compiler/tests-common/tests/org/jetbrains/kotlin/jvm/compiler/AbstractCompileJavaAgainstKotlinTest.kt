@@ -21,7 +21,6 @@ import org.jetbrains.kotlin.checkers.setupLanguageVersionSettingsForCompilerTest
 import org.jetbrains.kotlin.checkers.setupLanguageVersionSettingsForMultifileCompilerTests
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.cli.common.setupOutputDirectory
 import org.jetbrains.kotlin.cli.jvm.compiler.EnvironmentConfigFiles
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment
 import org.jetbrains.kotlin.config.CompilerConfiguration
@@ -112,10 +111,8 @@ abstract class AbstractCompileJavaAgainstKotlinTest : TestCaseWithTmpdir() {
         setupLanguageVersionSettingsForMultifileCompilerTests(ktFiles, environment)
         environment.configuration.put(JVMConfigurationKeys.USE_JAVAC, true)
         environment.configuration.put(JVMConfigurationKeys.COMPILE_JAVA, true)
-        with(MessageCollector.NONE) {
-            environment.configuration.setupOutputDirectory(outDir, this)
-            environment.configuration.put(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, this)
-        }
+        environment.configuration.put(JVMConfigurationKeys.OUTPUT_DIRECTORY, outDir)
+        environment.configuration.put(CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
         updateConfiguration(environment.configuration)
         environment.registerJavac(
             javaFiles = javaFiles,
