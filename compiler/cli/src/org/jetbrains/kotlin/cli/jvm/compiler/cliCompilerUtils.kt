@@ -115,7 +115,10 @@ fun writeOutput(
         return
     }
 
-    val outputDir = configuration.get(JVMConfigurationKeys.OUTPUT_DIRECTORY) ?: File(".")
+    val outputDir = configuration.get(JVMConfigurationKeys.OUTPUT_DIRECTORY)?.let {
+        if (it.path.isNotBlank()) it else null
+    } ?: File(".")
+
     outputFiles.writeAll(outputDir, messageCollector, reportOutputFiles)
 }
 
