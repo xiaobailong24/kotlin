@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.compilerRunner
 
 import com.intellij.openapi.util.text.StringUtil.escapeStringCharacters
 import org.gradle.api.Project
+import org.gradle.api.file.FileCollection
 import org.gradle.util.GradleVersion
 import org.jetbrains.kotlin.konan.target.HostManager
 import java.io.File
@@ -34,14 +35,14 @@ abstract class KotlinToolRunner(
         "java.system.class.loader"  // Don't use custom class loaders
     )
 
-    abstract val classpath: Set<File>
-    open fun checkClasspath(): Unit = check(classpath.isNotEmpty()) { "Classpath of the tool is empty: $displayName" }
+    abstract val classpath: FileCollection
+    open fun checkClasspath(): Unit = check(!classpath.isEmpty) { "Classpath of the tool is empty: $displayName" }
 
     abstract val isolatedClassLoaderCacheKey: Any
     protected open val isolatedClassLoaders: ConcurrentHashMap<Any, URLClassLoader> get() = isolatedClassLoadersMap
 
     private fun getIsolatedClassLoader(): URLClassLoader = isolatedClassLoaders.computeIfAbsent(isolatedClassLoaderCacheKey) {
-        val arrayOfURLs = classpath.map { File(it.absolutePath).toURI().toURL() }.toTypedArray()
+        val arrayOfURLs = classpath.files.map { File(it.absolutePath).toURI().toURL() }.toTypedArray()
         URLClassLoader(arrayOfURLs, null).apply {
             setDefaultAssertionStatus(enableAssertions)
         }
@@ -60,7 +61,7 @@ abstract class KotlinToolRunner(
     // for the purpose if there is a way to specify JVM args, for instance, straight in project configs
     open fun getCustomJvmArgs(): List<String> = emptyList()
 
-    private val jvmArgs: List<String> by lazy {
+    internal val jvmArgs: List<String> by lazy {
         mutableListOf<String>().apply {
             if (enableAssertions) add("-ea")
 
@@ -88,11 +89,7 @@ abstract class KotlinToolRunner(
     private fun runViaExec(args: List<String>) {
         val transformedArgs = transformArgs(args)
         val classpath = project.files(classpath)
-        val systemProperties = System.getProperties().asSequence()
-            .map { (k, v) -> k.toString() to v.toString() }
-            .filter { (k, _) -> k !in execSystemPropertiesBlacklist }
-            .escapeQuotesForWindows()
-            .toMap() + execSystemProperties
+        val systemProperties = cleanedSystemProperties()
 
         project.logger.info(
             """|Run "$displayName" tool in a separate JVM process
@@ -119,6 +116,12 @@ abstract class KotlinToolRunner(
             spec.args(transformedArgs)
         }
     }
+
+    internal fun cleanedSystemProperties() = System.getProperties().asSequence()
+        .map { (k, v) -> k.toString() to v.toString() }
+        .filter { (k, _) -> k !in execSystemPropertiesBlacklist }
+        .escapeQuotesForWindows()
+        .toMap() + execSystemProperties
 
     private fun runInProcess(args: List<String>) {
         val transformedArgs = transformArgs(args)

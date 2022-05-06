@@ -18,7 +18,9 @@ internal class KotlinNativeCommonizerToolRunner(project: Project) : KotlinToolRu
 
     override val classpath by lazy {
         try {
-            project.configurations.getByName(KLIB_COMMONIZER_CLASSPATH_CONFIGURATION_NAME).resolve() as Set<File>
+            project.files(
+                project.configurations.getByName(KLIB_COMMONIZER_CLASSPATH_CONFIGURATION_NAME)
+            )
         } catch (e: Exception) {
             project.logger.error(
                 "Could not resolve KLIB commonizer classpath. Check if Kotlin Gradle plugin repository is configured in $project."

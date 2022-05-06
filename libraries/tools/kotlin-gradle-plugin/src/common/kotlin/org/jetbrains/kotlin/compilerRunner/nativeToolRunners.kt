@@ -80,7 +80,7 @@ internal abstract class KotlinNativeToolRunner(
         project.files(
             project.kotlinNativeCompilerJar,
             "${project.konanHome}/konan/lib/trove4j.jar"
-        ).files
+        )
     }
 
     private val Project.kotlinNativeCompilerJar: String
@@ -90,7 +90,7 @@ internal abstract class KotlinNativeToolRunner(
             "$konanHome/konan/lib/kotlin-native.jar"
 
     final override fun checkClasspath() =
-        check(classpath.isNotEmpty()) {
+        check(!classpath.isEmpty) {
             """
                 Classpath of the tool is empty: $toolName
                 Probably the '${PropertiesProvider.KOTLIN_NATIVE_HOME}' project property contains an incorrect path.
@@ -101,7 +101,7 @@ internal abstract class KotlinNativeToolRunner(
     data class IsolatedClassLoaderCacheKey(val classpath: Set<java.io.File>)
 
     // TODO: can't we use this for other implementations too?
-    final override val isolatedClassLoaderCacheKey get() = IsolatedClassLoaderCacheKey(classpath)
+    final override val isolatedClassLoaderCacheKey get() = IsolatedClassLoaderCacheKey(classpath.files)
 
     override fun transformArgs(args: List<String>) = listOf(toolName) + args
 

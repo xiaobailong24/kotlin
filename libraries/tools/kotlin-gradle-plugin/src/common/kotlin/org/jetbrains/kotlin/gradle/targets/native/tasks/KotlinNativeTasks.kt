@@ -22,6 +22,7 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.*
 import org.gradle.work.NormalizeLineEndings
+import org.gradle.workers.WorkerExecutor
 import org.jetbrains.kotlin.cli.common.arguments.CommonCompilerArguments
 import org.jetbrains.kotlin.cli.common.arguments.CommonToolArguments
 import org.jetbrains.kotlin.compilerRunner.*
@@ -313,7 +314,8 @@ constructor(
     @Internal
     @Transient  // can't be serialized for Gradle configuration cache
     final override val compilation: KotlinNativeCompilationData<*>,
-    objectFactory: ObjectFactory
+    objectFactory: ObjectFactory,
+    private val workerExecutor: WorkerExecutor,
 ) : AbstractKotlinNativeCompile<KotlinCommonOptions, KotlinNativeCompilationData<*>, StubK2NativeCompilerArguments>(objectFactory),
     KotlinCompile<KotlinCommonOptions> {
 
@@ -455,7 +457,11 @@ constructor(
             commonSourcesTree
         )
 
-        KotlinNativeCompilerRunner(project).run(buildArgs)
+        NativeCompilerWorkAction.runViaWorker(
+            project,
+            workerExecutor,
+            buildArgs
+        )
     }
 }
 
@@ -468,7 +474,8 @@ abstract class KotlinNativeLink
 constructor(
     @Internal
     val binary: NativeBinary,
-    objectFactory: ObjectFactory
+    objectFactory: ObjectFactory,
+    private val workerExecutor: WorkerExecutor,
 ) : AbstractKotlinNativeCompile<KotlinCommonToolOptions, KotlinNativeCompilation, StubK2NativeCompilerArguments>(objectFactory) {
     @get:Internal
     final override val compilation: KotlinNativeCompilation
@@ -658,7 +665,11 @@ constructor(
             externalDependenciesArgs + cacheArgs
         )
 
-        KotlinNativeCompilerRunner(project).run(buildArgs)
+        NativeCompilerWorkAction.runViaWorker(
+            project,
+            workerExecutor,
+            buildArgs
+        )
     }
 }
 
