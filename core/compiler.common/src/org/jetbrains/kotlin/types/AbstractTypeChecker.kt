@@ -319,9 +319,10 @@ object AbstractTypeChecker {
             return !projection.isStarProjection() && projection.getType().upperBoundIfFlexible().isIntegerLiteralType()
         }
 
+        fun isIntegerLiteralTypeOrCapturedOne(type: SimpleTypeMarker) = type.isIntegerLiteralType() || isCapturedIntegerLiteralType(type)
+
         when {
-            (subType.isIntegerLiteralType() || isCapturedIntegerLiteralType(subType)) &&
-                    (superType.isIntegerLiteralType() || isCapturedIntegerLiteralType(superType)) -> {
+            isIntegerLiteralTypeOrCapturedOne(subType) && isIntegerLiteralTypeOrCapturedOne(superType) -> {
                 return true
             }
 
