@@ -19,7 +19,6 @@ import org.jetbrains.kotlin.fir.symbols.ConeTypeParameterLookupTag
 import org.jetbrains.kotlin.fir.types.impl.ConeClassLikeTypeImpl
 import org.jetbrains.kotlin.fir.types.impl.ConeTypeParameterTypeImpl
 import org.jetbrains.kotlin.name.StandardClassIds
-import org.jetbrains.kotlin.resolve.calls.NewCommonSuperTypeCalculator.commonSuperType
 import org.jetbrains.kotlin.types.AbstractTypeChecker
 import org.jetbrains.kotlin.types.AbstractTypeRefiner
 import org.jetbrains.kotlin.types.TypeCheckerState
@@ -503,8 +502,8 @@ interface ConeInferenceContext : TypeSystemInferenceExtensionContext, ConeTypeCo
                 this
             else {
                 var functionalSupertype: KotlinTypeMarker? = null
-                simpleType.anySuperTypeConstructor { type ->
-                    simpleType.fastCorrespondingSupertypes(type.typeConstructor())?.any { superType ->
+                simpleType.anySuperTypeConstructor { typeConstructor ->
+                    simpleType.fastCorrespondingSupertypes(typeConstructor)?.any { superType ->
                         val isFunctional = superType.cast<ConeKotlinType>().isBuiltinFunctionalType(session)
                         if (isFunctional)
                             functionalSupertype = superType

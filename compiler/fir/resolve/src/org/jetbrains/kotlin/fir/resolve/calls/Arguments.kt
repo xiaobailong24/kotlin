@@ -631,8 +631,7 @@ internal fun captureFromTypeParameterUpperBoundIfNeeded(
 private fun ConeKotlinType.hasSupertypeWithGivenClassId(classId: ClassId, context: TypeSystemCommonSuperTypesContext): Boolean {
     return with(context) {
         anySuperTypeConstructor {
-            val typeConstructor = it.typeConstructor()
-            typeConstructor is ConeClassLikeLookupTag && typeConstructor.classId == classId
+            it is ConeClassLikeLookupTag && it.classId == classId
         }
     }
 }
