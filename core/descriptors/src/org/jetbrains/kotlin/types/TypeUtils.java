@@ -30,8 +30,6 @@ import org.jetbrains.kotlin.utils.SmartSet;
 
 import java.util.*;
 
-import static org.jetbrains.kotlin.types.TypeUsage.SUPERTYPE;
-
 public class TypeUtils {
     public static final SimpleType DONT_CARE = ErrorUtils.createErrorType(ErrorTypeKind.DONT_CARE);
     public static final SimpleType CANNOT_INFER_FUNCTION_PARAM_TYPE =
@@ -480,15 +478,6 @@ public class TypeUtils {
     @NotNull
     public static TypeProjection makeStarProjection(@NotNull TypeParameterDescriptor parameterDescriptor) {
         return new StarProjectionImpl(parameterDescriptor);
-    }
-
-    @NotNull
-    public static TypeProjection makeStarProjection(@NotNull TypeParameterDescriptor parameterDescriptor, ErasureTypeAttributes attr) {
-        if (attr.getHowThisTypeIsUsed() == SUPERTYPE) {
-            return new TypeProjectionImpl(StarProjectionImplKt.starProjectionType(parameterDescriptor));
-        } else {
-            return new StarProjectionImpl(parameterDescriptor);
-        }
     }
 
     @NotNull
