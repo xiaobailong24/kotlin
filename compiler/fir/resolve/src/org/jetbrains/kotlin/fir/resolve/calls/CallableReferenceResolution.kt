@@ -59,7 +59,7 @@ internal object CheckCallableReferenceExpectedType : CheckerStage() {
         candidate.resultingTypeForCallableReference = resultingType
         candidate.callableReferenceAdaptation = callableReferenceAdaptation
         candidate.outerConstraintBuilderEffect = fun ConstraintSystemOperation.() {
-            addOtherSystem(candidate.system.currentStorage())
+            addOtherSystem(candidate.system.asReadOnlyStorage())
 
             val position = SimpleConstraintSystemConstraintPosition //TODO
 
