@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.analysis.api.symbols.KtClassOrObjectSymbol
 import org.jetbrains.kotlin.analysis.api.symbols.KtSymbol
 import org.jetbrains.kotlin.analysis.api.symbols.KtSymbolOrigin
 import org.jetbrains.kotlin.analysis.api.tokens.ValidityToken
+import org.jetbrains.kotlin.fir.analysis.checkers.toRegularClassSymbol
 import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.utils.superConeTypes
 import org.jetbrains.kotlin.fir.resolve.ScopeSession
@@ -26,7 +27,6 @@ import org.jetbrains.kotlin.fir.symbols.impl.FirCallableSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirClassSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirIntersectionOverrideFunctionSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirIntersectionOverridePropertySymbol
-import org.jetbrains.kotlin.fir.types.toRegularClassSymbol
 
 internal class KtFirSymbolDeclarationOverridesProvider(
     override val analysisSession: KtFirAnalysisSession,
