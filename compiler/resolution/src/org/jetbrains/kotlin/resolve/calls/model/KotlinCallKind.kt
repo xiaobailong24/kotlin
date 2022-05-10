@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.resolve.calls.components.CheckSuperExpressionCallPar
 import org.jetbrains.kotlin.resolve.calls.components.CheckVisibility
 import org.jetbrains.kotlin.resolve.calls.components.CollectionTypeVariableUsagesInfo
 import org.jetbrains.kotlin.resolve.calls.components.CompatibilityOfPartiallyApplicableSamConversion
+import org.jetbrains.kotlin.resolve.calls.components.CompatibilityOfTypeVariableAsIntersectionTypePart
 import org.jetbrains.kotlin.resolve.calls.components.CreateFreshVariablesSubstitutor
 import org.jetbrains.kotlin.resolve.calls.components.EagerResolveOfCallableReferences
 import org.jetbrains.kotlin.resolve.calls.components.MapArguments
@@ -56,6 +57,7 @@ enum class KotlinCallKind(vararg resolutionPart: ResolutionPart) {
         CheckArgumentsInParenthesis,
         CheckExternalArgument,
         EagerResolveOfCallableReferences,
+        CompatibilityOfTypeVariableAsIntersectionTypePart,
         CompatibilityOfPartiallyApplicableSamConversion,
         PostponedVariablesInitializerResolutionPart,
         CheckContextReceiversResolutionPart,
@@ -70,6 +72,7 @@ enum class KotlinCallKind(vararg resolutionPart: ResolutionPart) {
         CollectionTypeVariableUsagesInfo,
         CheckReceivers,
         CheckCallableReference,
+        CompatibilityOfTypeVariableAsIntersectionTypePart,
         CheckIncompatibleTypeVariableUpperBounds
     ),
     UNSUPPORTED();
