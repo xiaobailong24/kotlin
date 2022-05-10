@@ -27,7 +27,10 @@ import org.jetbrains.kotlin.fir.resolve.calls.Candidate
 import org.jetbrains.kotlin.fir.resolve.calls.FirErrorReferenceWithCandidate
 import org.jetbrains.kotlin.fir.resolve.calls.FirNamedReferenceWithCandidate
 import org.jetbrains.kotlin.fir.resolve.dfa.FirDataFlowAnalyzer
-import org.jetbrains.kotlin.fir.resolve.diagnostics.*
+import org.jetbrains.kotlin.fir.resolve.diagnostics.ConeConstraintSystemHasContradiction
+import org.jetbrains.kotlin.fir.resolve.diagnostics.ConeInapplicableCandidateError
+import org.jetbrains.kotlin.fir.resolve.diagnostics.ConePropertyAsOperator
+import org.jetbrains.kotlin.fir.resolve.diagnostics.ConeTypeParameterInQualifiedAccess
 import org.jetbrains.kotlin.fir.resolve.inference.ResolvedLambdaAtom
 import org.jetbrains.kotlin.fir.resolve.providers.symbolProvider
 import org.jetbrains.kotlin.fir.resolve.substitution.ConeSubstitutor
@@ -51,7 +54,6 @@ import org.jetbrains.kotlin.fir.types.impl.ConeTypeParameterTypeImpl
 import org.jetbrains.kotlin.fir.visitors.FirDefaultTransformer
 import org.jetbrains.kotlin.fir.visitors.FirTransformer
 import org.jetbrains.kotlin.fir.visitors.transformSingle
-import org.jetbrains.kotlin.resolve.calls.inference.model.InferredEmptyIntersection
 import org.jetbrains.kotlin.resolve.calls.tower.CandidateApplicability
 import org.jetbrains.kotlin.resolve.calls.tower.isSuccess
 import org.jetbrains.kotlin.types.TypeApproximatorConfiguration
@@ -854,9 +856,6 @@ class FirCallCompletionResultsWriterTransformer(
         return varargArgumentsExpression
     }
 
-    private fun FirNamedReferenceWithCandidate.hasAdditionalResolutionErrors(): Boolean =
-        candidate.system.errors.any { it is InferredEmptyIntersection }
-
     private fun FirNamedReferenceWithCandidate.toResolvedReference(): FirNamedReference {
         val errorDiagnostic = when {
             this is FirErrorReferenceWithCandidate -> this.diagnostic
@@ -868,9 +867,6 @@ class FirCallCompletionResultsWriterTransformer(
 
                 ConeConstraintSystemHasContradiction(candidate)
             }
-            // NB: these additional errors might not lead to marking candidate unsuccessful because it may be a warning in FE 1.0
-            // We consider those warnings as errors in FIR
-            hasAdditionalResolutionErrors() -> ConeConstraintSystemHasContradiction(candidate)
             else -> null
         }
 

@@ -5723,12 +5723,6 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
             }
 
             @Test
-            @TestMetadata("kt52131.kt")
-            public void testKt52131() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/controlFlowAnalysis/kt52131.kt");
-            }
-
-            @Test
             @TestMetadata("kt607.kt")
             public void testKt607() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/controlFlowAnalysis/kt607.kt");
@@ -13841,12 +13835,6 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
             }
 
             @Test
-            @TestMetadata("kt45461.kt")
-            public void testKt45461() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/inference/kt45461.kt");
-            }
-
-            @Test
             @TestMetadata("kt46515.kt")
             public void testKt46515() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt46515.kt");
@@ -13859,18 +13847,6 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
             }
 
             @Test
-            @TestMetadata("kt48765.kt")
-            public void testKt48765() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/inference/kt48765.kt");
-            }
-
-            @Test
-            @TestMetadata("kt48935.kt")
-            public void testKt48935() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/inference/kt48935.kt");
-            }
-
-            @Test
             @TestMetadata("kt49658.kt")
             public void testKt49658() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt49658.kt");
@@ -13880,18 +13856,6 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
             @TestMetadata("kt49658Strict.kt")
             public void testKt49658Strict() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt49658Strict.kt");
-            }
-
-            @Test
-            @TestMetadata("kt51844.kt")
-            public void testKt51844() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/inference/kt51844.kt");
-            }
-
-            @Test
-            @TestMetadata("kt49661.kt")
-            public void testKt49661() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/inference/kt49661.kt");
             }
 
             @Test
@@ -14195,12 +14159,6 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
                 @TestMetadata("kt47744.kt")
                 public void testKt47744() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/builderInference/kt47744.kt");
-                }
-
-                @Test
-                @TestMetadata("kt49285.kt")
-                public void testKt49285() throws Exception {
-                    runTest("compiler/testData/diagnostics/tests/inference/builderInference/kt49285.kt");
                 }
 
                 @Test
@@ -22662,12 +22620,6 @@ public class DiagnosisCompilerTestFE10TestdataTestGenerated extends AbstractDiag
             @TestMetadata("javaEmptyList.kt")
             public void testJavaEmptyList() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/platformTypes/javaEmptyList.kt");
-            }
-
-            @Test
-            @TestMetadata("kt50877.kt")
-            public void testKt50877() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/platformTypes/kt50877.kt");
             }
 
             @Test
