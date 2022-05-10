@@ -113,7 +113,7 @@ class NewConstraintWarning(
     override val lowerType: KotlinTypeMarker,
     override val upperType: KotlinTypeMarker,
     override val position: IncorporationConstraintPosition,
-) : ConstraintSystemError(RESOLVED), NewConstraintMismatch
+) : ConstraintSystemError(RESOLVED_WITH_WARNING), NewConstraintMismatch
 
 class CapturedTypeFromSubtyping(
     val typeVariable: TypeVariableMarker,
@@ -143,7 +143,7 @@ sealed interface InferredEmptyIntersection {
 class InferredEmptyIntersectionWarning(
     override val incompatibleTypes: Collection<KotlinTypeMarker>,
     override val typeVariable: TypeVariableMarker
-) : ConstraintSystemError(RESOLVED), InferredEmptyIntersection
+) : ConstraintSystemError(RESOLVED_WITH_WARNING), InferredEmptyIntersection
 
 class InferredEmptyIntersectionError(
     override val incompatibleTypes: Collection<KotlinTypeMarker>,
