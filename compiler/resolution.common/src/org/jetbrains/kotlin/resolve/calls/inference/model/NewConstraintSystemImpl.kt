@@ -5,8 +5,6 @@
 
 package org.jetbrains.kotlin.resolve.calls.inference.model
 
-import org.jetbrains.kotlin.config.LanguageFeature
-import org.jetbrains.kotlin.config.LanguageVersionSettings
 import org.jetbrains.kotlin.resolve.calls.components.PostponedArgumentsAnalyzerContext
 import org.jetbrains.kotlin.resolve.calls.inference.*
 import org.jetbrains.kotlin.resolve.calls.inference.components.*
@@ -21,8 +19,7 @@ import kotlin.math.max
 
 class NewConstraintSystemImpl(
     private val constraintInjector: ConstraintInjector,
-    val typeSystemContext: TypeSystemInferenceExtensionContext,
-    private val languageVersionSettings: LanguageVersionSettings,
+    val typeSystemContext: TypeSystemInferenceExtensionContext
 ) : ConstraintSystemCompletionContext(),
     TypeSystemInferenceExtensionContext by typeSystemContext,
     NewConstraintSystem,
@@ -415,8 +412,6 @@ class NewConstraintSystemImpl(
     ) = with(utilContext) {
         checkState(State.BUILDING, State.COMPLETION)
 
-        checkInferredEmptyIntersection(variable, resultType)
-
         constraintInjector.addInitialEqualityConstraint(this@NewConstraintSystemImpl, variable.defaultType(), resultType, position)
 
         /*
@@ -443,19 +438,7 @@ class NewConstraintSystemImpl(
         doPostponedComputationsIfAllVariablesAreFixed()
     }
 
-    private fun checkInferredEmptyIntersection(variable: TypeVariableMarker, resultType: KotlinTypeMarker) {
-        val intersectionTypeConstructor = resultType.typeConstructor().takeIf { it is IntersectionTypeConstructorMarker } ?: return
-        val isInferredEmptyIntersectionForbidden =
-            languageVersionSettings.supportsFeature(LanguageFeature.ForbidInferringTypeVariablesIntoEmptyIntersection)
-        val intersectionComponents = intersectionTypeConstructor.supertypes()
-
-        if (intersectionComponents.isEmptyIntersection()) {
-            val errorFactory =
-                if (isInferredEmptyIntersectionForbidden) ::InferredEmptyIntersectionError else ::InferredEmptyIntersectionWarning
-            addError(errorFactory(intersectionComponents, variable))
-        }
-    }
-
+    @OptIn(ExperimentalStdlibApi::class)
     private fun checkMissedConstraints() {
         val constraintSystem = this@NewConstraintSystemImpl
         val errorsByMissedConstraints = buildList {

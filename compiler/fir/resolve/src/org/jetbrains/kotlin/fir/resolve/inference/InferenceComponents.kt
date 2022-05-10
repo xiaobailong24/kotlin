@@ -37,7 +37,7 @@ class InferenceComponents(val session: FirSession) : FirSessionComponent {
     val constraintSystemFactory = ConstraintSystemFactory()
 
     fun createConstraintSystem(): NewConstraintSystemImpl {
-        return NewConstraintSystemImpl(injector, typeContext, session.languageVersionSettings)
+        return NewConstraintSystemImpl(injector, typeContext)
     }
 
     inner class ConstraintSystemFactory {

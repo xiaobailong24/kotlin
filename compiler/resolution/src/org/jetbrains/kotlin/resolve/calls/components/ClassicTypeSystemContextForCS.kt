@@ -120,8 +120,7 @@ private inline fun Any?.errorMessage(): String {
 fun NewConstraintSystemImpl(
     constraintInjector: ConstraintInjector,
     builtIns: KotlinBuiltIns,
-    kotlinTypeRefiner: KotlinTypeRefiner,
-    languageVersionSettings: LanguageVersionSettings
+    kotlinTypeRefiner: KotlinTypeRefiner
 ): NewConstraintSystemImpl {
-    return NewConstraintSystemImpl(constraintInjector, ClassicTypeSystemContextForCS(builtIns, kotlinTypeRefiner), languageVersionSettings)
+    return NewConstraintSystemImpl(constraintInjector, ClassicTypeSystemContextForCS(builtIns, kotlinTypeRefiner))
 }

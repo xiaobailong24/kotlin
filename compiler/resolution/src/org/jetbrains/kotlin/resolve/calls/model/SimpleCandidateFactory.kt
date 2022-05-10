@@ -34,10 +34,7 @@ class SimpleCandidateFactory(
     val baseSystem: ConstraintStorage
 
     init {
-        val baseSystem = NewConstraintSystemImpl(
-            callComponents.constraintInjector, callComponents.builtIns,
-            callComponents.kotlinTypeRefiner, callComponents.languageVersionSettings
-        )
+        val baseSystem = NewConstraintSystemImpl(callComponents.constraintInjector, callComponents.builtIns, callComponents.kotlinTypeRefiner)
         if (!inferenceSession.resolveReceiverIndependently()) {
             baseSystem.addSubsystemFromArgument(kotlinCall.explicitReceiver)
             baseSystem.addSubsystemFromArgument(kotlinCall.dispatchReceiverForInvokeExtension)
