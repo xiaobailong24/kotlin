@@ -1,4 +1,3 @@
-// FIR_IDENTICAL
 // RENDER_DIAGNOSTICS_FULL_TEXT
 interface Base
 
@@ -10,5 +9,5 @@ fun <T, V> exampleGenericFunction(func: V) where T: Base, V: (T) -> Unit {
 
 fun main() {
     val func: (DoesNotImplementBase) -> Unit = { }
-    exampleGenericFunction(func) // expected this to be a compilation error as the T: Base constraint should not be satisfied
+    <!INFERRED_TYPE_VARIABLE_INTO_EMPTY_INTERSECTION_WARNING!>exampleGenericFunction<!>(func) // expected this to be a compilation error as the T: Base constraint should not be satisfied
 }
