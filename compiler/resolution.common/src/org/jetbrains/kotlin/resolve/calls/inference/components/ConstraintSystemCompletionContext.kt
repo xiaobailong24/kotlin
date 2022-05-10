@@ -111,8 +111,6 @@ abstract class ConstraintSystemCompletionContext : VariableFixationFinder.Contex
 
     fun List<Constraint>.extractUpperTypes(): List<KotlinTypeMarker> =
         filter { constraint ->
-            constraint.kind == ConstraintKind.UPPER && !constraint.type.contains {
-                !it.typeConstructor().isClassTypeConstructor() && !it.typeConstructor().isTypeParameterTypeConstructor()
-            }
+            constraint.kind == ConstraintKind.UPPER && !constraint.type.contains { !it.typeConstructor().isClassTypeConstructor() }
         }.map { it.type }
 }
