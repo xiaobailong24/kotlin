@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.fir.symbols.ConeTypeParameterLookupTag
 import org.jetbrains.kotlin.fir.types.impl.ConeClassLikeTypeImpl
 import org.jetbrains.kotlin.fir.types.impl.ConeTypeParameterTypeImpl
 import org.jetbrains.kotlin.name.StandardClassIds
+import org.jetbrains.kotlin.resolve.calls.NewCommonSuperTypeCalculator.commonSuperType
 import org.jetbrains.kotlin.types.AbstractTypeChecker
 import org.jetbrains.kotlin.types.AbstractTypeRefiner
 import org.jetbrains.kotlin.types.TypeCheckerState
@@ -388,21 +389,7 @@ interface ConeInferenceContext : TypeSystemInferenceExtensionContext, ConeTypeCo
         val typeParameterErasureMap = this.extractTypeParameters()
             .map { (it as ConeTypeParameterLookupTag).typeParameterSymbol }
             .eraseToUpperBoundsAssociated(session, intersectUpperBounds = true, eraseRecursively = true)
-        val substitutor by lazy { ConeSubstitutorByMap(typeParameterErasureMap, session) }
-        val typeWithErasedTypeParameters = if (argumentsCount() != 0) {
-            replaceArgumentsDeeply {
-                val type = it.getType()
-                val typeParameter =
-                    (type.typeConstructor().getTypeParameterClassifier() as? ConeTypeParameterLookupTag)?.typeParameterSymbol
-                if (typeParameter != null) {
-                    createTypeArgument(substitutor.safeSubstitute(type), TypeVariance.OUT)
-                } else it
-            }
-        } else if (typeConstructor().isTypeParameterTypeConstructor()) {
-            substitutor.safeSubstitute(this)
-        } else this
-
-        return typeWithErasedTypeParameters
+        return ConeSubstitutorByMap(typeParameterErasureMap, session).safeSubstitute(this)
     }
 
     override fun TypeConstructorMarker.isTypeParameterTypeConstructor(): Boolean {
