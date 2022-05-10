@@ -9335,12 +9335,6 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
             }
 
             @Test
-            @TestMetadata("intersectionTypeToSubtypeConversion.kt")
-            public void testIntersectionTypeToSubtypeConversion() throws Exception {
-                runTest("compiler/testData/codegen/box/coroutines/suspendConversion/intersectionTypeToSubtypeConversion.kt");
-            }
-
-            @Test
             @TestMetadata("onArgument.kt")
             public void testOnArgument() throws Exception {
                 runTest("compiler/testData/codegen/box/coroutines/suspendConversion/onArgument.kt");
@@ -13233,12 +13227,6 @@ public class JsCodegenBoxTestGenerated extends AbstractJsCodegenBoxTest {
         @TestMetadata("inlinedSamWrapper.kt")
         public void testInlinedSamWrapper() throws Exception {
             runTest("compiler/testData/codegen/box/funInterface/inlinedSamWrapper.kt");
-        }
-
-        @Test
-        @TestMetadata("intersectionTypeToFunInterfaceConversion.kt")
-        public void testIntersectionTypeToFunInterfaceConversion() throws Exception {
-            runTest("compiler/testData/codegen/box/funInterface/intersectionTypeToFunInterfaceConversion.kt");
         }
 
         @Test
