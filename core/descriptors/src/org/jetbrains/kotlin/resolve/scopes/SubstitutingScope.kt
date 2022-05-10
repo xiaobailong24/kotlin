@@ -30,20 +30,19 @@ import org.jetbrains.kotlin.utils.sure
 import java.util.*
 
 class SubstitutingScope(private val workerScope: MemberScope, givenSubstitutor: TypeSubstitutor) : MemberScope {
-    val substitutor by lazy { givenSubstitutor.substitution.buildSubstitutor() }
+    val substitutor = givenSubstitutor.substitution.wrapWithCapturingSubstitution().buildSubstitutor()
 
-    private val capturingSubstitutor = givenSubstitutor.substitution.wrapWithCapturingSubstitution().buildSubstitutor()
     private var substitutedDescriptors: MutableMap<DeclarationDescriptor, DeclarationDescriptor>? = null
 
     private val _allDescriptors by lazy { substitute(workerScope.getContributedDescriptors()) }
 
     fun substitute(type: KotlinType): KotlinType {
-        if (capturingSubstitutor.isEmpty) return type
-        return capturingSubstitutor.safeSubstitute(type) as KotlinType
+        if (substitutor.isEmpty) return type
+        return substitutor.safeSubstitute(type) as KotlinType
     }
 
     private fun <D : DeclarationDescriptor> substitute(descriptor: D): D {
-        if (capturingSubstitutor.isEmpty) return descriptor
+        if (substitutor.isEmpty) return descriptor
 
         if (substitutedDescriptors == null) {
             substitutedDescriptors = HashMap<DeclarationDescriptor, DeclarationDescriptor>()
@@ -51,7 +50,7 @@ class SubstitutingScope(private val workerScope: MemberScope, givenSubstitutor: 
 
         val substituted = substitutedDescriptors!!.getOrPut(descriptor) {
             when (descriptor) {
-                is Substitutable<*> -> descriptor.substitute(capturingSubstitutor).sure {
+                is Substitutable<*> -> descriptor.substitute(substitutor).sure {
                     "We expect that no conflict should happen while substitution is guaranteed to generate invariant projection, " +
                     "but $descriptor substitution fails"
                 }
@@ -64,7 +63,7 @@ class SubstitutingScope(private val workerScope: MemberScope, givenSubstitutor: 
     }
 
     private fun <D : DeclarationDescriptor> substitute(descriptors: Collection<D>): Collection<D> {
-        if (capturingSubstitutor.isEmpty) return descriptors
+        if (substitutor.isEmpty) return descriptors
         if (descriptors.isEmpty()) return descriptors
 
         val result = newLinkedHashSetWithExpectedSize<D>(descriptors.size)
@@ -98,7 +97,7 @@ class SubstitutingScope(private val workerScope: MemberScope, givenSubstitutor: 
 
         p.println("substitutor = ")
         p.pushIndent()
-        p.println(capturingSubstitutor)
+        p.println(substitutor)
         p.popIndent()
 
         p.print("workerScope = ")

@@ -15242,12 +15242,6 @@ public class FirOldFrontendDiagnosticsWithLightTreeTestGenerated extends Abstrac
                 }
 
                 @Test
-                @TestMetadata("covariance.kt")
-                public void testCovariance() throws Exception {
-                    runTest("compiler/testData/diagnostics/tests/inference/emptyIntersectionTypes/covariance.kt");
-                }
-
-                @Test
                 @TestMetadata("kt45461.kt")
                 public void testKt45461() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/emptyIntersectionTypes/kt45461.kt");
