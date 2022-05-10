@@ -13841,12 +13841,6 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
-            @TestMetadata("kt45461.kt")
-            public void testKt45461() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/inference/kt45461.kt");
-            }
-
-            @Test
             @TestMetadata("kt46515.kt")
             public void testKt46515() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt46515.kt");
@@ -13859,18 +13853,6 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             }
 
             @Test
-            @TestMetadata("kt48765.kt")
-            public void testKt48765() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/inference/kt48765.kt");
-            }
-
-            @Test
-            @TestMetadata("kt48935.kt")
-            public void testKt48935() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/inference/kt48935.kt");
-            }
-
-            @Test
             @TestMetadata("kt49658.kt")
             public void testKt49658() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt49658.kt");
@@ -13880,12 +13862,6 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
             @TestMetadata("kt49658Strict.kt")
             public void testKt49658Strict() throws Exception {
                 runTest("compiler/testData/diagnostics/tests/inference/kt49658Strict.kt");
-            }
-
-            @Test
-            @TestMetadata("kt49661.kt")
-            public void testKt49661() throws Exception {
-                runTest("compiler/testData/diagnostics/tests/inference/kt49661.kt");
             }
 
             @Test
