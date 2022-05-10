@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.types
 
-// TODO: add `SINGLE_FINAL_CLASS` later to report warnings
-enum class EmptyIntersectionTypeKind { NOT_EMPTY_INTERSECTION, MULTIPLE_CLASSES }
+enum class EmptyIntersectionTypeKind { NOT_EMPTY_INTERSECTION, MULTIPLE_CLASSES } // TODO: add `SINGLE_FINAL_CLASS` later
 
 fun EmptyIntersectionTypeKind.isDefinitelyEmpty(): Boolean = this == EmptyIntersectionTypeKind.MULTIPLE_CLASSES
