@@ -26,7 +26,9 @@ import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValueWithSmartCastI
 import org.jetbrains.kotlin.resolve.scopes.utils.parentsWithSelf
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.error.ErrorUtils
-import org.jetbrains.kotlin.types.model.*
+import org.jetbrains.kotlin.types.model.KotlinTypeMarker
+import org.jetbrains.kotlin.types.model.TypeConstructorMarker
+import org.jetbrains.kotlin.types.model.typeConstructor
 import org.jetbrains.kotlin.types.typeUtil.*
 import org.jetbrains.kotlin.utils.SmartList
 import org.jetbrains.kotlin.utils.addToStdlib.cast
@@ -901,12 +903,12 @@ internal object CheckContextReceiversResolutionPart : ResolutionPart() {
 
 internal object CheckIncompatibleTypeVariableUpperBounds : ResolutionPart() {
     override fun ResolutionCandidate.process(workIndex: Int) = with(getSystem().asConstraintSystemCompleterContext()) {
-        val typeVariables = getSystem().getBuilder().currentStorage().notFixedTypeVariables.values.takeIf { it.isNotEmpty() } ?: return
+        val typeVariables = getSystem().getBuilder().currentStorage().notFixedTypeVariables.values
 
         for (variableWithConstraints in typeVariables) {
             val upperTypes = variableWithConstraints.constraints.extractUpperTypes()
 
-            if (upperTypes.computeEmptyIntersectionTypeKind().isDefinitelyEmpty()) {
+            if (upperTypes.isEmptyIntersection()) {
                 val isInferredEmptyIntersectionForbidden =
                     callComponents.languageVersionSettings.supportsFeature(LanguageFeature.ForbidInferringTypeVariablesIntoEmptyIntersection)
 

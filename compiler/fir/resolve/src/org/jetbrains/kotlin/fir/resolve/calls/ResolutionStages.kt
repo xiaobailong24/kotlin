@@ -41,7 +41,6 @@ import org.jetbrains.kotlin.resolve.calls.tower.CandidateApplicability
 import org.jetbrains.kotlin.resolve.deprecation.DeprecationLevelValue
 import org.jetbrains.kotlin.types.AbstractNullabilityChecker
 import org.jetbrains.kotlin.types.TypeApproximatorConfiguration
-import org.jetbrains.kotlin.types.isDefinitelyEmpty
 import org.jetbrains.kotlin.util.OperatorNameConventions
 
 abstract class ResolutionStage {
@@ -580,12 +579,12 @@ internal object CheckLowPriorityInOverloadResolution : CheckerStage() {
 internal object CheckIncompatibleTypeVariableUpperBounds : ResolutionStage() {
     override suspend fun check(candidate: Candidate, callInfo: CallInfo, sink: CheckerSink, context: ResolutionContext) =
         with(candidate.system.asConstraintSystemCompleterContext()) {
-            val typeVariables = candidate.system.notFixedTypeVariables.values.takeIf { it.isNotEmpty() } ?: return
+            val typeVariables = candidate.system.notFixedTypeVariables.values
 
             for (variableWithConstraints in typeVariables) {
                 val upperTypes = variableWithConstraints.constraints.extractUpperTypes()
 
-                if (upperTypes.computeEmptyIntersectionTypeKind().isDefinitelyEmpty()) {
+                if (upperTypes.isEmptyIntersection()) {
                     sink.yieldDiagnostic(
                         @Suppress("UNCHECKED_CAST")
                         InferredEmptyIntersectionDiagnostic(

@@ -13,7 +13,6 @@ import org.jetbrains.kotlin.resolve.calls.inference.components.*
 import org.jetbrains.kotlin.types.AbstractTypeApproximator
 import org.jetbrains.kotlin.types.AbstractTypeChecker
 import org.jetbrains.kotlin.types.TypeApproximatorConfiguration
-import org.jetbrains.kotlin.types.isDefinitelyEmpty
 import org.jetbrains.kotlin.types.model.*
 import org.jetbrains.kotlin.utils.SmartList
 import org.jetbrains.kotlin.utils.SmartSet
@@ -448,14 +447,12 @@ class NewConstraintSystemImpl(
         val intersectionTypeConstructor = resultType.typeConstructor().takeIf { it is IntersectionTypeConstructorMarker } ?: return
         val isInferredEmptyIntersectionForbidden =
             languageVersionSettings.supportsFeature(LanguageFeature.ForbidInferringTypeVariablesIntoEmptyIntersection)
-        val upperTypes = intersectionTypeConstructor.supertypes()
+        val intersectionComponents = intersectionTypeConstructor.supertypes()
 
-        if (upperTypes.computeEmptyIntersectionTypeKind().isDefinitelyEmpty()) {
-            // Remove existing errors from resolution stage because a completion error is more precise
-            storage.errors.removeIf { it is InferredEmptyIntersectionError || it is InferredEmptyIntersectionWarning }
+        if (intersectionComponents.isEmptyIntersection()) {
             val errorFactory =
                 if (isInferredEmptyIntersectionForbidden) ::InferredEmptyIntersectionError else ::InferredEmptyIntersectionWarning
-            addError(errorFactory(upperTypes, variable))
+            addError(errorFactory(intersectionComponents, variable))
         }
     }
 
