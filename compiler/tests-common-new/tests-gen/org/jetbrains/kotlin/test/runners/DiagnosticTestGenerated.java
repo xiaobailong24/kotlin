@@ -15242,18 +15242,6 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
                 }
 
                 @Test
-                @TestMetadata("intersectionTypeToFunInterfaceConversion.kt")
-                public void testIntersectionTypeToFunInterfaceConversion() throws Exception {
-                    runTest("compiler/testData/diagnostics/tests/inference/emptyIntersectionTypes/intersectionTypeToFunInterfaceConversion.kt");
-                }
-
-                @Test
-                @TestMetadata("intersectionTypeToSubtypeConversion.kt")
-                public void testIntersectionTypeToSubtypeConversion() throws Exception {
-                    runTest("compiler/testData/diagnostics/tests/inference/emptyIntersectionTypes/intersectionTypeToSubtypeConversion.kt");
-                }
-
-                @Test
                 @TestMetadata("kt45461.kt")
                 public void testKt45461() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/emptyIntersectionTypes/kt45461.kt");
@@ -15509,12 +15497,6 @@ public class DiagnosticTestGenerated extends AbstractDiagnosticTest {
                 @TestMetadata("kt48935_6.kt")
                 public void testKt48935_6() throws Exception {
                     runTest("compiler/testData/diagnostics/tests/inference/emptyIntersectionTypes/kt48935_6.kt");
-                }
-
-                @Test
-                @TestMetadata("kt48987.kt")
-                public void testKt48987() throws Exception {
-                    runTest("compiler/testData/diagnostics/tests/inference/emptyIntersectionTypes/kt48987.kt");
                 }
 
                 @Test
