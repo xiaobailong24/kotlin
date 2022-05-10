@@ -264,6 +264,7 @@ private fun mapInapplicableCandidateError(
     }
 }
 
+@OptIn(ExperimentalStdlibApi::class)
 private fun mapSystemHasContradictionError(
     session: FirSession,
     diagnostic: ConeConstraintSystemHasContradiction,
