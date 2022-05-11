@@ -9,6 +9,8 @@ import kotlin.test.FrameworkAdapter
 
 @JsFun("() => (typeof arguments !== 'undefined' && typeof arguments.join !== 'undefined') ? arguments.join(' ') : '' ")
 private external fun d8Arguments(): String
+@JsFun("() => (typeof process != 'undefined' && typeof process.argv != 'undefined') ? process.argv.slice(2).join(' ') : ''")
+private external fun nodeArguments(): String
 
 internal class TeamcityAdapter : FrameworkAdapter {
     private enum class MessageType(val type: String) {
@@ -46,7 +48,8 @@ internal class TeamcityAdapter : FrameworkAdapter {
     }
 
     private val testArguments: FrameworkTestArguments by lazy {
-        FrameworkTestArguments.parse(d8Arguments().split(' '))
+        val arguments = d8Arguments().takeIf { it.isNotEmpty() } ?: nodeArguments()
+        FrameworkTestArguments.parse(arguments.split(' '))
     }
 
     private fun runSuite(name: String, suiteFn: () -> Unit) {

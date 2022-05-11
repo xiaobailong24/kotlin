@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsNodeDsl
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsExec
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinWasmNode
 import org.jetbrains.kotlin.gradle.tasks.withType
 import javax.inject.Inject
 
@@ -31,12 +32,15 @@ open class KotlinNodeJsIr @Inject constructor(target: KotlinJsIrTarget) :
     }
 
     override fun configureDefaultTestFramework(test: KotlinJsTest) {
-        if (test.testFramework == null) {
-            test.useMocha { }
-        }
-
-        if (test.enabled) {
-            nodeJs.taskRequirements.addTaskRequirements(test)
+        if (target.platformType != KotlinPlatformType.wasm) {
+            if (test.testFramework == null) {
+                test.useMocha { }
+            }
+            if (test.enabled) {
+                nodeJs.taskRequirements.addTaskRequirements(test)
+            }
+        } else {
+            test.testFramework = KotlinWasmNode(test)
         }
     }
 
