@@ -642,7 +642,7 @@ class CompileKotlinAgainstCustomBinariesTest : AbstractKotlinCompilerIntegration
         compileKotlin(
             "source.kt", tmpdir,
             listOf(),
-            additionalOptions = listOf("-Xuse-fir"),
+            additionalOptions = listOf("-Xuse-k2"),
             additionalSources = listOf("A.java", "B.java"),
         )
     }
