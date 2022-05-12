@@ -580,6 +580,9 @@ interface TypeSystemContext : TypeSystemOptimizationContext {
 
     fun SimpleTypeMarker.asDefinitelyNotNullType(): DefinitelyNotNullTypeMarker?
     fun DefinitelyNotNullTypeMarker.original(): SimpleTypeMarker
+
+    fun SimpleTypeMarker.originalIfDefinitelyNotNullable(): SimpleTypeMarker = asDefinitelyNotNullType()?.original() ?: this
+
     fun KotlinTypeMarker.makeDefinitelyNotNullOrNotNull(): KotlinTypeMarker
     fun SimpleTypeMarker.makeSimpleTypeDefinitelyNotNullOrNotNull(): SimpleTypeMarker
     fun SimpleTypeMarker.isMarkedNullable(): Boolean
