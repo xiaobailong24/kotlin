@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.gradle.targets.js.d8
 
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.*
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 import org.jetbrains.kotlin.gradle.tasks.registerTask
 import org.jetbrains.kotlin.gradle.utils.newFileProperty
@@ -14,16 +15,16 @@ import javax.inject.Inject
 
 open class D8Exec
 @Inject
-constructor() : AbstractExecTask<D8Exec>(D8Exec::class.java) {
+constructor(
+    private val compilation: KotlinJsCompilation
+) : AbstractExecTask<D8Exec>(D8Exec::class.java) {
     @Transient
     @get:Internal
     lateinit var d8: D8RootExtension
 
     init {
         onlyIf {
-            !inputFileProperty.isPresent || inputFileProperty.asFile.map {
-                it.exists()
-            }.get()
+            !inputFileProperty.isPresent || inputFileProperty.asFile.map { it.exists() }.get()
         }
     }
 
@@ -37,12 +38,22 @@ constructor() : AbstractExecTask<D8Exec>(D8Exec::class.java) {
 
     override fun exec() {
         val newArgs = mutableListOf<String>()
-        args?.let(newArgs::addAll)
         newArgs.addAll(d8Args)
         if (inputFileProperty.isPresent) {
-            newArgs.add(inputFileProperty.asFile.get().canonicalPath)
+            val inputFile = inputFileProperty.asFile.get()
+            workingDir = inputFile.parentFile
+            if (compilation.target.platformType == KotlinPlatformType.wasm) {
+                newArgs.add("--module")
+            }
+            newArgs.add(inputFile.canonicalPath)
         }
-        this.setArgs(newArgs)
+        args?.let {
+            if (it.isNotEmpty()) {
+                newArgs.add("--")
+                newArgs.addAll(it)
+            }
+        }
+        this.args = newArgs
         super.exec()
     }
 
