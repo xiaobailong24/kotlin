@@ -4,9 +4,6 @@
 // FULL_JDK
 // WITH_REFLECT
 
-// Android doesn't have @Repeatable, so findAnnotations can't unpack repeatable annotations.
-// IGNORE_BACKEND: ANDROID
-
 // FILE: A.kt
 @java.lang.annotation.Repeatable(A.Container::class)
 annotation class A(val value: String) {

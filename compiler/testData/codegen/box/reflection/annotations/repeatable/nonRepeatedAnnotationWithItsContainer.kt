@@ -4,9 +4,6 @@
 // FULL_JDK
 // WITH_REFLECT
 
-// Android doesn't have @Repeatable.
-// IGNORE_BACKEND: ANDROID
-
 package test
 
 import kotlin.test.assertEquals
