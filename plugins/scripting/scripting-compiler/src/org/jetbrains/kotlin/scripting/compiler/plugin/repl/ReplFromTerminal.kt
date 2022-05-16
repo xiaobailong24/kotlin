@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.cli.common.repl.ReplEvalResult
 import org.jetbrains.kotlin.cli.common.repl.replUnescapeLineBreaks
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
+import org.jetbrains.kotlin.descriptors.runtime.components.tryLoadClass
 import org.jetbrains.kotlin.scripting.compiler.plugin.repl.configuration.ConsoleReplConfiguration
 import org.jetbrains.kotlin.scripting.compiler.plugin.repl.configuration.IdeReplConfiguration
 import org.jetbrains.kotlin.scripting.compiler.plugin.repl.configuration.ReplConfiguration
@@ -105,7 +106,27 @@ class ReplFromTerminal(
             is ReplEvalResult.ValueResult, is ReplEvalResult.UnitResult -> {
                 writer.notifyCommandSuccess()
                 if (evalResult is ReplEvalResult.ValueResult) {
-                    writer.outputCommandResult(evalResult.toString())
+                    val resultClass = evalResult.value?.javaClass
+                    val resultPrimitive = evalResult.value?.javaClass?.kotlin?.javaPrimitiveType
+                    val resultClassTypeName = resultClass?.typeName
+                    val resultString = evalResult.type.takeIf {
+                        it != null && resultClassTypeName != null && it != resultClassTypeName
+                    }?.let {
+                        ReplFromTerminal::class.java.classLoader.tryLoadClass(it)
+                    }?.let {
+                        it.declaredConstructors.find { ctor ->
+                            ctor.parameterCount == 1
+                                    && (ctor.parameters[0].type == resultClass || ctor.parameters[0].type == resultPrimitive)
+                        }
+                    }?.let {
+                        try {
+                            it.isAccessible = true
+                            it.newInstance(evalResult.value).toString()
+                        } catch (e: Throwable) {
+                            null
+                        }
+                    }
+                    writer.outputCommandResult(resultString ?: evalResult.toString())
                 }
             }
             is ReplEvalResult.Error.Runtime -> writer.outputRuntimeError(evalResult.message)
