@@ -598,7 +598,7 @@ public class KotlinExpressionParsing extends AbstractKotlinParsing {
     }
 
     boolean isAtLabelDefinitionOrMissingIdentifier() {
-        return (at(IDENTIFIER) && myBuilder.rawLookup(1) == AT) || at(AT);
+        return at(IDENTIFIER) && myBuilder.rawLookup(1) == AT;
     }
 
     /*
