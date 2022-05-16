@@ -460,6 +460,29 @@ class GeneralNativeIT : BaseGradleIT() {
     }
 
     @Test
+    fun testTransitiveExportIsNotRequiredForExportingVariant() = with(
+        transformNativeTestProjectWithPluginDsl("export-published-lib", directoryPrefix = "native-binaries")
+    ) {
+        Assume.assumeTrue(HostManager.hostIsMac)
+
+        val frameworkName = "shared"
+        val headerPath = "shared/build/bin/iosX64/debugFramework/$frameworkName.framework/Headers/$frameworkName.h"
+        val frameworkTask = "linkDebugFrameworkIosX64"
+
+        build(":lib:publish") {
+            assertSuccessful()
+        }
+
+        build(":shared:$frameworkTask") {
+            assertSuccessful()
+            assertFileExists(headerPath)
+            val headerContents = fileInWorkingDir(headerPath).readText()
+            assertTrue(headerContents.contains("funToExport"))
+            assertTrue(headerContents.contains("funInShared"))
+        }
+    }
+
+    @Test
     fun testNativeExecutables() = with(transformNativeTestProjectWithPluginDsl("executables", directoryPrefix = "native-binaries")) {
         val binaries = mutableListOf(
             "debugExecutable" to "native-binary",
