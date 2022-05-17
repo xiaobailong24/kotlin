@@ -13,6 +13,8 @@ import org.gradle.api.artifacts.result.ResolvedComponentResult
 import org.gradle.api.artifacts.result.ResolvedDependencyResult
 import org.gradle.api.attributes.Attribute
 import org.gradle.api.file.FileCollection
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.multiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.ChooseVisibleSourceSets.MetadataProvider.Companion.asMetadataProvider
 import org.jetbrains.kotlin.gradle.plugin.sources.KotlinDependencyScope
@@ -243,7 +245,11 @@ internal class GranularMetadataTransformation(
             .filterIsInstance<ResolvedDependencyResult>()
             .filterTo(mutableSetOf()) { ModuleIds.fromComponent(project, it.selected) in requestedTransitiveDependencies }
 
-        val visibleSourceSetsExcludingDependsOn = allVisibleSourceSets.filterTo(mutableSetOf()) { it !in sourceSetsVisibleInParents }
+        val isDefaultCompilationSourceSet = kotlinSourceSet in project.multiplatformExtension.platformCompilationSourceSets
+
+        val visibleSourceSetsExcludingDependsOn = if (!isDefaultCompilationSourceSet)
+            allVisibleSourceSets.filterTo(mutableSetOf()) { it !in sourceSetsVisibleInParents }
+        else emptySet()
 
         val metadataProvider = when (mppDependencyMetadataExtractor) {
             is ProjectMppDependencyProjectStructureMetadataExtractor -> ProjectMetadataProvider(
@@ -345,3 +351,8 @@ internal fun requestedDependencies(
     val otherContributingSourceSets = dependsOnClosureWithInterCompilationDependencies(project, sourceSet)
     return listOf(sourceSet, *otherContributingSourceSets.toTypedArray()).flatMap(::collectScopedDependenciesFromSourceSet)
 }
+
+private val KotlinMultiplatformExtension.platformCompilationSourceSets: Set<KotlinSourceSet>
+    get() = targets.filterNot { it is KotlinMetadataTarget }
+        .flatMap { target -> target.compilations }
+        .mapTo(mutableSetOf()) { it.defaultSourceSet }
