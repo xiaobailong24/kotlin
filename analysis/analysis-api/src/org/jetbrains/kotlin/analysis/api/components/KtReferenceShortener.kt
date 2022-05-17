@@ -98,17 +98,49 @@ public interface KtReferenceShortenerMixIn : KtAnalysisSessionMixIn {
  * @property isEmpty The flag responsible for detection if any shortening is applicable
  */
 
+public data class ShorteningImportInfo(
+    val importToAdd: FqName,
+    val importIsStar: Boolean
+)
+
+public sealed class KtElementShortening {
+    public abstract val element: SmartPsiElementPointer<*>
+    public abstract val importInfo: ShorteningImportInfo?
+    public abstract val childElement: KtElementShortening?
+}
+
+public class KtDotQualifierShortening(
+    override val element: SmartPsiElementPointer<KtDotQualifiedExpression>,
+    override val importInfo: ShorteningImportInfo?,
+    override val childElement: KtDotQualifierShortening?
+) : KtElementShortening()
+
+public class KtUserTypeShortening(
+    override val element: SmartPsiElementPointer<KtUserType>,
+    override val importInfo: ShorteningImportInfo?,
+    override val childElement: KtUserTypeShortening?
+) : KtElementShortening()
+
 public interface ShortenCommand {
 
     public val targetFile: KtFile?
-    public val importsToAdd: List<FqName>?
-    public val starImportsToAdd: List<FqName>?
-    public val typesToShorten: List<SmartPsiElementPointer<KtUserType>>?
-    public val qualifiersToShorten: List<SmartPsiElementPointer<KtDotQualifiedExpression>>?
+    public val ktDotQualifierShortenings: List<KtDotQualifierShortening>
+    public val ktUserTypeShortenings: List<KtUserTypeShortening>
     public val isEmpty: Boolean
 
     /**
      * Launches reference shortening using the information stored in properties of this class
      */
-    public fun invokeShortening()
+
+    // TODO: finish
+    public fun getAllDistinctImports(considerInnerElements: Boolean = false): List<ShorteningImportInfo> {
+        val importSet = HashSet<ShorteningImportInfo>()
+        for (shortening in ktDotQualifierShortenings + ktUserTypeShortenings) {
+            shortening.importInfo?.let { if (it !in importSet) importSet.add(it) }
+        }
+        return importSet.toList()
+    }
+
+    // TODO: move implementation here
+    public fun invokeShortening() {}
 }
