@@ -5,6 +5,7 @@
 
 package org.jetbrains.kotlin.idea.references
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
@@ -20,7 +21,7 @@ interface KotlinReferenceProviderContributor {
 
     companion object {
         fun getInstance(): KotlinReferenceProviderContributor =
-            ServiceManager.getService(KotlinReferenceProviderContributor::class.java)
+            ApplicationManager.getApplication().getService(KotlinReferenceProviderContributor::class.java)
     }
 }
 

@@ -233,10 +233,7 @@ private fun createContainerToResolveCommonCode(
         configureCommonSpecificComponents()
         useInstance(metadataPartProvider)
 
-        val metadataFinderFactory = ServiceManager.getService(
-            moduleContext.project,
-            MetadataFinderFactory::class.java
-        )
+        val metadataFinderFactory = moduleContext.project.getService(MetadataFinderFactory::class.java)
             ?: error("No MetadataFinderFactory in project")
         useInstance(metadataFinderFactory.create(moduleContentScope))
 

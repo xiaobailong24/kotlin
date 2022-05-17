@@ -120,7 +120,7 @@ abstract class LightClassGenerationSupport {
     companion object {
         @JvmStatic
         fun getInstance(project: Project): LightClassGenerationSupport {
-            return ServiceManager.getService(project, LightClassGenerationSupport::class.java)
+            return project.getService(LightClassGenerationSupport::class.java)
         }
     }
 }

@@ -18,9 +18,11 @@ package org.jetbrains.kotlin.utils
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.PathManager
+import com.intellij.util.lang.JavaVersion
 import org.jetbrains.jps.model.java.impl.JavaSdkUtil
 
 import java.io.File
+import java.nio.file.Path
 import java.util.regex.Pattern
 
 object PathUtil {
@@ -176,13 +178,13 @@ object PathUtil {
 
     @JvmStatic
     fun getJdkClassesRootsFromCurrentJre(): List<File> =
-            getJdkClassesRootsFromJre(System.getProperty("java.home"))
+        getJdkClassesRootsFromJre(System.getProperty("java.home"))
 
     @JvmStatic
     fun getJdkClassesRootsFromJre(javaHome: String): List<File> =
-            JavaSdkUtil.getJdkClassesRoots(File(javaHome), true)
+        JavaSdkUtil.getJdkClassesRoots(File(javaHome).toPath(), true).map(Path::toFile)
 
     @JvmStatic
     fun getJdkClassesRoots(jdkHome: File): List<File> =
-            JavaSdkUtil.getJdkClassesRoots(jdkHome, false)
+        JavaSdkUtil.getJdkClassesRoots(jdkHome.toPath(), false).map(Path::toFile)
 }

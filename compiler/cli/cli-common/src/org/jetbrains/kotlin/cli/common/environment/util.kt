@@ -17,13 +17,14 @@
 package org.jetbrains.kotlin.cli.common.environment
 
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.util.lang.JavaVersion
 
 fun setIdeaIoUseFallback() {
     val properties = System.getProperties()
 
     properties.setProperty("idea.io.use.nio2", java.lang.Boolean.TRUE.toString())
 
-    if (!(SystemInfo.isJavaVersionAtLeast(1, 7, 0) && "1.7.0-ea" != SystemInfo.JAVA_VERSION)) {
+    if (JavaVersion.current() < JavaVersion.compose(1, 7, 0, 0, false) && "1.7.0-ea" != SystemInfo.JAVA_VERSION) {
         properties.setProperty("idea.io.use.fallback", java.lang.Boolean.TRUE.toString())
     }
 }

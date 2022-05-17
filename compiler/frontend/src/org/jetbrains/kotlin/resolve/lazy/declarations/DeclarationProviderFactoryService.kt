@@ -45,7 +45,7 @@ abstract class DeclarationProviderFactoryService {
             moduleContentScope: GlobalSearchScope,
             moduleInfo: ModuleInfo
         ): DeclarationProviderFactory {
-            return ServiceManager.getService(project, DeclarationProviderFactoryService::class.java)!!
+            return project.getService(DeclarationProviderFactoryService::class.java)!!
                 .create(project, storageManager, syntheticFiles, filteringScope(syntheticFiles, moduleContentScope), moduleInfo)
         }
 

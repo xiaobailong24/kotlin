@@ -50,7 +50,7 @@ class FacadeCache(private val project: Project) {
 
     companion object {
         fun getInstance(project: Project): FacadeCache {
-            return ServiceManager.getService(project, FacadeCache::class.java)
+            return project.getService(FacadeCache::class.java)
         }
     }
 }

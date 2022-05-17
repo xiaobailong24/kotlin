@@ -39,7 +39,7 @@ interface ModuleVisibilityManager {
 
     object SERVICE {
         @JvmStatic fun getInstance(project: Project): ModuleVisibilityManager =
-                ServiceManager.getService(project, ModuleVisibilityManager::class.java)
+                project.getService(ModuleVisibilityManager::class.java)
     }
 }
 

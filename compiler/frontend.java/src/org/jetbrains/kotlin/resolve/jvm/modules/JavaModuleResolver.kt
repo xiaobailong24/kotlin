@@ -32,6 +32,6 @@ interface JavaModuleResolver : JavaModuleAnnotationsProvider {
     }
 
     companion object SERVICE {
-        fun getInstance(project: Project): JavaModuleResolver = ServiceManager.getService(project, JavaModuleResolver::class.java)
+        fun getInstance(project: Project): JavaModuleResolver = project.getService(JavaModuleResolver::class.java)
     }
 }

@@ -45,6 +45,6 @@ open class ScriptDependenciesProvider constructor(
 
     companion object {
         fun getInstance(project: Project): ScriptDependenciesProvider? =
-            ServiceManager.getService(project, ScriptDependenciesProvider::class.java)
+            project.getService(ScriptDependenciesProvider::class.java)
     }
 }

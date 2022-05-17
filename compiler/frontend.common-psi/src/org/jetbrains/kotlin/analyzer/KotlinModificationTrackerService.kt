@@ -20,7 +20,7 @@ open class KotlinModificationTrackerService {
 
         @JvmStatic
         fun getInstance(project: Project): KotlinModificationTrackerService {
-            return ServiceManager.getService(project, KotlinModificationTrackerService::class.java) ?: NEVER_CHANGE_TRACKER_SERVICE
+            return project.getService(KotlinModificationTrackerService::class.java) ?: NEVER_CHANGE_TRACKER_SERVICE
         }
     }
 }

@@ -45,7 +45,7 @@ class CliScriptDependenciesProvider(project: Project) : ScriptDependenciesProvid
             if (scriptDef != null) {
                 val result = refineScriptCompilationConfiguration(KtFileScriptSource(file), scriptDef, project, providedConfiguration)
 
-                ServiceManager.getService(project, ScriptReportSink::class.java)?.attachReports(file.virtualFile, result.reports)
+                project.getService(ScriptReportSink::class.java)?.attachReports(file.virtualFile, result.reports)
 
                 cacheLock.write {
                     cache.put(path, result)

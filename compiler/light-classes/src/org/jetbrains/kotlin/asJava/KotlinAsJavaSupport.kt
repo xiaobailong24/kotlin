@@ -63,10 +63,7 @@ abstract class KotlinAsJavaSupport {
     companion object {
         @JvmStatic
         fun getInstance(project: Project): KotlinAsJavaSupport {
-            return ServiceManager.getService(
-                project,
-                KotlinAsJavaSupport::class.java
-            )
+            return project.getService(KotlinAsJavaSupport::class.java)
         }
     }
 }

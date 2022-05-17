@@ -16,6 +16,6 @@ interface LanguageVersionSettingsProvider {
 
     companion object {
         fun getInstance(project: Project): LanguageVersionSettingsProvider? =
-            ServiceManager.getService(project, LanguageVersionSettingsProvider::class.java)
+            project.getService(LanguageVersionSettingsProvider::class.java)
     }
 }

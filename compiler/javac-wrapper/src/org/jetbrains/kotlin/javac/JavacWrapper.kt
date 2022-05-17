@@ -74,7 +74,7 @@ class JavacWrapper(
     private val jarFileSystem = VirtualFileManager.getInstance().getFileSystem(StandardFileSystems.JAR_PROTOCOL)!!
 
     companion object {
-        fun getInstance(project: Project): JavacWrapper = ServiceManager.getService(project, JavacWrapper::class.java)
+        fun getInstance(project: Project): JavacWrapper = project.getService(JavacWrapper::class.java)
     }
 
     private fun createCommonClassifierType(classId: ClassId) =

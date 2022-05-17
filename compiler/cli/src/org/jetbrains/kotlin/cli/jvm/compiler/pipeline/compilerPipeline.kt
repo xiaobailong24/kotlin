@@ -487,7 +487,7 @@ fun createProjectEnvironment(
     val project = projectEnvironment.project
     val localFileSystem = VirtualFileManager.getInstance().getFileSystem(StandardFileSystems.FILE_PROTOCOL)
 
-    val javaFileManager = ServiceManager.getService(project, CoreJavaFileManager::class.java) as KotlinCliJavaFileManagerImpl
+    val javaFileManager = project.getService(CoreJavaFileManager::class.java) as KotlinCliJavaFileManagerImpl
 
     val releaseTarget = configuration.get(JVMConfigurationKeys.JDK_RELEASE)
 

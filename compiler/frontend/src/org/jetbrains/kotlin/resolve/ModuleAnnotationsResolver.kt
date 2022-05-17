@@ -19,6 +19,6 @@ interface ModuleAnnotationsResolver {
 
     companion object {
         fun getInstance(project: Project): ModuleAnnotationsResolver =
-            ServiceManager.getService(project, ModuleAnnotationsResolver::class.java)
+            project.getService(ModuleAnnotationsResolver::class.java)
     }
 }

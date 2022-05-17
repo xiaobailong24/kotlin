@@ -16,10 +16,7 @@
 
 package org.jetbrains.kotlin.incremental.storage
 
-import com.intellij.util.io.DataExternalizer
-import com.intellij.util.io.IOUtil
-import com.intellij.util.io.KeyDescriptor
-import com.intellij.util.io.PersistentHashMap
+import com.intellij.util.io.*
 import java.io.File
 import java.io.IOException
 
@@ -58,7 +55,7 @@ class CachingLazyStorage<K, V>(
 
     override val keys: Collection<K>
         @Synchronized
-        get() = getStorageIfExists()?.allKeysWithExistingMapping ?: listOf()
+        get() = getStorageIfExists()?.collectAllKeysWithExistingMapping() ?: listOf()
 
     @Synchronized
     override operator fun contains(key: K): Boolean =
@@ -80,7 +77,9 @@ class CachingLazyStorage<K, V>(
 
     @Synchronized
     override fun append(key: K, value: V) {
-        getStorageOrCreateNew().appendData(key, { valueExternalizer.save(it, value) })
+        getStorageOrCreateNew().appendData(key, AppendablePersistentMap.ValueDataAppender {
+            valueExternalizer.save(it, value)
+        })
     }
 
     @Synchronized

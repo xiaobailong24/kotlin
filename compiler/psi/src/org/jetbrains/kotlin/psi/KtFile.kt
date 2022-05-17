@@ -200,7 +200,7 @@ open class KtFile(viewProvider: FileViewProvider, val isCompiled: Boolean) :
     }
 
     override fun getClasses(): Array<PsiClass> {
-        val fileClassProvider = ServiceManager.getService(project, KtFileClassProvider::class.java)
+        val fileClassProvider = project.getService(KtFileClassProvider::class.java)
         return fileClassProvider?.getFileClasses(this) ?: PsiClass.EMPTY_ARRAY
     }
 
