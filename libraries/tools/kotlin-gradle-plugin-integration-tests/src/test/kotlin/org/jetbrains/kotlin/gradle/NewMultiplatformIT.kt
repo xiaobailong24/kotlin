@@ -5,12 +5,12 @@
 package org.jetbrains.kotlin.gradle
 
 import org.gradle.api.logging.LogLevel
-import org.jetbrains.kotlin.gradle.native.GeneralNativeIT.Companion.withNativeCommandLineArguments
-import org.jetbrains.kotlin.gradle.native.GeneralNativeIT.Companion.containsSequentially
 import org.gradle.api.logging.configuration.WarningMode
 import org.gradle.util.GradleVersion
-import org.jetbrains.kotlin.gradle.native.*
+import org.jetbrains.kotlin.gradle.native.GeneralNativeIT.Companion.containsSequentially
+import org.jetbrains.kotlin.gradle.native.GeneralNativeIT.Companion.withNativeCommandLineArguments
 import org.jetbrains.kotlin.gradle.native.MPPNativeTargets
+import org.jetbrains.kotlin.gradle.native.configureJvmMemory
 import org.jetbrains.kotlin.gradle.native.transformNativeTestProject
 import org.jetbrains.kotlin.gradle.native.transformNativeTestProjectWithPluginDsl
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
@@ -539,7 +539,7 @@ class NewMultiplatformIT : BaseGradleIT() {
                     "\n" + """
                     buildscript {
                         repositories {
-                            maven { url 'https://plugins.gradle.org/m2/' }
+                            maven { url 'https://cache-redirector.jetbrains.com/plugins.gradle.org/m2/' }
                         }
                         dependencies {
                             classpath 'com.github.jengelman.gradle.plugins:shadow:5.0.0'
