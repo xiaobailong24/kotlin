@@ -13,24 +13,12 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.metadataCompilationRegistryBy
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompileTool
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
-interface IdeaKotlinCompilerArgumentsResolver {
-    fun resolve(fragment: KotlinGradleFragment): CommonCompilerArguments?
-
-    object Empty : IdeaKotlinCompilerArgumentsResolver {
-        override fun resolve(fragment: KotlinGradleFragment): CommonCompilerArguments? = null
-    }
-}
-
-fun IdeaKotlinCompilerArgumentsResolver(project: Project): IdeaKotlinCompilerArgumentsResolver =
-    IdeaKotlinCompilerArgumentsResolverImpl(project)
-
-private class IdeaKotlinCompilerArgumentsResolverImpl(private val project: Project) : IdeaKotlinCompilerArgumentsResolver {
-    private val metadataCompilationRegistryByModuleId by lazy { project.metadataCompilationRegistryByModuleId }
-    override fun resolve(fragment: KotlinGradleFragment): CommonCompilerArguments? {
-        val compileTaskName = metadataCompilationRegistryByModuleId[fragment.containingModule.moduleIdentifier]
+object IdeaKotlinCompilerArgumentsResolver {
+    fun resolve(fragment: KotlinGradleFragment): CommonCompilerArguments? {
+        val compileTaskName = fragment.project.metadataCompilationRegistryByModuleId[fragment.containingModule.moduleIdentifier]
             ?.getForFragmentOrNull(fragment)
             ?.compileKotlinTaskName ?: return null
-        return project.tasks.findByName(compileTaskName)
+        return fragment.project.tasks.findByName(compileTaskName)
             ?.safeAs<AbstractKotlinCompileTool<CommonCompilerArguments>>()
             ?.prepareCompilerArguments()
     }

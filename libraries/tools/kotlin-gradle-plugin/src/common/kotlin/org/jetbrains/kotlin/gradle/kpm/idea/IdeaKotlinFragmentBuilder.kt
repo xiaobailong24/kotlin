@@ -15,7 +15,7 @@ internal fun IdeaKotlinProjectModelBuildingContext.IdeaKotlinFragment(fragment: 
 }
 
 private fun IdeaKotlinProjectModelBuildingContext.buildIdeaKotlinFragment(fragment: KotlinGradleFragment): IdeaKotlinFragment {
-    val compilerArguments = compilerArgumentsResolver.resolve(fragment)
+    val compilerArguments = IdeaKotlinCompilerArgumentsResolver.resolve(fragment)
     return IdeaKotlinFragmentImpl(
         coordinates = IdeaKotlinFragmentCoordinates(fragment),
         platforms = fragment.containingVariants.map { variant -> IdeaKotlinPlatform(variant) }.toSet(),
