@@ -59,12 +59,12 @@ fun TypeCheckerProviderContext.equalTypes(a: ConeKotlinType, b: ConeKotlinType):
     AbstractTypeChecker.equalTypes(this, a, b)
 
 private fun ConeTypeContext.makesSenseToBeDefinitelyNotNull(
-    originalType: ConeKotlinType,
+    type: ConeSimpleKotlinType,
     avoidComprehensiveCheck: Boolean,
 ): Boolean {
     // Do not replace `originalType.asFlexibleType()?.lowerBound() ?: originalType` with `lowerBoundIfFlexible()`
     // since the latter might call `fullyExpandedType` that might be too early on that stage
-    return when (val type = originalType.asFlexibleType()?.lowerBound() ?: originalType) {
+    return when (type) {
         is ConeTypeParameterType -> avoidComprehensiveCheck || type.isNullableType()
         // Actually, this branch should work for type parameters as well, but it breaks some cases. See KT-40114.
         // Basically, if we have `T : X..X?`, then `T <: Any` but we still have `T` != `T & Any`.
@@ -98,12 +98,14 @@ fun ConeDefinitelyNotNullType.Companion.create(
 
 fun ConeKotlinType.makeConeTypeDefinitelyNotNullOrNotNull(
     typeContext: ConeTypeContext,
-    forceWithoutCheck: Boolean = false,
+    avoidComprehensiveCheck: Boolean = false,
 ): ConeKotlinType {
     if (this is ConeIntersectionType) {
-        return ConeIntersectionType(intersectedTypes.map { it.makeConeTypeDefinitelyNotNullOrNotNull(typeContext, forceWithoutCheck) })
+        return ConeIntersectionType(intersectedTypes.map {
+            it.makeConeTypeDefinitelyNotNullOrNotNull(typeContext, avoidComprehensiveCheck)
+        })
     }
-    return ConeDefinitelyNotNullType.create(this, typeContext, forceWithoutCheck)
+    return ConeDefinitelyNotNullType.create(this, typeContext, avoidComprehensiveCheck)
         ?: this.withNullability(ConeNullability.NOT_NULL, typeContext)
 }
 

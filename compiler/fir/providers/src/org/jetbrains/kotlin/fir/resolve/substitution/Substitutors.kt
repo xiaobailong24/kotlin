@@ -47,7 +47,7 @@ abstract class AbstractConeSubstitutor(protected val typeContext: ConeTypeContex
     override fun substituteOrNull(type: ConeKotlinType): ConeKotlinType? {
         val newType = substituteType(type)
         if (newType != null && type is ConeDefinitelyNotNullType) {
-            return newType.makeConeTypeDefinitelyNotNullOrNotNull(typeContext, forceWithoutCheck = false)
+            return newType.makeConeTypeDefinitelyNotNullOrNotNull(typeContext, avoidComprehensiveCheck = false)
         }
         return (newType ?: type.substituteRecursive())
     }
