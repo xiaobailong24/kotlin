@@ -23,7 +23,7 @@
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-#define CURRENT_SOURCE_LOCATION __FILE__ ":" TOSTRING(__LINE__)
+#define CURRENT_SOURCE_LOCATION __FILE_NAME__ ":" TOSTRING(__LINE__)
 
 namespace kotlin {
 namespace internal {
