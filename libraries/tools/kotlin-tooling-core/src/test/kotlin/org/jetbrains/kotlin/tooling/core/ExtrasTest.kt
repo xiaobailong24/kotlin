@@ -6,8 +6,6 @@ import kotlin.test.*
 
 class ExtrasTest {
 
-    data class Box<T>(val value: T)
-
     @Test
     fun `test - isEmpty`() {
         assertTrue(mutableExtrasOf().isEmpty())
@@ -286,31 +284,6 @@ class ExtrasTest {
                 keyOf<Int>() withValue 1
             ),
             extras
-        )
-    }
-
-    @Test
-    fun `test - filterType`() {
-        val extras = mutableExtrasOf()
-        extras[keyOf<Box<String>>()] = Box("first")
-        extras[keyOf<Box<String>>("other")] = Box("second")
-        extras[keyOf<Box<Int>>()] = Box(1)
-
-        assertEquals<List<Box<String>>>(
-            listOf(Box("first"), Box("second")),
-            extras.filterIsType<Box<String>>().map { it.value }.toList()
-        )
-
-        assertEquals<List<Box<Int>>>(
-            listOf(Box(1)), extras.filterIsType<Box<Int>>().map { it.value }.toList()
-        )
-
-        assertEquals(
-            emptyList(), extras.filterIsType<Box<*>>().toList()
-        )
-
-        assertEquals(
-            emptyList(), extras.filterIsType<Any>().toList()
         )
     }
 }

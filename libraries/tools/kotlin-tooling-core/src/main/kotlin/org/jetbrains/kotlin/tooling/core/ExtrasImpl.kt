@@ -119,7 +119,7 @@ abstract class AbstractExtras : Extras {
     }
 }
 
-abstract class AbstractEmptyExtras : Extras {
+abstract class AbstractEmptyExtras : AbstractExtras() {
     final override val size: Int = 0
 
     final override val keys: Set<Extras.Key<*>> = emptySet()
@@ -133,21 +133,6 @@ abstract class AbstractEmptyExtras : Extras {
     override fun contains(key: Extras.Key<*>): Boolean = false
 
     override fun contains(element: Extras.Entry<out Any>): Boolean = false
-
-    override fun containsAll(elements: Collection<Extras.Entry<out Any>>): Boolean =
-        emptySet<Nothing>().containsAll(elements)
-
-    override fun equals(other: Any?): Boolean {
-        if (other === this) return true
-        if (other !is Extras) return false
-        if (other.isEmpty()) return true
-        return false
-    }
-
-    override fun hashCode(): Int {
-        /* Random Magic Number */
-        return 24112010
-    }
 }
 
 internal object EmptyExtras : AbstractEmptyExtras(), Serializable {
