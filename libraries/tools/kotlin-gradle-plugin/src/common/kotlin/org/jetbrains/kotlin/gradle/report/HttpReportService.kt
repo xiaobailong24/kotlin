@@ -42,9 +42,9 @@ abstract class HttpReportService : BuildService<HttpReportService.Parameters>,
 
     val log = Logging.getLogger(this.javaClass)
 
-    init {
-        log.info("Http report service is registered. Unique build id: $uuid")
-    }
+//    init {
+//        log.info("Http report service is registered. Unique build id: $uuid")
+//    }
 
     //    @Volatile for one thread executor it does not need
     private var requestPreviousFailed = false
