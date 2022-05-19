@@ -176,7 +176,7 @@ class DefaultKotlinSourceSet(
             when (resolution) {
                 is MetadataDependencyResolution.KeepOriginalDependency -> null
 
-                is MetadataDependencyResolution.ExcludeAsUnrequested ->
+                is MetadataDependencyResolution.Exclude ->
                     MetadataDependencyTransformation(group, name, projectPath, null, emptySet(), emptyMap())
 
                 is MetadataDependencyResolution.ChooseVisibleSourceSets -> {

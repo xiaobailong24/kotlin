@@ -36,7 +36,7 @@ internal sealed class MetadataDependencyResolution(
     override fun toString(): String {
         val verb = when (this) {
             is KeepOriginalDependency -> "keep"
-            is ExcludeAsUnrequested -> "exclude"
+            is Exclude -> "exclude"
             is ChooseVisibleSourceSets -> "choose"
         }
         return "$verb, dependency = $dependency"
@@ -47,10 +47,21 @@ internal sealed class MetadataDependencyResolution(
         projectDependency: Project?
     ) : MetadataDependencyResolution(dependency, projectDependency)
 
-    class ExcludeAsUnrequested(
+    sealed class Exclude(
         dependency: ResolvedComponentResult,
         projectDependency: Project?
-    ) : MetadataDependencyResolution(dependency, projectDependency)
+    ) : MetadataDependencyResolution(dependency, projectDependency) {
+
+        class Unrequested(
+            dependency: ResolvedComponentResult,
+            projectDependency: Project?
+        ) : Exclude(dependency, projectDependency)
+
+        class PlatformSourceSetDependency(
+            dependency: ResolvedComponentResult,
+            projectDependency: Project?
+        ) : Exclude(dependency, projectDependency)
+    }
 
     class ChooseVisibleSourceSets internal constructor(
         dependency: ResolvedComponentResult,
@@ -159,7 +170,8 @@ internal class GranularMetadataTransformation(
                 is MetadataDependencyResolution.KeepOriginalDependency ->
                     resolvedDependency.dependencies.filterIsInstance<ResolvedDependencyResult>()
                 is MetadataDependencyResolution.ChooseVisibleSourceSets -> dependencyResult.visibleTransitiveDependencies
-                is MetadataDependencyResolution.ExcludeAsUnrequested -> error("a visited dependency is erroneously considered unrequested")
+                is MetadataDependencyResolution.Exclude.PlatformSourceSetDependency -> emptyList()
+                is MetadataDependencyResolution.Exclude.Unrequested -> error("a visited dependency is erroneously considered unrequested")
             }
 
             resolvedDependencyQueue.addAll(
@@ -172,7 +184,7 @@ internal class GranularMetadataTransformation(
             if (resolvedDependency.selected !in visitedDependencies) {
 //                val files = resolvedDependency.moduleArtifacts.map { it.file }
                 result.add(
-                    MetadataDependencyResolution.ExcludeAsUnrequested(
+                    MetadataDependencyResolution.Exclude.Unrequested(
                         resolvedDependency.selected,
                         (resolvedDependency.selected.id as? ProjectComponentIdentifier)
                             ?.takeIf { it.build.isCurrentBuild() }
@@ -211,6 +223,9 @@ internal class GranularMetadataTransformation(
 
         val resolvedToProject: Project? = module.toProjectOrNull(project)
 
+        if (kotlinSourceSet in project.multiplatformExtension.platformCompilationSourceSets)
+            return MetadataDependencyResolution.Exclude.PlatformSourceSetDependency(module, resolvedToProject)
+
         val projectStructureMetadata = mppDependencyMetadataExtractor?.getProjectStructureMetadata()
             ?: return MetadataDependencyResolution.KeepOriginalDependency(module, resolvedToProject)
 
@@ -245,11 +260,7 @@ internal class GranularMetadataTransformation(
             .filterIsInstance<ResolvedDependencyResult>()
             .filterTo(mutableSetOf()) { ModuleIds.fromComponent(project, it.selected) in requestedTransitiveDependencies }
 
-        val isDefaultCompilationSourceSet = kotlinSourceSet in project.multiplatformExtension.platformCompilationSourceSets
-
-        val visibleSourceSetsExcludingDependsOn = if (!isDefaultCompilationSourceSet)
-            allVisibleSourceSets.filterTo(mutableSetOf()) { it !in sourceSetsVisibleInParents }
-        else emptySet()
+        val visibleSourceSetsExcludingDependsOn = allVisibleSourceSets.filterTo(mutableSetOf()) { it !in sourceSetsVisibleInParents }
 
         val metadataProvider = when (mppDependencyMetadataExtractor) {
             is ProjectMppDependencyProjectStructureMetadataExtractor -> ProjectMetadataProvider(
@@ -355,4 +366,5 @@ internal fun requestedDependencies(
 private val KotlinMultiplatformExtension.platformCompilationSourceSets: Set<KotlinSourceSet>
     get() = targets.filterNot { it is KotlinMetadataTarget }
         .flatMap { target -> target.compilations }
-        .mapTo(mutableSetOf()) { it.defaultSourceSet }
+        .flatMap { it.kotlinSourceSetsIncludingDefault }
+        .toSet()

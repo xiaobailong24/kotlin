@@ -782,8 +782,10 @@ class HierarchicalMppIT : KGPBaseTest() {
                         it.sourceSetName == leafSourceSetName && it.scope == "implementation" && it.groupAndModule == "kt52216:lib"
                     }
                     assertNotNull(report, "No transformation for $leafSourceSetName implementation")
-                    assert(report.allVisibleSourceSets.singleOrNull() == "commonMain") {
-                        "Transformation should contain common main in all visible source sets"
+                    assert(report.allVisibleSourceSets.isEmpty()) {
+                        "All visible source sets for leaf platform source set should always be empty, but found: ${
+                            report.allVisibleSourceSets.joinToString(prefix = "[", postfix = "]", separator = "; ")
+                        }"
                     }
                     assert(report.newVisibleSourceSets.isEmpty()) {
                         "New visible source sets for leaf platform source set should always be empty, but found: ${
@@ -819,8 +821,10 @@ class HierarchicalMppIT : KGPBaseTest() {
                     assert(intermediateReport.allVisibleSourceSets.singleOrNull() == "commonMain") {
                         "Intermediate transformation should contain commonMain in all visible source sets, but it doesn't for target: $targetName"
                     }
-                    assert(leafReport.allVisibleSourceSets.singleOrNull() == "commonMain") {
-                        "Leaf transformation should contain commonMain in all visible source sets, but it doesn't for target: $targetName"
+                    assert(leafReport.allVisibleSourceSets.isEmpty()) {
+                        "All visible source sets for leaf platform source set should should be empty, but for target $targetName found: ${
+                            leafReport.allVisibleSourceSets.joinToString(prefix = "[", postfix = "]", separator = "; ")
+                        }"
                     }
                     assert(intermediateReport.newVisibleSourceSets.isEmpty()) {
                         "New visible source sets for intermediate source set should should be empty, but for target $targetName found: ${
