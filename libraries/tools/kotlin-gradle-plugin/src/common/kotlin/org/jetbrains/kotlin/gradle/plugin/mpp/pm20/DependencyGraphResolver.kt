@@ -104,7 +104,7 @@ class GradleDependencyGraphNode(
      * modules, then this property points to the other component. */
     val metadataSourceComponent: ResolvedComponentResult?,
     override val dependenciesByFragment: Map<KpmFragment, Iterable<GradleDependencyGraphNode>>
-) : DependencyGraphNode(module, dependenciesByFragment)
+) : KpmDependencyGraphNode(module, dependenciesByFragment)
 
 class KpmGradleDependencyGraph(
     override val requestingModule: KpmGradleModule,
