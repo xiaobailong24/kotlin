@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.gradle.kpm.KotlinMutableExternalModelContainer
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultKotlinDependencyHandler
-import org.jetbrains.kotlin.gradle.plugin.mpp.toModuleDependency
+import org.jetbrains.kotlin.gradle.plugin.mpp.toKpmModuleDependency
 import org.jetbrains.kotlin.gradle.plugin.sources.DefaultLanguageSettingsBuilder
 import org.jetbrains.kotlin.gradle.plugin.sources.FragmentConsistencyChecker
 import org.jetbrains.kotlin.gradle.plugin.sources.FragmentConsistencyChecks
@@ -92,7 +92,7 @@ open class KpmGradleFragmentInternal @Inject constructor(
     //       anyway, so for now all fragments follow that behavior
     override val declaredModuleDependencies: Iterable<KpmModuleDependency>
         get() = listOf(apiConfiguration, implementationConfiguration).flatMapTo(mutableSetOf()) { exportConfiguration ->
-            exportConfiguration.allDependencies.map { dependency -> dependency.toModuleDependency(project) }
+            exportConfiguration.allDependencies.map { dependency -> dependency.toKpmModuleDependency(project) }
         }
 
     override val kotlinSourceRoots: SourceDirectorySet =

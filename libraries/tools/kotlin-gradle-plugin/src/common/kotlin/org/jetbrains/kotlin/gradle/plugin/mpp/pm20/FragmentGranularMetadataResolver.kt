@@ -26,7 +26,7 @@ internal class FragmentGranularMetadataResolver(
         get() = requestingFragment.containingModule.project
 
     private val parentResultsByModuleIdentifier: Map<KpmModuleIdentifier, List<MetadataDependencyResolution>> by lazy {
-        refinesParentResolvers.value.flatMap { it.resolutions }.groupBy { it.dependency.toSingleModuleIdentifier() }
+        refinesParentResolvers.value.flatMap { it.resolutions }.groupBy { it.dependency.toSingleKpmModuleIdentifier() }
     }
 
     private val moduleResolver = KpmGradleModuleDependencyResolver.getForCurrentBuild(project)
@@ -37,10 +37,10 @@ internal class FragmentGranularMetadataResolver(
     private fun doResolveMetadataDependencies(): Iterable<MetadataDependencyResolution> {
         val configurationToResolve = configurationToResolveMetadataDependencies(project, requestingFragment.containingModule)
         val resolvedComponentsByModuleId =
-            configurationToResolve.incoming.resolutionResult.allComponents.associateBy { it.toSingleModuleIdentifier() }
+            configurationToResolve.incoming.resolutionResult.allComponents.associateBy { it.toSingleKpmModuleIdentifier() }
         val resolvedDependenciesByModuleId =
             configurationToResolve.incoming.resolutionResult.allDependencies.filterIsInstance<ResolvedDependencyResult>()
-                .flatMap { dependency -> dependency.requested.toModuleIdentifiers().map { id -> id to dependency } }.toMap()
+                .flatMap { dependency -> dependency.requested.toKpmModuleIdentifiers().map { id -> id to dependency } }.toMap()
 
         val dependencyGraph = dependencyGraphResolver.resolveDependencyGraph(requestingFragment.containingModule)
 
@@ -83,7 +83,7 @@ internal class FragmentGranularMetadataResolver(
 
                     val visibleFragmentNames = visibleFragments.map { it.fragmentName }.toSet()
                     val visibleFragmentNamesExcludingVisibleByParents =
-                        visibleFragmentNames.minus(fragmentsNamesVisibleByParents(metadataSourceComponent.toSingleModuleIdentifier()))
+                        visibleFragmentNames.minus(fragmentsNamesVisibleByParents(metadataSourceComponent.toSingleKpmModuleIdentifier()))
 
                     /*
                     We can safely assume that a metadata extractor can be created, because the project structure metadata already

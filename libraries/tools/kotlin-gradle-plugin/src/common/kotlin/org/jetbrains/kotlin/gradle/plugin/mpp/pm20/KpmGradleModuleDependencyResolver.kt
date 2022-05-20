@@ -73,14 +73,14 @@ internal fun buildSyntheticPlainModule(
     resolvedComponentResult: ResolvedComponentResult,
     singleVariantName: String,
 ): KpmExternalPlainModule {
-    val moduleDependency = resolvedComponentResult.toModuleDependency()
+    val moduleDependency = resolvedComponentResult.toKpmModuleDependency()
     return KpmExternalPlainModule(KpmBasicModule(moduleDependency.moduleIdentifier).apply {
         KpmBasicVariant(this@apply, singleVariantName, DefaultLanguageSettingsBuilder()).apply {
             fragments.add(this)
             this.declaredModuleDependencies.addAll(
                 resolvedComponentResult.dependencies
                     .filterIsInstance<ResolvedDependencyResult>()
-                    .map { it.selected.toModuleDependency() }
+                    .map { it.selected.toKpmModuleDependency() }
             )
         }
     })
@@ -104,28 +104,28 @@ internal class KpmExternalImportedModule(
     override fun toString(): String = "imported $moduleData"
 }
 
-private fun ModuleComponentIdentifier.toSingleModuleIdentifier(classifier: String? = null): KpmMavenModuleIdentifier =
+private fun ModuleComponentIdentifier.toSingleKpmModuleIdentifier(classifier: String? = null): KpmMavenModuleIdentifier =
     KpmMavenModuleIdentifier(moduleIdentifier.group, moduleIdentifier.name, classifier)
 
 internal fun ComponentIdentifier.matchesModule(module: KpmModule): Boolean =
     matchesModuleIdentifier(module.moduleIdentifier)
 
-internal fun ResolvedComponentResult.toModuleIdentifiers(): List<KpmModuleIdentifier> {
+internal fun ResolvedComponentResult.toKpmModuleIdentifiers(): List<KpmModuleIdentifier> {
     val classifiers = moduleClassifiersFromCapabilities(variants.flatMap { it.capabilities })
-    return classifiers.map { moduleClassifier -> toModuleIdentifier(moduleClassifier) }
+    return classifiers.map { moduleClassifier -> toKpmModuleIdentifier(moduleClassifier) }
 }
 
 // FIXME this mapping doesn't have enough information to choose auxiliary modules
-internal fun ResolvedComponentResult.toSingleModuleIdentifier(): KpmModuleIdentifier {
+internal fun ResolvedComponentResult.toSingleKpmModuleIdentifier(): KpmModuleIdentifier {
     val classifiers = moduleClassifiersFromCapabilities(variants.flatMap { it.capabilities })
     val moduleClassifier = classifiers.single() // FIXME handle multiple capabilities
-    return toModuleIdentifier(moduleClassifier)
+    return toKpmModuleIdentifier(moduleClassifier)
 }
 
-private fun ResolvedComponentResult.toModuleIdentifier(moduleClassifier: String?): KpmModuleIdentifier {
+private fun ResolvedComponentResult.toKpmModuleIdentifier(moduleClassifier: String?): KpmModuleIdentifier {
     return when (val id = id) {
         is ProjectComponentIdentifier -> KpmLocalModuleIdentifier(id.build.name, id.projectPath, moduleClassifier)
-        is ModuleComponentIdentifier -> id.toSingleModuleIdentifier()
+        is ModuleComponentIdentifier -> id.toSingleKpmModuleIdentifier()
         else -> KpmMavenModuleIdentifier(moduleVersion?.group.orEmpty(), moduleVersion?.name.orEmpty(), moduleClassifier)
     }
 }
@@ -135,7 +135,7 @@ internal fun moduleClassifiersFromCapabilities(capabilities: Iterable<Capability
     return if (classifierCapabilities.none()) listOf(null) else classifierCapabilities.map { it.name.substringAfterLast("..") /*FIXME invent a more stable scheme*/ }
 }
 
-internal fun ComponentSelector.toModuleIdentifiers(): Iterable<KpmModuleIdentifier> {
+internal fun ComponentSelector.toKpmModuleIdentifiers(): Iterable<KpmModuleIdentifier> {
     val moduleClassifiers = moduleClassifiersFromCapabilities(requestedCapabilities)
     return when (this) {
         is ProjectComponentSelector -> moduleClassifiers.map { KpmLocalModuleIdentifier(buildName, projectPath, it) }
@@ -144,9 +144,9 @@ internal fun ComponentSelector.toModuleIdentifiers(): Iterable<KpmModuleIdentifi
     }
 }
 
-internal fun ResolvedComponentResult.toModuleDependency(): KpmModuleDependency = KpmModuleDependency(toSingleModuleIdentifier())
-internal fun ComponentSelector.toModuleDependency(): KpmModuleDependency {
-    val moduleId = toModuleIdentifiers().single() // FIXME handle multiple
+internal fun ResolvedComponentResult.toKpmModuleDependency(): KpmModuleDependency = KpmModuleDependency(toSingleKpmModuleIdentifier())
+internal fun ComponentSelector.toKpmModuleDependency(): KpmModuleDependency {
+    val moduleId = toKpmModuleIdentifiers().single() // FIXME handle multiple
     return KpmModuleDependency(moduleId)
 }
 
@@ -161,7 +161,7 @@ internal fun ComponentIdentifier.matchesModuleIdentifier(id: KpmModuleIdentifier
         }
         is KpmMavenModuleIdentifier -> {
             val componentId = this as? ModuleComponentIdentifier
-            componentId?.toSingleModuleIdentifier() == id
+            componentId?.toSingleKpmModuleIdentifier() == id
         }
         else -> false
     }

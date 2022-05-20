@@ -32,7 +32,7 @@ class ProjectStructureMetadataModuleBuilder {
         component: ResolvedComponentResult,
         metadata: KotlinProjectStructureMetadata
     ): KpmModule {
-        val moduleData = KpmBasicModule(component.toSingleModuleIdentifier()).apply {
+        val moduleData = KpmBasicModule(component.toSingleKpmModuleIdentifier()).apply {
             metadata.sourceSetNamesByVariantName.keys.forEach { variantName ->
                 fragments.add(KpmBasicVariant(this@apply, variantName))
             }
@@ -77,7 +77,7 @@ class ProjectStructureMetadataModuleBuilder {
     }
 
     fun getModule(component: ResolvedComponentResult, projectStructureMetadata: KotlinProjectStructureMetadata): KpmModule {
-        val moduleId = component.toSingleModuleIdentifier()
+        val moduleId = component.toSingleKpmModuleIdentifier()
         return modulesCache.getOrPut(moduleId) {
             buildModuleFromProjectStructureMetadata(
                 component,
@@ -188,7 +188,7 @@ class GradleProjectModuleBuilder(private val addInferredSourceSetVisibilityAsExp
 
                     // FIXME: Kotlin/Native implementation-effective-api dependencies are missing here. Introduce dependency scopes
                     requestedDependencies(project, sourceSet, listOf(KotlinDependencyScope.API_SCOPE)).forEach {
-                        val moduleDependency = it.toModuleDependency(project)
+                        val moduleDependency = it.toKpmModuleDependency(project)
                         fragment.declaredModuleDependencies.add(moduleDependency)
                     }
                 }
@@ -236,7 +236,7 @@ class GradleProjectModuleBuilder(private val addInferredSourceSetVisibilityAsExp
     }
 }
 
-internal fun Dependency.toModuleDependency(
+internal fun Dependency.toKpmModuleDependency(
     project: Project
 ): KpmModuleDependency {
     return KpmModuleDependency(

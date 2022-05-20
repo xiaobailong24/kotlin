@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.Choos
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.FragmentGranularMetadataResolverFactory
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleFragment
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleModule.Companion.moduleName
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.toModuleDependency
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.toKpmModuleDependency
 import org.jetbrains.kotlin.gradle.utils.withTemporaryDirectory
 
 internal class IdeaKotlinMetadataBinaryDependencyResolver(
@@ -27,7 +27,7 @@ internal class IdeaKotlinMetadataBinaryDependencyResolver(
 
     private fun resolve(fragment: KpmGradleFragment, resolution: ChooseVisibleSourceSets): Iterable<IdeaKotlinDependency> {
         val gradleModuleIdentifier = resolution.dependency.id as? ModuleComponentIdentifier ?: return emptySet()
-        val kotlinModuleIdentifier = resolution.dependency.toModuleDependency().moduleIdentifier
+        val kotlinModuleIdentifier = resolution.dependency.toKpmModuleDependency().moduleIdentifier
 
         /* Project to project metadata dependencies shall be resolved as source dependencies, somewhere else */
         val metadataProvider = when (resolution.metadataProvider) {

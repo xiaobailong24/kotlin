@@ -46,7 +46,7 @@ class KpmGradleDependencyGraphResolver(
         val nodeByModuleId = mutableMapOf<KpmModuleIdentifier, KpmGradleDependencyGraphNode>()
 
         fun getKotlinModuleFromComponentResult(component: ResolvedComponentResult): KpmModule =
-            moduleResolver.resolveDependency(requestingModule, component.toModuleDependency())
+            moduleResolver.resolveDependency(requestingModule, component.toKpmModuleDependency())
                 ?: buildSyntheticPlainModule(
                     component,
                     component.variants.singleOrNull()?.displayName ?: "default",
@@ -68,8 +68,8 @@ class KpmGradleDependencyGraphResolver(
                     .filterIsInstance<ResolvedDependencyResult>()
                     // This filter statement is used to only visit the dependencies of the variant(s) of the requested Kotlin module and not
                     // other variants. This prevents infinite recursion when visiting multiple Kotlin modules within one Gradle components
-                    .filter { dependency -> dependency.requested.toModuleIdentifiers().any { it in dependenciesRequestedByModule } }
-                    .flatMap { dependency -> dependency.requested.toModuleIdentifiers().map { id -> id to dependency.selected } }
+                    .filter { dependency -> dependency.requested.toKpmModuleIdentifiers().any { it in dependenciesRequestedByModule } }
+                    .flatMap { dependency -> dependency.requested.toKpmModuleIdentifiers().map { id -> id to dependency.selected } }
                     .toMap()
 
                 val fragmentDependencies = kpmModule.fragments.associateWith { it.declaredModuleDependencies }

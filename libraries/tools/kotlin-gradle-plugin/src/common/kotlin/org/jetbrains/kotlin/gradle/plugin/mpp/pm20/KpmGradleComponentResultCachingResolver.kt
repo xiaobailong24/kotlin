@@ -22,7 +22,7 @@ open class KpmGradleComponentResultCachingResolver {
     protected open fun resolveDependencies(module: KpmGradleModule): Map<KpmModuleIdentifier, ResolvedComponentResult> {
         val allComponents = configurationToResolve(module).incoming.resolutionResult.allComponents
         // FIXME handle multi-component results
-        return allComponents.flatMap { component -> component.toModuleIdentifiers().map { it to component } }.toMap()
+        return allComponents.flatMap { component -> component.toKpmModuleIdentifiers().map { it to component } }.toMap()
     }
 
     private fun getResultsForModule(module: KpmGradleModule): Map<KpmModuleIdentifier, ResolvedComponentResult> =
