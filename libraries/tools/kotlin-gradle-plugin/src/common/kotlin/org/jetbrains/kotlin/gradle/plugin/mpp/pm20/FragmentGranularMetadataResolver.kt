@@ -29,7 +29,7 @@ internal class FragmentGranularMetadataResolver(
         refinesParentResolvers.value.flatMap { it.resolutions }.groupBy { it.dependency.toSingleModuleIdentifier() }
     }
 
-    private val moduleResolver = GradleModuleDependencyResolver.getForCurrentBuild(project)
+    private val moduleResolver = KpmGradleModuleDependencyResolver.getForCurrentBuild(project)
     private val variantResolver = GradleModuleVariantResolver.getForCurrentBuild(project)
     private val fragmentResolver = DefaultModuleFragmentsResolver(variantResolver)
     private val dependencyGraphResolver = GradleKotlinDependencyGraphResolver(moduleResolver)

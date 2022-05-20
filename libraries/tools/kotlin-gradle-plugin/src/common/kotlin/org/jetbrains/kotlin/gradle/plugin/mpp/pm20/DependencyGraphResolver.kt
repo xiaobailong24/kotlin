@@ -30,7 +30,7 @@ internal fun configurationToResolveMetadataDependencies(project: Project, reques
 
 
 class GradleKotlinDependencyGraphResolver(
-    private val moduleResolver: ModuleDependencyResolver
+    private val moduleResolver: KpmModuleDependencyResolver
 ) : KotlinDependencyGraphResolver {
 
     private fun configurationToResolve(requestingModule: KpmGradleModule): Configuration =

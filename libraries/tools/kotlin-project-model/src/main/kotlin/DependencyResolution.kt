@@ -8,7 +8,7 @@ package org.jetbrains.kotlin.project.model
 // TODO ensure that resolvers are pluggable + custom dependency kinds (& result kinds?)
 // TODO think about state management: unresolved -> (known dependency graph?) ... -> completely resolved
 //      it seems to be important to learn whether or not the model is final
-interface ModuleDependencyResolver {
+interface KpmModuleDependencyResolver {
     fun resolveDependency(requestingModule: KpmModule, moduleDependency: KpmModuleDependency): KpmModule?
 }
 

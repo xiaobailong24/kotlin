@@ -19,7 +19,7 @@ import org.jetbrains.kotlin.project.model.*
 import org.jetbrains.kotlin.project.model.KpmVariant
 import java.util.*
 
-class CachingModuleDependencyResolver(private val actualResolver: ModuleDependencyResolver) : ModuleDependencyResolver {
+class KpmCachingModuleDependencyResolver(private val actualResolver: KpmModuleDependencyResolver) : KpmModuleDependencyResolver {
     private val cacheByRequestingModule = WeakHashMap<KpmModule, MutableMap<KpmModuleDependency, KpmModule?>>()
 
     private fun cacheForRequestingModule(requestingModule: KpmModule) =
@@ -62,11 +62,11 @@ open class GradleComponentResultCachingResolver {
     }
 }
 
-class GradleModuleDependencyResolver(
+class KpmGradleModuleDependencyResolver(
     private val gradleComponentResultResolver: GradleComponentResultCachingResolver,
     private val projectStructureMetadataModuleBuilder: ProjectStructureMetadataModuleBuilder,
     private val projectModuleBuilder: GradleProjectModuleBuilder
-) : ModuleDependencyResolver {
+) : KpmModuleDependencyResolver {
 
     override fun resolveDependency(requestingModule: KpmModule, moduleDependency: KpmModuleDependency): KpmModule? {
         require(requestingModule is KpmGradleModule)
@@ -98,14 +98,14 @@ class GradleModuleDependencyResolver(
     }
 
     companion object {
-        fun getForCurrentBuild(project: Project): ModuleDependencyResolver {
+        fun getForCurrentBuild(project: Project): KpmModuleDependencyResolver {
             val extraPropertyName = "org.jetbrains.kotlin.dependencyResolution.moduleResolver.${project.getKotlinPluginVersion()}"
             return project.getOrPutRootProjectProperty(extraPropertyName) {
                 val componentResultResolver = GradleComponentResultCachingResolver.getForCurrentBuild(project)
                 val metadataModuleBuilder = ProjectStructureMetadataModuleBuilder()
                 val projectModuleBuilder = GradleProjectModuleBuilder(true)
-                CachingModuleDependencyResolver(
-                    GradleModuleDependencyResolver(componentResultResolver, metadataModuleBuilder, projectModuleBuilder)
+                KpmCachingModuleDependencyResolver(
+                    KpmGradleModuleDependencyResolver(componentResultResolver, metadataModuleBuilder, projectModuleBuilder)
                 )
             }
         }
