@@ -43,7 +43,7 @@ class GradleKotlinDependencyGraphResolver(
     }
 
     private fun resolveAsGraph(requestingModule: KotlinGradleModule): GradleDependencyGraph {
-        val nodeByModuleId = mutableMapOf<KotlinModuleIdentifier, GradleDependencyGraphNode>()
+        val nodeByModuleId = mutableMapOf<KpmModuleIdentifier, GradleDependencyGraphNode>()
 
         fun getKotlinModuleFromComponentResult(component: ResolvedComponentResult): KotlinModule =
             moduleResolver.resolveDependency(requestingModule, component.toModuleDependency())

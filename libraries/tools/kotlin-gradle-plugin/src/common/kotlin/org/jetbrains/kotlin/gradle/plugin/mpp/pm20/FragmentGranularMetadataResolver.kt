@@ -25,7 +25,7 @@ internal class FragmentGranularMetadataResolver(
     private val project: Project
         get() = requestingFragment.containingModule.project
 
-    private val parentResultsByModuleIdentifier: Map<KotlinModuleIdentifier, List<MetadataDependencyResolution>> by lazy {
+    private val parentResultsByModuleIdentifier: Map<KpmModuleIdentifier, List<MetadataDependencyResolution>> by lazy {
         refinesParentResolvers.value.flatMap { it.resolutions }.groupBy { it.dependency.toSingleModuleIdentifier() }
     }
 
@@ -140,7 +140,7 @@ internal class FragmentGranularMetadataResolver(
         return results
     }
 
-    private fun fragmentsNamesVisibleByParents(kotlinModuleIdentifier: KotlinModuleIdentifier): MutableSet<String> {
+    private fun fragmentsNamesVisibleByParents(kotlinModuleIdentifier: KpmModuleIdentifier): MutableSet<String> {
         val parentResolutionsForDependency = parentResultsByModuleIdentifier[kotlinModuleIdentifier].orEmpty()
         return parentResolutionsForDependency.filterIsInstance<MetadataDependencyResolution.ChooseVisibleSourceSets>()
             .flatMapTo(mutableSetOf()) { it.allVisibleSourceSetNames }

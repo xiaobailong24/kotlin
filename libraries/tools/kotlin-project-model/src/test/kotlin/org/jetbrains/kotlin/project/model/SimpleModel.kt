@@ -5,7 +5,7 @@
 
 package org.jetbrains.kotlin.project.model
 
-fun module(name: String, classifier: String? = null) = BasicKotlinModule(LocalModuleIdentifier("current", name, classifier))
+fun module(name: String, classifier: String? = null) = BasicKotlinModule(KpmLocalModuleIdentifier("current", name, classifier))
 
 fun BasicKotlinModule.fragment(vararg nameParts: String): KpmBasicFragment =
     fragment(nameParts.drop(1).joinToString("", nameParts.first()) { it.capitalize() })
@@ -21,11 +21,11 @@ fun BasicKotlinModule.variant(name: String): KpmBasicVariant =
         ?.let { it as? KpmBasicVariant ?: error("$name is not a variant") }
         ?: KpmBasicVariant(this, name).also { fragments.add(it) }
 
-fun KotlinModuleIdentifier.equalsWithoutClassifier(other: KotlinModuleIdentifier) = when (this) {
-    is LocalModuleIdentifier -> other is LocalModuleIdentifier &&
-            LocalModuleIdentifier(buildId, projectId, null) == LocalModuleIdentifier(other.buildId, other.projectId, null)
-    is MavenModuleIdentifier -> other is MavenModuleIdentifier &&
-            MavenModuleIdentifier(group, name, null) == MavenModuleIdentifier(other.group, other.name, null)
+fun KpmModuleIdentifier.equalsWithoutClassifier(other: KpmModuleIdentifier) = when (this) {
+    is KpmLocalModuleIdentifier -> other is KpmLocalModuleIdentifier &&
+            KpmLocalModuleIdentifier(buildId, projectId, null) == KpmLocalModuleIdentifier(other.buildId, other.projectId, null)
+    is KpmMavenModuleIdentifier -> other is KpmMavenModuleIdentifier &&
+            KpmMavenModuleIdentifier(group, name, null) == KpmMavenModuleIdentifier(other.group, other.name, null)
     else -> error("can't check equality yet")
 }
 

@@ -11,11 +11,11 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.topLevelExtensionOrNull
 import org.jetbrains.kotlin.gradle.plugin.PropertiesProvider
-import org.jetbrains.kotlin.project.model.KotlinModuleIdentifier
+import org.jetbrains.kotlin.project.model.KpmModuleIdentifier
 
 internal interface KpmGradleProjectModelContainer {
     val modules: NamedDomainObjectContainer<KotlinGradleModule>
-    val metadataCompilationRegistryByModuleId: MutableMap<KotlinModuleIdentifier, MetadataCompilationRegistry>
+    val metadataCompilationRegistryByModuleId: MutableMap<KpmModuleIdentifier, MetadataCompilationRegistry>
     val rootPublication: MavenPublication?
 }
 
@@ -35,12 +35,12 @@ internal val Project.hasKpmModel: Boolean
 internal val Project.kpmModules: NamedDomainObjectContainer<KotlinGradleModule>
     get() = kpmModelContainer.modules
 
-internal val Project.metadataCompilationRegistryByModuleId: MutableMap<KotlinModuleIdentifier, MetadataCompilationRegistry>
+internal val Project.metadataCompilationRegistryByModuleId: MutableMap<KpmModuleIdentifier, MetadataCompilationRegistry>
     get() = kpmModelContainer.metadataCompilationRegistryByModuleId
 
 internal class DefaultKpmGradleProjectModelContainer(
     override val modules: NamedDomainObjectContainer<KotlinGradleModule>,
-    override val metadataCompilationRegistryByModuleId: MutableMap<KotlinModuleIdentifier, MetadataCompilationRegistry>,
+    override val metadataCompilationRegistryByModuleId: MutableMap<KpmModuleIdentifier, MetadataCompilationRegistry>,
 ) : KpmGradleProjectModelContainer {
     override var rootPublication: MavenPublication? = null
 
