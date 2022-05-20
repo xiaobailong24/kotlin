@@ -19,6 +19,8 @@ import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.dsl.multiplatformExtensionOrNull
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.*
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.currentBuildId
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.representsProject
 import org.jetbrains.kotlin.gradle.plugin.sources.DefaultLanguageSettingsBuilder
 import org.jetbrains.kotlin.gradle.plugin.sources.KotlinDependencyScope
 import org.jetbrains.kotlin.gradle.plugin.sources.getVisibleSourceSetsFromAssociateCompilations
@@ -69,7 +71,7 @@ class ProjectStructureMetadataModuleBuilder {
                 }
             }
         }
-        return KpmExternalImportedModule(
+        return GradleKpmExternalImportedModule(
             moduleData,
             metadata,
             moduleData.fragments.filterTo(mutableSetOf()) { it.fragmentName in metadata.hostSpecificSourceSets }
@@ -275,7 +277,7 @@ class KpmGradleModuleVariantResolver : KpmModuleVariantResolver {
         // TODO maybe improve this behavior? Currently it contradicts dependency resolution in that it may return a chosen variant for an
         //  unrequested dependency. This workaround is needed for synthetic modules which were not produced from module metadata, so maybe
         //  those modules should be marked somehow
-        if (dependencyModule is KpmExternalPlainModule) {
+        if (dependencyModule is GradleKpmExternalPlainModule) {
             return KpmVariantResolution.fromMatchingVariants(
                 requestingVariant,
                 dependencyModule,

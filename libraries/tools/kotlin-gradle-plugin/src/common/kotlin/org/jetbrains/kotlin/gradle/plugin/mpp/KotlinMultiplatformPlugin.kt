@@ -307,7 +307,7 @@ private fun applyUserDefinedAttributesWithKpm(
     }
 
     // Also handle the legacy-mapped variants, which are not accessible through the compilations in the loop above
-    project.kpmModules.getByName(KpmGradleModule.MAIN_MODULE_NAME).variants.withType(LegacyMappedVariant::class.java).all { variant ->
+    project.kpmModules.getByName(KpmGradleModule.MAIN_MODULE_NAME).variants.withType(GradleKpmLegacyMappedVariant::class.java).all { variant ->
         val compilation = variant.compilation
         copyAttributesToVariant(variant, compilation.attributes)
     }

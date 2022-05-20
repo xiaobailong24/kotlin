@@ -31,7 +31,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.registerEmbedAndSignAppleFrameworkTask
 import org.jetbrains.kotlin.gradle.plugin.mpp.isMain
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.*
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmAwareTargetConfigurator
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmAwareTargetConfigurator
 import org.jetbrains.kotlin.gradle.targets.metadata.isKotlinGranularMetadataEnabled
 import org.jetbrains.kotlin.gradle.targets.native.*
 import org.jetbrains.kotlin.gradle.targets.native.internal.commonizeCInteropTask
@@ -543,8 +543,8 @@ open class KotlinNativeTargetConfigurator<T : KotlinNativeTarget> : AbstractKotl
     }
 }
 
-internal class KpmNativeTargetConfigurator<T : KotlinNativeTarget>(private val nativeTargetConfigurator: KotlinNativeTargetConfigurator<T>) :
-    KpmAwareTargetConfigurator<T>(nativeTargetConfigurator) {
+internal class GradleKpmNativeTargetConfigurator<T : KotlinNativeTarget>(private val nativeTargetConfigurator: KotlinNativeTargetConfigurator<T>) :
+    GradleKpmAwareTargetConfigurator<T>(nativeTargetConfigurator) {
 
     override fun configureTarget(target: T) {
         super.configureTarget(target)

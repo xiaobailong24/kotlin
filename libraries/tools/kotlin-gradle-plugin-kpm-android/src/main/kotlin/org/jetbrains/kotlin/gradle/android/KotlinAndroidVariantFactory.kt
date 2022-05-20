@@ -44,7 +44,7 @@ fun KpmGradleModule.createKotlinAndroidVariant(androidVariant: BaseVariant) {
     }
 
     val kotlinVariant = createExternalJvmVariant(
-        "android${androidVariant.buildType.name.replaceFirstChar { it.uppercase() }}", KpmJvmVariantConfig(
+        "android${androidVariant.buildType.name.replaceFirstChar { it.uppercase() }}", GradleKpmJvmVariantConfig(
             /* Only swap out configuration that is used. Default setup shall still be applied */
             compileDependencies = (DefaultKotlinCompileDependenciesDefinition +
                     FragmentAttributes<GradleKpmFragment> {

@@ -21,12 +21,12 @@ class KotlinFragmentConfigurationDefinitionTest : AbstractKpmExtensionTest() {
     private val testContext by lazy {
         val names = FragmentNameDisambiguation(kotlin.main, "test")
         KotlinGradleFragmentConfigurationContextImpl(
-            kotlin.main, KpmDefaultFragmentDependencyConfigurationsFactory.create(kotlin.main, names), names
+            kotlin.main, GradleKpmDefaultFragmentDependencyConfigurationsFactory.create(kotlin.main, names), names
         )
     }
 
     private val dummyFragment by lazy {
-        KpmCommonFragmentFactory(kotlin.main).create("testFragment")
+        GradleKpmCommonFragmentFactory(kotlin.main).create("testFragment")
     }
 
     @Test

@@ -186,19 +186,19 @@ private fun GradleKpmVariant.jvmExtrasOrNull() =
             jvmTarget = compilationData.kotlinOptions.jvmTarget,
             withJavaEnabled = false
         )
-        is LegacyMappedVariant -> buildJvmExtrasOrNull(compilation.target)
+        is GradleKpmLegacyMappedVariant -> buildJvmExtrasOrNull(compilation.target)
         else -> null
     }
 
 private fun GradleKpmVariant.androidExtrasOrNull() =
     when (this) {
-        is LegacyMappedVariant -> buildAndroidExtrasOrNull(compilation.target)
+        is GradleKpmLegacyMappedVariant -> buildAndroidExtrasOrNull(compilation.target)
         else -> null
     }
 
 private fun GradleKpmVariant.jsExtrasOrNull() =
     when (this) {
-        is LegacyMappedVariant -> buildJsExtrasOrNull(compilation.target)
+        is GradleKpmLegacyMappedVariant -> buildJsExtrasOrNull(compilation.target)
         else -> null
     }
 
@@ -209,7 +209,7 @@ private fun GradleKpmVariant.nativeExtrasOrNull() =
             konanVersion = project.konanVersion.toString(),
             konanAbiVersion = KotlinAbiVersion.CURRENT.toString()
         )
-        is LegacyMappedVariant -> buildNativeExtrasOrNull(compilation.target)
+        is GradleKpmLegacyMappedVariant -> buildNativeExtrasOrNull(compilation.target)
         else -> null
     }
 

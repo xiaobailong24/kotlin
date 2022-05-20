@@ -7,12 +7,12 @@ package org.jetbrains.kotlin.gradle.kpm.idea
 
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.KeepOriginalDependency
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmFragmentGranularMetadataResolverFactory
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmFragmentGranularMetadataResolverFactory
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmFragment
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.resolvableMetadataConfigurationName
 
 internal class IdeaKotlinOriginalMetadataDependencyResolver(
-    private val fragmentGranularMetadataResolverFactory: KpmFragmentGranularMetadataResolverFactory
+    private val fragmentGranularMetadataResolverFactory: GradleKpmFragmentGranularMetadataResolverFactory
 ) : IdeaKotlinDependencyResolver {
     override fun resolve(fragment: GradleKpmFragment): Set<IdeaKotlinDependency> {
         val dependencyIdentifiers = fragmentGranularMetadataResolverFactory.getOrCreate(fragment).resolutions

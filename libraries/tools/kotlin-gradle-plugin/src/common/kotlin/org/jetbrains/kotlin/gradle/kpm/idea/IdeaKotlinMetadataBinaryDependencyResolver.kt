@@ -9,14 +9,14 @@ import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.ChooseVisibleSourceSets
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.ChooseVisibleSourceSets.MetadataProvider.JarMetadataProvider
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.ChooseVisibleSourceSets.MetadataProvider.ProjectMetadataProvider
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmFragmentGranularMetadataResolverFactory
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmFragmentGranularMetadataResolverFactory
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmFragment
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleModule.Companion.moduleName
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.toKpmModuleDependency
 import org.jetbrains.kotlin.gradle.utils.withTemporaryDirectory
 
 internal class IdeaKotlinMetadataBinaryDependencyResolver(
-    private val fragmentGranularMetadataResolverFactory: KpmFragmentGranularMetadataResolverFactory
+    private val fragmentGranularMetadataResolverFactory: GradleKpmFragmentGranularMetadataResolverFactory
 ) : IdeaKotlinDependencyResolver {
     override fun resolve(fragment: GradleKpmFragment): Set<IdeaKotlinDependency> {
         return fragmentGranularMetadataResolverFactory.getOrCreate(fragment).resolutions

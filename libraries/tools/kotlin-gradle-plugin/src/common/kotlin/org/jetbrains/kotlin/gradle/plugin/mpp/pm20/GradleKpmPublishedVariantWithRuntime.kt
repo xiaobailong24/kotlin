@@ -7,6 +7,7 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.gradle.api.artifacts.Configuration
 import org.jetbrains.kotlin.gradle.plugin.mpp.publishedConfigurationName
+import org.jetbrains.kotlin.gradle.utils.dashSeparatedName
 
 abstract class GradleKpmPublishedVariantWithRuntime(
     containingModule: KpmGradleModule, fragmentName: String,
@@ -23,7 +24,7 @@ abstract class GradleKpmPublishedVariantWithRuntime(
     apiElementsConfiguration = apiElementsConfiguration,
     runtimeDependenciesConfiguration = runtimeDependencyConfiguration,
     runtimeElementsConfiguration = runtimeElementsConfiguration
-), KpmSingleMavenPublishedModuleHolder by KpmDefaultSingleMavenPublishedModuleHolder(
+), KpmSingleMavenPublishedModuleHolder by GradleKpmDefaultSingleMavenPublishedModuleHolder(
     containingModule, defaultModuleSuffix(containingModule, fragmentName)
 ) {
     override val gradleVariantNames: Set<String>
@@ -31,3 +32,6 @@ abstract class GradleKpmPublishedVariantWithRuntime(
             listOf(it, publishedConfigurationName(it))
         }
 }
+
+private fun defaultModuleSuffix(module: KpmGradleModule, variantName: String): String =
+    dashSeparatedName(variantName, module.moduleClassifier)

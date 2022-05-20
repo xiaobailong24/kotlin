@@ -27,7 +27,7 @@ abstract class GradleKpmNativeVariantInternal(
         compileDependenciesConfiguration = compileDependencyConfiguration,
         apiElementsConfiguration = apiElementsConfiguration
     ),
-    KpmSingleMavenPublishedModuleHolder by KpmDefaultSingleMavenPublishedModuleHolder(containingModule, fragmentName) {
+    KpmSingleMavenPublishedModuleHolder by GradleKpmDefaultSingleMavenPublishedModuleHolder(containingModule, fragmentName) {
 
     override var enableEndorsedLibraries: Boolean = false
 
@@ -38,7 +38,7 @@ abstract class GradleKpmNativeVariantInternal(
         DefaultCInteropSettings(project, cinteropName, compilationData)
     }
 
-    override val compilationData by lazy { KpmNativeVariantCompilationData(this) }
+    override val compilationData by lazy { GradleKpmNativeVariantCompilationData(this) }
 }
 
 interface KotlinNativeCompilationData<T : KotlinCommonOptions> : KotlinCompilationData<T> {

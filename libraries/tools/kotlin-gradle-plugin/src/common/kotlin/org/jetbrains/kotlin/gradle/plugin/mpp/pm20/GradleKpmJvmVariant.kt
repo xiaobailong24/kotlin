@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptionsImpl
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.filterModuleName
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 open class GradleKpmJvmVariant(
@@ -30,13 +31,13 @@ open class GradleKpmJvmVariant(
     runtimeDependencyConfiguration = runtimeDependenciesConfiguration,
     runtimeElementsConfiguration = runtimeElementsConfiguration
 ) {
-    override val compilationData: KpmJvmVariantCompilationData by lazy { KpmJvmVariantCompilationData(this) }
+    override val compilationData: GradleKpmJvmVariantCompilationData by lazy { GradleKpmJvmVariantCompilationData(this) }
 
     override val platformType: KotlinPlatformType
         get() = KotlinPlatformType.jvm
 }
 
-class KpmJvmVariantCompilationData(val variant: GradleKpmJvmVariant) : KpmVariantCompilationDataInternal<KotlinJvmOptions> {
+class GradleKpmJvmVariantCompilationData(val variant: GradleKpmJvmVariant) : GradleKpmVariantCompilationDataInternal<KotlinJvmOptions> {
     override val owner: GradleKpmJvmVariant get() = variant
 
     // TODO pull out to the variant

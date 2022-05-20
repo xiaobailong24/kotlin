@@ -30,7 +30,7 @@ abstract class GradleKpmVariantInternal(
 
     override var compileDependencyFiles: FileCollection = project.files({ compileDependenciesConfiguration })
 
-    internal abstract val compilationData: KpmVariantCompilationDataInternal<*>
+    internal abstract val compilationData: GradleKpmVariantCompilationDataInternal<*>
 
     // TODO rewrite using our own artifacts API?
     override val compilationOutputs: KotlinCompilationOutput = DefaultKotlinCompilationOutput(
@@ -49,7 +49,4 @@ private fun kotlinPlatformTypeAttributeFromPlatform(platformType: KotlinPlatform
 // TODO: rewrite with the artifacts API
 internal val GradleKpmVariant.defaultSourceArtifactTaskName: String
     get() = disambiguateName("sourcesJar")
-
-private fun defaultModuleSuffix(module: KpmGradleModule, variantName: String): String =
-    dashSeparatedName(variantName, module.moduleClassifier)
 

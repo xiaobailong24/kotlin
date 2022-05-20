@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
 
 @RunWith(Parameterized::class)
 class KotlinNativeVariantFactoryTest(
-    private val variantConstructor: KpmNativeVariantConstructor<*>,
+    private val variantConstructor: GradleKpmNativeVariantConstructor<*>,
     @Suppress("unused") private val variantClassName: String
 ) : AbstractKpmExtensionTest() {
 
@@ -29,7 +29,7 @@ class KotlinNativeVariantFactoryTest(
 
     @BeforeTest
     fun createVariant() {
-        variant = KpmNativeVariantFactory(kotlin.main, variantConstructor).create("native")
+        variant = GradleKpmNativeVariantFactory(kotlin.main, variantConstructor).create("native")
     }
 
     @Test

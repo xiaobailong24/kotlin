@@ -92,7 +92,7 @@ fun rootPublicationComponentName(module: KpmGradleModule) =
 
 open class KotlinPm20ProjectExtension(project: Project) : KotlinTopLevelExtension(project) {
 
-    internal val kpmModelContainer = DefaultKpmGradleProjectModelContainer.create(project)
+    internal val kpmModelContainer = GradleKpmDefaultProjectModelContainer.create(project)
 
     internal val ideaKotlinProjectModelBuilder by lazy { IdeaKotlinProjectModelBuilder.default(this) }
 

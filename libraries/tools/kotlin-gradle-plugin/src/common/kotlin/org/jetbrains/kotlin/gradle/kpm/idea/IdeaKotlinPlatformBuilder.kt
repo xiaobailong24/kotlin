@@ -18,7 +18,7 @@ internal fun IdeaKotlinProjectModelBuildingContext.IdeaKotlinPlatform(variant: G
     when (variant) {
         is GradleKpmJvmVariant -> return IdeaKotlinPlatform.jvm(variant.compilationData.kotlinOptions.jvmTarget ?: JvmTarget.DEFAULT.name)
         is GradleKpmNativeVariantInternal -> return IdeaKotlinPlatform.native(variant.konanTarget.name)
-        is LegacyMappedVariant -> when (val compilation = variant.compilation) {
+        is GradleKpmLegacyMappedVariant -> when (val compilation = variant.compilation) {
             is KotlinJvmCompilation -> return IdeaKotlinPlatform.jvm(compilation.kotlinOptions.jvmTarget ?: JvmTarget.DEFAULT.name)
             is KotlinJvmAndroidCompilation -> return IdeaKotlinPlatform.jvm(compilation.kotlinOptions.jvmTarget ?: JvmTarget.DEFAULT.name)
             is KotlinNativeCompilation -> return IdeaKotlinPlatform.native(compilation.konanTarget.name)

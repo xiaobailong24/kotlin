@@ -121,9 +121,9 @@ class KotlinToolingMetadataWithModelMappingTest {
         }
 
         val expectedTargets = mapOf(
-            androidJvm to LegacyMappedVariantWithRuntime::class,
+            androidJvm to GradleKpmLegacyMappedVariantWithRuntime::class,
             jvm to GradleKpmJvmVariant::class,
-            js to LegacyMappedVariantWithRuntime::class,
+            js to GradleKpmLegacyMappedVariantWithRuntime::class,
             native to GradleKpmLinuxX64Variant::class
         )
 
