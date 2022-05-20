@@ -31,7 +31,7 @@ internal class FragmentGranularMetadataResolver(
 
     private val moduleResolver = KpmGradleModuleDependencyResolver.getForCurrentBuild(project)
     private val variantResolver = GradleModuleVariantResolver.getForCurrentBuild(project)
-    private val fragmentResolver = DefaultModuleFragmentsResolver(variantResolver)
+    private val fragmentResolver = KpmDefaultFragmentsResolver(variantResolver)
     private val dependencyGraphResolver = KpmGradleDependencyGraphResolver(moduleResolver)
 
     private fun doResolveMetadataDependencies(): Iterable<MetadataDependencyResolution> {
@@ -63,7 +63,7 @@ internal class FragmentGranularMetadataResolver(
             val dependencyModule = dependencyNode.module
 
             val fragmentVisibility = fragmentResolver.getChosenFragments(requestingFragment, dependencyModule)
-            val chosenFragments = fragmentVisibility as? FragmentResolution.ChosenFragments
+            val chosenFragments = fragmentVisibility as? KpmFragmentResolution.ChosenFragments
             val visibleFragments = chosenFragments?.visibleFragments?.toList().orEmpty()
 
             val visibleTransitiveDependencies =
@@ -148,7 +148,7 @@ internal class FragmentGranularMetadataResolver(
 
     private fun resolveHostSpecificMetadataArtifacts(
         dependencyModule: KpmExternalImportedModule,
-        chosenFragments: FragmentResolution.ChosenFragments,
+        chosenFragments: KpmFragmentResolution.ChosenFragments,
     ): Map<String, File> {
         val visibleFragments = chosenFragments.visibleFragments
         val variantResolutions = chosenFragments.variantResolutions

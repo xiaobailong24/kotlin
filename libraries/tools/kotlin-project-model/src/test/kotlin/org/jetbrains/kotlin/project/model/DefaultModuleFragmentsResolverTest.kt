@@ -14,7 +14,7 @@ internal class DefaultModuleFragmentsResolverTest {
     val bundleFoo = simpleModuleBundle("foo")
     val bundleBar = simpleModuleBundle("bar")
 
-    val fragmentResolver = DefaultModuleFragmentsResolver(MatchVariantsByExactAttributes())
+    val fragmentResolver = KpmDefaultFragmentsResolver(MatchVariantsByExactAttributes())
 
     @Test
     fun testFragmentVisibility() {
@@ -32,7 +32,7 @@ internal class DefaultModuleFragmentsResolverTest {
 
         moduleBarMain.fragments.forEach { consumingFragment ->
             val result = fragmentResolver.getChosenFragments(consumingFragment, moduleFooMain)
-            assertTrue(result is FragmentResolution.ChosenFragments)
+            assertTrue(result is KpmFragmentResolution.ChosenFragments)
             val expected = expectedVisibleFragments.getValue(consumingFragment.fragmentName)
             assertEquals(expected, result.visibleFragments.map { it.fragmentName }.toSet())
         }
@@ -52,7 +52,7 @@ internal class DefaultModuleFragmentsResolverTest {
 
         val (commonMainResult, jsAndLinuxResult) = listOf("common", "jsAndLinux").map {
             val chosenFragments = fragmentResolver.getChosenFragments(dependingModule.fragment(it), moduleFooMain)
-            assertTrue(chosenFragments is FragmentResolution.ChosenFragments)
+            assertTrue(chosenFragments is KpmFragmentResolution.ChosenFragments)
             chosenFragments.visibleFragments.map { it.fragmentName }.toSet()
         }
 
