@@ -43,34 +43,6 @@ abstract class KpmNativeVariantInternal(
     override val compilationData by lazy { KpmNativeVariantCompilationData(this) }
 }
 
-class KotlinNativeVariantConstructor<T : KpmNativeVariantInternal>(
-    val konanTarget: KonanTarget,
-    val variantClass: Class<T>,
-    private val constructor: (
-        containingModule: KpmGradleModule,
-        fragmentName: String,
-        dependencyConfigurations: KpmFragmentDependencyConfigurations,
-        compileDependencyConfiguration: Configuration,
-        apiElementsConfiguration: Configuration,
-        hostSpecificMetadataElementsConfiguration: Configuration?
-    ) -> T
-) {
-    operator fun invoke(
-        containingModule: KpmGradleModule,
-        fragmentName: String,
-        dependencyConfigurations: KpmFragmentDependencyConfigurations,
-        compileDependencyConfiguration: Configuration,
-        apiElementsConfiguration: Configuration,
-        hostSpecificMetadataElementsConfiguration: Configuration?
-    ): T = constructor(
-        containingModule, fragmentName,
-        dependencyConfigurations,
-        compileDependencyConfiguration,
-        apiElementsConfiguration,
-        hostSpecificMetadataElementsConfiguration
-    )
-}
-
 interface KotlinNativeCompilationData<T : KotlinCommonOptions> : KotlinCompilationData<T> {
     val konanTarget: KonanTarget
     val enableEndorsedLibs: Boolean

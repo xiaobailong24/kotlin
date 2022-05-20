@@ -6,8 +6,6 @@
 package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.gradle.api.Project
-import org.jetbrains.kotlin.gradle.dsl.pm20Extension
-import kotlin.reflect.KClass
 
 internal fun registerDefaultVariantFactories(project: Project) {
     project.kpmModules.configureEach { module ->
@@ -17,7 +15,7 @@ internal fun registerDefaultVariantFactories(project: Project) {
         )
 
         fun <T : KpmNativeVariantInternal> registerNativeVariantFactory(
-            constructor: KotlinNativeVariantConstructor<T>
+            constructor: KpmNativeVariantConstructor<T>
         ) = module.fragments.registerFactory(
             constructor.variantClass, KotlinNativeVariantFactory(module, constructor)
         )

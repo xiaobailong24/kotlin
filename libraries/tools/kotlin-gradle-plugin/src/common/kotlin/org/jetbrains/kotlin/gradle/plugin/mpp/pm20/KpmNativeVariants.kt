@@ -22,7 +22,7 @@ open class KpmAndroidNativeX64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.ANDROID_X64, KpmAndroidNativeX64Variant::class.java, ::KpmAndroidNativeX64Variant
         )
     }
@@ -45,7 +45,7 @@ open class KpmAndroidNativeX86Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.ANDROID_X86, KpmAndroidNativeX86Variant::class.java, ::KpmAndroidNativeX86Variant
         )
     }
@@ -68,7 +68,7 @@ open class KpmAndroidNativeArm32Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.ANDROID_ARM32, KpmAndroidNativeArm32Variant::class.java, ::KpmAndroidNativeArm32Variant
         )
     }
@@ -91,7 +91,7 @@ open class KpmAndroidNativeArm64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.ANDROID_ARM64, KpmAndroidNativeArm64Variant::class.java, ::KpmAndroidNativeArm64Variant
         )
     }
@@ -114,7 +114,7 @@ open class KpmIosArm32Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.IOS_ARM32, KpmIosArm32Variant::class.java, ::KpmIosArm32Variant
         )
     }
@@ -137,7 +137,7 @@ open class KpmIosArm64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.IOS_ARM64, KpmIosArm64Variant::class.java, ::KpmIosArm64Variant
         )
     }
@@ -160,7 +160,7 @@ open class KpmIosX64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.IOS_X64, KpmIosX64Variant::class.java, ::KpmIosX64Variant
         )
     }
@@ -183,7 +183,7 @@ open class KpmIosSimulatorArm64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.IOS_SIMULATOR_ARM64, KpmIosSimulatorArm64Variant::class.java, ::KpmIosSimulatorArm64Variant
         )
     }
@@ -206,7 +206,7 @@ open class KpmWatchosArm32Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.WATCHOS_ARM32, KpmWatchosArm32Variant::class.java, ::KpmWatchosArm32Variant
         )
     }
@@ -229,7 +229,7 @@ open class KpmWatchosArm64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.WATCHOS_ARM64, KpmWatchosArm64Variant::class.java, ::KpmWatchosArm64Variant
         )
     }
@@ -252,7 +252,7 @@ open class KpmWatchosX86Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.WATCHOS_X86, KpmWatchosX86Variant::class.java, ::KpmWatchosX86Variant
         )
     }
@@ -275,7 +275,7 @@ open class KpmWatchosX64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.WATCHOS_X64, KpmWatchosX64Variant::class.java, ::KpmWatchosX64Variant
         )
     }
@@ -298,7 +298,7 @@ open class KpmWatchosSimulatorArm64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.WATCHOS_SIMULATOR_ARM64, KpmWatchosSimulatorArm64Variant::class.java, ::KpmWatchosSimulatorArm64Variant
         )
     }
@@ -321,7 +321,7 @@ open class KpmTvosArm64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.TVOS_ARM64, KpmTvosArm64Variant::class.java, ::KpmTvosArm64Variant
         )
     }
@@ -344,7 +344,7 @@ open class KpmTvosX64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.TVOS_X64, KpmTvosX64Variant::class.java, ::KpmTvosX64Variant
         )
     }
@@ -367,7 +367,7 @@ open class KpmTvosSimulatorArm64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.TVOS_SIMULATOR_ARM64, KpmTvosSimulatorArm64Variant::class.java, ::KpmTvosSimulatorArm64Variant
         )
     }
@@ -390,7 +390,7 @@ open class KpmLinuxX64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.LINUX_X64, KpmLinuxX64Variant::class.java, ::KpmLinuxX64Variant
         )
     }
@@ -413,7 +413,7 @@ open class KpmMingwX86Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.MINGW_X86, KpmMingwX86Variant::class.java, ::KpmMingwX86Variant
         )
     }
@@ -436,7 +436,7 @@ open class KpmMingwX64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.MINGW_X64, KpmMingwX64Variant::class.java, ::KpmMingwX64Variant
         )
     }
@@ -459,7 +459,7 @@ open class KpmMacosX64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.MACOS_X64, KpmMacosX64Variant::class.java, ::KpmMacosX64Variant
         )
     }
@@ -482,7 +482,7 @@ open class KpmMacosArm64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.MACOS_ARM64, KpmMacosArm64Variant::class.java, ::KpmMacosArm64Variant
         )
     }
@@ -505,7 +505,7 @@ open class KpmLinuxArm64Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.LINUX_ARM64, KpmLinuxArm64Variant::class.java, ::KpmLinuxArm64Variant
         )
     }
@@ -528,7 +528,7 @@ open class KpmLinuxArm32HfpVariant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.LINUX_ARM32_HFP, KpmLinuxArm32HfpVariant::class.java, ::KpmLinuxArm32HfpVariant
         )
     }
@@ -551,7 +551,7 @@ open class KpmLinuxMips32Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.LINUX_MIPS32, KpmLinuxMips32Variant::class.java, ::KpmLinuxMips32Variant
         )
     }
@@ -574,7 +574,7 @@ open class KpmLinuxMipsel32Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.LINUX_MIPSEL32, KpmLinuxMipsel32Variant::class.java, ::KpmLinuxMipsel32Variant
         )
     }
@@ -597,7 +597,7 @@ open class KpmWasm32Variant @Inject constructor(
     hostSpecificMetadataElementsConfiguration = hostSpecificMetadataElementsConfiguration
 ) {
     companion object {
-        val constructor = KotlinNativeVariantConstructor(
+        val constructor = KpmNativeVariantConstructor(
             KonanTarget.WASM32, KpmWasm32Variant::class.java, ::KpmWasm32Variant
         )
     }

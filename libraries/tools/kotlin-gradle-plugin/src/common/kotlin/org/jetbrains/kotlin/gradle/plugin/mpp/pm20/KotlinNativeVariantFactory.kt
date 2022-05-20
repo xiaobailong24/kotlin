@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.FragmentNameDisambiguati
 
 fun <T : KpmNativeVariantInternal> KotlinNativeVariantFactory(
     module: KpmGradleModule,
-    constructor: KotlinNativeVariantConstructor<T>,
+    constructor: KpmNativeVariantConstructor<T>,
     config: KotlinNativeVariantConfig<T> = KotlinNativeVariantConfig()
 ) = KpmGradleFragmentFactory(
     fragmentInstantiator = KotlinNativeVariantInstantiator(module, constructor, config),
@@ -48,7 +48,7 @@ data class KotlinNativeVariantConfig<T : KpmNativeVariantInternal>(
 
 class KotlinNativeVariantInstantiator<T : KpmNativeVariantInternal>(
     private val module: KpmGradleModule,
-    private val kotlinNativeVariantConstructor: KotlinNativeVariantConstructor<T>,
+    private val variantConstructor: KpmNativeVariantConstructor<T>,
     private val config: KotlinNativeVariantConfig<T>
 
 ) : KpmGradleFragmentFactory.FragmentInstantiator<T> {
@@ -58,7 +58,7 @@ class KotlinNativeVariantInstantiator<T : KpmNativeVariantInternal>(
         val dependencies = config.dependenciesConfigurationFactory.create(module, names)
         val context = KotlinGradleFragmentConfigurationContextImpl(module, dependencies, names)
 
-        return kotlinNativeVariantConstructor.invoke(
+        return variantConstructor.invoke(
             containingModule = module,
             fragmentName = name,
             dependencyConfigurations = dependencies,
