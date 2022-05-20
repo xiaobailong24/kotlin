@@ -15,7 +15,7 @@ object KpmJvmCompileTaskConfigurator : KpmCompileTaskConfigurator<KpmJvmVariant>
     override fun registerCompileTasks(variant: KpmJvmVariant): TaskProvider<*> {
         val compilationData = variant.compilationData
         LifecycleTasksManager(variant.project).registerClassesTask(compilationData)
-        return KotlinCompilationTaskConfigurator(variant.project).createKotlinJvmCompilationTask(variant, compilationData)
+        return KpmCompilationTaskConfigurator(variant.project).createKotlinJvmCompilationTask(variant, compilationData)
     }
 }
 
@@ -23,7 +23,7 @@ object KpmNativeCompileTaskConfigurator : KpmCompileTaskConfigurator<KpmNativeVa
     override fun registerCompileTasks(variant: KpmNativeVariantInternal): TaskProvider<*> {
         val compilationData = variant.compilationData
         LifecycleTasksManager(variant.project).registerClassesTask(compilationData)
-        return KotlinCompilationTaskConfigurator(variant.project).createKotlinNativeCompilationTask(variant, compilationData)
+        return KpmCompilationTaskConfigurator(variant.project).createKotlinNativeCompilationTask(variant, compilationData)
     }
 }
 

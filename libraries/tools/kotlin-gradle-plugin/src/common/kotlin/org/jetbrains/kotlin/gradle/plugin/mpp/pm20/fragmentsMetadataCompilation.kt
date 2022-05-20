@@ -214,7 +214,7 @@ private fun createNativeMetadataCompilation(
     metadataCompilationRegistry.registerNative(fragment, metadataCompilationData)
 }
 
-private class MetadataCompilationTasksConfigurator(project: Project) : KotlinCompilationTaskConfigurator(project) {
+private class MetadataCompilationTasksConfigurator(project: Project) : KpmCompilationTaskConfigurator(project) {
     fun createKotlinCommonCompilationTask(
         fragment: KpmGradleFragment,
         compilationData: KotlinCommonFragmentMetadataCompilationData
