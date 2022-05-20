@@ -282,7 +282,7 @@ internal fun applyUserDefinedAttributes(target: AbstractKotlinTarget) {
 private fun applyUserDefinedAttributesWithKpm(
     target: AbstractKotlinTarget,
 ) {
-    fun copyAttributesToVariant(variant: KotlinGradleVariant, from: AttributeContainer) {
+    fun copyAttributesToVariant(variant: KpmGradleVariant, from: AttributeContainer) {
         variant.gradleVariantNames.forEach { configurationOrVariantName ->
             val configuration = variant.project.configurations.findByName(configurationOrVariantName)
                 ?: return@forEach

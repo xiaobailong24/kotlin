@@ -28,7 +28,7 @@ import org.jetbrains.kotlin.gradle.utils.dashSeparatedName
 import org.jetbrains.kotlin.gradle.utils.filesProvider
 import org.jetbrains.kotlin.gradle.utils.lowerCamelCaseName
 import org.jetbrains.kotlin.library.KLIB_FILE_EXTENSION
-import org.jetbrains.kotlin.project.model.KotlinFragment
+import org.jetbrains.kotlin.project.model.KpmFragment
 import java.util.concurrent.Callable
 
 internal fun setupFragmentsMetadataForKpmModules(project: Project) {
@@ -173,7 +173,7 @@ internal fun metadataJarName(module: KotlinGradleModule) =
     lowerCamelCaseName(module.moduleClassifier, KotlinMetadataTargetConfigurator.ALL_METADATA_JAR_NAME)
 
 private fun createCommonMetadataCompilation(
-    fragment: KotlinGradleFragment,
+    fragment: KpmGradleFragment,
     compileAllTask: TaskProvider<DefaultTask>,
     metadataCompilationRegistry: MetadataCompilationRegistry
 ) {
@@ -194,7 +194,7 @@ private fun createCommonMetadataCompilation(
 }
 
 private fun createNativeMetadataCompilation(
-    fragment: KotlinGradleFragment,
+    fragment: KpmGradleFragment,
     compileAllTask: TaskProvider<DefaultTask>,
     metadataCompilationRegistry: MetadataCompilationRegistry
 ) {
@@ -216,7 +216,7 @@ private fun createNativeMetadataCompilation(
 
 private class MetadataCompilationTasksConfigurator(project: Project) : KotlinCompilationTaskConfigurator(project) {
     fun createKotlinCommonCompilationTask(
-        fragment: KotlinGradleFragment,
+        fragment: KpmGradleFragment,
         compilationData: KotlinCommonFragmentMetadataCompilationData
     ) {
         KotlinCommonSourceSetProcessor(
@@ -235,22 +235,22 @@ private class MetadataCompilationTasksConfigurator(project: Project) : KotlinCom
     }
 
     fun createKotlinNativeMetadataCompilationTask(
-        fragment: KotlinGradleFragment,
+        fragment: KpmGradleFragment,
         compilationData: KotlinNativeFragmentMetadataCompilationData
     ): TaskProvider<KotlinNativeCompile> = createKotlinNativeCompilationTask(fragment, compilationData) {
         kotlinPluginData = project.compilerPluginProviderForNativeMetadata(fragment, compilationData)
     }
 
-    override fun getSourcesForFragmentCompilation(fragment: KotlinGradleFragment): MultipleSourceRootsProvider {
+    override fun getSourcesForFragmentCompilation(fragment: KpmGradleFragment): MultipleSourceRootsProvider {
         return project.provider { listOf(fragmentSourcesProvider.getFragmentOwnSources(fragment)) }
     }
 
-    override fun getCommonSourcesForFragmentCompilation(fragment: KotlinGradleFragment): MultipleSourceRootsProvider {
+    override fun getCommonSourcesForFragmentCompilation(fragment: KpmGradleFragment): MultipleSourceRootsProvider {
         return project.provider { listOf(fragmentSourcesProvider.getFragmentOwnSources(fragment)) }
     }
 }
 
-private fun resolvedMetadataProviders(fragment: KotlinGradleFragment) =
+private fun resolvedMetadataProviders(fragment: KpmGradleFragment) =
     fragment.withRefinesClosure.map {
         FragmentResolvedMetadataProvider(
             fragment.project.tasks.withType<TransformKotlinGranularMetadataForFragment>().named(transformFragmentMetadataTaskName(it))
@@ -259,7 +259,7 @@ private fun resolvedMetadataProviders(fragment: KotlinGradleFragment) =
 
 private fun createExtractMetadataTask(
     project: Project,
-    fragment: KotlinGradleFragment,
+    fragment: KpmGradleFragment,
     transformation: FragmentGranularMetadataResolver
 ) {
     project.tasks.register(
@@ -293,5 +293,5 @@ private fun disableMetadataCompilationIfNotYetSupported(
     }
 }
 
-private fun transformFragmentMetadataTaskName(fragment: KotlinFragment) =
+private fun transformFragmentMetadataTaskName(fragment: KpmFragment) =
     lowerCamelCaseName("resolve", fragment.disambiguateName("Metadata"))

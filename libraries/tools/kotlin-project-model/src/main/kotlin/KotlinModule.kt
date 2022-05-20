@@ -10,10 +10,10 @@ package org.jetbrains.kotlin.project.model
 interface KotlinModule {
     val moduleIdentifier: KotlinModuleIdentifier
 
-    val fragments: Iterable<KotlinFragment>
+    val fragments: Iterable<KpmFragment>
 
-    val variants: Iterable<KotlinVariant>
-        get() = fragments.filterIsInstance<KotlinVariant>()
+    val variants: Iterable<KpmVariant>
+        get() = fragments.filterIsInstance<KpmVariant>()
 
     val plugins: Iterable<KpmCompilerPlugin>
 
@@ -23,7 +23,7 @@ interface KotlinModule {
 open class BasicKotlinModule(
     override val moduleIdentifier: KotlinModuleIdentifier
 ) : KotlinModule {
-    override val fragments = mutableListOf<BasicKotlinFragment>()
+    override val fragments = mutableListOf<KpmBasicFragment>()
 
     override val plugins = mutableListOf<KpmCompilerPlugin>()
 

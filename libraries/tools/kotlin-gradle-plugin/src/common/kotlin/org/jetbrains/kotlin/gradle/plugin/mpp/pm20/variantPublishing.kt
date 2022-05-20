@@ -54,17 +54,17 @@ data class BasicPlatformPublicationToMavenRequest(
 /** TODO: consider also using this class for exposing a KPM variant's configurations for project-to-project dependencies,
  *        so that a variant may expose an arbitrary set of configurations rather just { API, runtime } or { API } */
 interface VariantPublicationRequest {
-    val fromVariant: KotlinGradleVariant
+    val fromVariant: KpmGradleVariant
     val publishConfiguration: Configuration
 }
 
 data class BasicVariantPublicationRequest(
-    override val fromVariant: KotlinGradleVariant,
+    override val fromVariant: KpmGradleVariant,
     override val publishConfiguration: Configuration
 ) : VariantPublicationRequest
 
 
-fun VariantPublishingConfigurator.configureNativeVariantPublication(variant: KotlinNativeVariantInternal) {
+fun VariantPublishingConfigurator.configureNativeVariantPublication(variant: KpmNativeVariantInternal) {
     val publishConfigurations = listOfNotNull(
         variant.apiElementsConfiguration,
         variant.hostSpecificMetadataElementsConfiguration // host-specific metadata may be absent
@@ -72,13 +72,13 @@ fun VariantPublishingConfigurator.configureNativeVariantPublication(variant: Kot
     configureSingleVariantPublishing(variant, variant, publishConfigurations)
 }
 
-fun VariantPublishingConfigurator.configureSingleVariantPublication(variant: KotlinGradlePublishedVariantWithRuntime) {
+fun VariantPublishingConfigurator.configureSingleVariantPublication(variant: KpmGradlePublishedVariantWithRuntime) {
     val publishConfigurations = listOf(variant.apiElementsConfiguration, variant.runtimeElementsConfiguration)
     configureSingleVariantPublishing(variant, variant, publishConfigurations)
 }
 
 fun VariantPublishingConfigurator.configureSingleVariantPublishing(
-    variant: KotlinGradleVariant,
+    variant: KpmGradleVariant,
     publishedModuleHolder: SingleMavenPublishedModuleHolder,
     publishConfigurations: Iterable<Configuration>
 ) {
@@ -103,12 +103,12 @@ open class VariantPublishingConfigurator @Inject constructor(
             project.objects.newInstance(VariantPublishingConfigurator::class.java, project)
     }
 
-    open fun platformComponentName(variant: KotlinGradleVariant) = variant.disambiguateName("")
+    open fun platformComponentName(variant: KpmGradleVariant) = variant.disambiguateName("")
 
-    open fun inferMavenScope(variant: KotlinGradleVariant, configurationName: String): String? =
+    open fun inferMavenScope(variant: KpmGradleVariant, configurationName: String): String? =
         when {
             configurationName == variant.apiElementsConfiguration.name -> "compile"
-            variant is KotlinGradleVariantWithRuntime && configurationName == variant.runtimeElementsConfiguration.name -> "runtime"
+            variant is KpmGradleVariantWithRuntime && configurationName == variant.runtimeElementsConfiguration.name -> "runtime"
             else -> null
         }
 
@@ -144,7 +144,7 @@ open class VariantPublishingConfigurator @Inject constructor(
         )
     }
 
-    protected open fun configureSourceElementsPublishing(componentName: String, variant: KotlinGradleVariant) {
+    protected open fun configureSourceElementsPublishing(componentName: String, variant: KpmGradleVariant) {
         val configurationName = variant.disambiguateName("sourceElements")
         val docsVariants = DocumentationVariantConfigurator().createSourcesElementsConfiguration(configurationName, variant)
         project.components.withType(AdhocComponentWithVariants::class.java).named(componentName).configure { component ->
@@ -238,7 +238,7 @@ open class VariantPublishingConfigurator @Inject constructor(
 }
 
 internal data class AdvancedVariantPublicationRequest(
-    override val fromVariant: KotlinGradleVariant,
+    override val fromVariant: KpmGradleVariant,
     override val publishConfiguration: Configuration,
     val overrideConfigurationAttributesForPublication: AttributeContainer?,
     val overrideConfigurationArtifactsForPublication: Provider<out Iterable<PublishArtifact>>?,
@@ -271,7 +271,7 @@ open class DocumentationVariantConfigurator {
 
     open fun createSourcesElementsConfiguration(
         configurationName: String,
-        variant: KotlinGradleVariant
+        variant: KpmGradleVariant
     ): Configuration {
         val sourcesArtifactTask = variant.project.tasks.withType<AbstractArchiveTask>().named(variant.sourceArchiveTaskName)
         val artifactClassifier = dashSeparatedName(variant.containingModule.moduleClassifier, "sources")

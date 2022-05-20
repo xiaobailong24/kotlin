@@ -20,19 +20,19 @@ open class KotlinGradleModuleFactory(private val project: Project) : NamedDomain
     }
 
     protected open fun registerDefaultCommonFragment(module: KotlinGradleModule) {
-        module.fragments.register(KotlinGradleFragment.COMMON_FRAGMENT_NAME, KotlinGradleFragment::class.java)
+        module.fragments.register(KpmGradleFragment.COMMON_FRAGMENT_NAME, KpmGradleFragment::class.java)
     }
 
     protected open fun addDefaultRefinementDependencyOnCommon(module: KotlinGradleModule) {
-        module.fragments.matching { it.name != KotlinGradleFragment.COMMON_FRAGMENT_NAME }.all {
-            it.refines(module.fragments.named(KotlinGradleFragment.COMMON_FRAGMENT_NAME))
+        module.fragments.matching { it.name != KpmGradleFragment.COMMON_FRAGMENT_NAME }.all {
+            it.refines(module.fragments.named(KpmGradleFragment.COMMON_FRAGMENT_NAME))
         }
     }
 
     protected open fun addDefaultDependencyOnMainModule(module: KotlinGradleModule) {
         if (module.name != KotlinGradleModule.MAIN_MODULE_NAME) {
             module.fragments
-                .matching { it.fragmentName == KotlinGradleFragment.COMMON_FRAGMENT_NAME }
+                .matching { it.fragmentName == KpmGradleFragment.COMMON_FRAGMENT_NAME }
                 .configureEach { commonFragment ->
                     commonFragment.dependencies {
                         api(module.project.kpmModules.getByName(KotlinGradleModule.MAIN_MODULE_NAME))
@@ -42,6 +42,6 @@ open class KotlinGradleModuleFactory(private val project: Project) : NamedDomain
     }
 
     protected open fun registerFragmentFactory(module: KotlinGradleModule) {
-        module.fragments.registerFactory(KotlinGradleFragment::class.java, KotlinCommonFragmentFactory(module))
+        module.fragments.registerFactory(KpmGradleFragment::class.java, KotlinCommonFragmentFactory(module))
     }
 }

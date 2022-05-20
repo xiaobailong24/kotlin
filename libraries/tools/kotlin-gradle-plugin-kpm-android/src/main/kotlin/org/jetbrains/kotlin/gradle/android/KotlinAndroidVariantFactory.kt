@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.*
 
 fun KotlinGradleModule.createKotlinAndroidVariant(androidVariant: BaseVariant) {
-    val androidOutgoingArtifacts = FragmentArtifacts<KotlinJvmVariant> {
+    val androidOutgoingArtifacts = FragmentArtifacts<KpmJvmVariant> {
         variants.create("classes") { variant ->
             variant.attributes.attribute(AndroidArtifacts.ARTIFACT_TYPE, AndroidArtifacts.ArtifactType.CLASSES_JAR.type)
             variant.artifact(project.provider { fragment.compilationOutputs.classesDirs.singleFile }) {
@@ -38,7 +38,7 @@ fun KotlinGradleModule.createKotlinAndroidVariant(androidVariant: BaseVariant) {
         }
     }
 
-    val androidElementsAttributes = FragmentAttributes<KotlinJvmVariant> {
+    val androidElementsAttributes = FragmentAttributes<KpmJvmVariant> {
         attribute(BuildTypeAttr.ATTRIBUTE, project.objects.named(androidVariant.buildType.name))
         attribute(TARGET_JVM_ENVIRONMENT_ATTRIBUTE, project.objects.named(TargetJvmEnvironment.ANDROID))
     }
@@ -47,7 +47,7 @@ fun KotlinGradleModule.createKotlinAndroidVariant(androidVariant: BaseVariant) {
         "android${androidVariant.buildType.name.replaceFirstChar { it.uppercase() }}", KotlinJvmVariantConfig(
             /* Only swap out configuration that is used. Default setup shall still be applied */
             compileDependencies = (DefaultKotlinCompileDependenciesDefinition +
-                    FragmentAttributes<KotlinGradleFragment> {
+                    FragmentAttributes<KpmGradleFragment> {
                         namedAttribute(TARGET_JVM_ENVIRONMENT_ATTRIBUTE, TargetJvmEnvironment.ANDROID)
                         attribute(KotlinPlatformType.attribute, KotlinPlatformType.androidJvm)
                     })

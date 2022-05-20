@@ -21,15 +21,15 @@ import org.jetbrains.kotlin.gradle.utils.dashSeparatedName
 import org.jetbrains.kotlin.project.model.KotlinAttributeKey
 import org.jetbrains.kotlin.project.model.KotlinPlatformTypeAttribute
 
-abstract class KotlinGradleVariantInternal(
+abstract class KpmGradleVariantInternal(
     containingModule: KotlinGradleModule,
     fragmentName: String,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations,
     final override val compileDependenciesConfiguration: Configuration,
     final override val apiElementsConfiguration: Configuration
-) : KotlinGradleFragmentInternal(
+) : KpmGradleFragmentInternal(
     containingModule, fragmentName, dependencyConfigurations
-), KotlinGradleVariant {
+), KpmGradleVariant {
 
     override val variantAttributes: Map<KotlinAttributeKey, String>
         get() = mapOf(KotlinPlatformTypeAttribute to kotlinPlatformTypeAttributeFromPlatform(platformType)) // TODO user attributes
@@ -80,10 +80,10 @@ class DefaultSingleMavenPublishedModuleHolder(
 private fun kotlinPlatformTypeAttributeFromPlatform(platformType: KotlinPlatformType) = platformType.name
 
 // TODO: rewrite with the artifacts API
-internal val KotlinGradleVariant.defaultSourceArtifactTaskName: String
+internal val KpmGradleVariant.defaultSourceArtifactTaskName: String
     get() = disambiguateName("sourcesJar")
 
-abstract class KotlinGradleVariantWithRuntimeInternal(
+abstract class KpmGradleVariantWithRuntimeInternal(
     containingModule: KotlinGradleModule,
     fragmentName: String,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations,
@@ -91,13 +91,13 @@ abstract class KotlinGradleVariantWithRuntimeInternal(
     apiElementsConfiguration: Configuration,
     final override val runtimeDependenciesConfiguration: Configuration,
     final override val runtimeElementsConfiguration: Configuration
-) : KotlinGradleVariantInternal(
+) : KpmGradleVariantInternal(
     containingModule = containingModule,
     fragmentName = fragmentName,
     dependencyConfigurations = dependencyConfigurations,
     compileDependenciesConfiguration = compileDependencyConfiguration,
     apiElementsConfiguration = apiElementsConfiguration
-), KotlinGradleVariantWithRuntime {
+), KpmGradleVariantWithRuntime {
     // TODO deduplicate with KotlinCompilation?
 
     override var runtimeDependencyFiles: FileCollection = project.files(runtimeDependenciesConfiguration)
@@ -109,14 +109,14 @@ abstract class KotlinGradleVariantWithRuntimeInternal(
 private fun defaultModuleSuffix(module: KotlinGradleModule, variantName: String): String =
     dashSeparatedName(variantName, module.moduleClassifier)
 
-abstract class KotlinGradlePublishedVariantWithRuntime(
+abstract class KpmGradlePublishedVariantWithRuntime(
     containingModule: KotlinGradleModule, fragmentName: String,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     runtimeDependencyConfiguration: Configuration,
     runtimeElementsConfiguration: Configuration
-) : KotlinGradleVariantWithRuntimeInternal(
+) : KpmGradleVariantWithRuntimeInternal(
     containingModule = containingModule,
     fragmentName = fragmentName,
     dependencyConfigurations = dependencyConfigurations,

@@ -20,10 +20,10 @@ interface KotlinGradleModule : KotlinModule, Named, HasKotlinDependencies {
     val project: Project
     val moduleClassifier: String?
 
-    override val fragments: ExtensiblePolymorphicDomainObjectContainer<KotlinGradleFragment>
+    override val fragments: ExtensiblePolymorphicDomainObjectContainer<KpmGradleFragment>
 
     // TODO DSL & build script model: find a way to create a flexible typed view on fragments?
-    override val variants: NamedDomainObjectSet<KotlinGradleVariant>
+    override val variants: NamedDomainObjectSet<KpmGradleVariant>
 
     override val plugins: Set<KpmCompilerPlugin>
 
@@ -47,10 +47,10 @@ interface KotlinGradleModule : KotlinModule, Named, HasKotlinDependencies {
 
     // DSL
 
-    val common: KotlinGradleFragment
-        get() = fragments.getByName(KotlinGradleFragment.COMMON_FRAGMENT_NAME)
+    val common: KpmGradleFragment
+        get() = fragments.getByName(KpmGradleFragment.COMMON_FRAGMENT_NAME)
 
-    fun common(configure: KotlinGradleFragment.() -> Unit) =
+    fun common(configure: KpmGradleFragment.() -> Unit) =
         common.configure()
 
     override fun dependencies(configure: KotlinDependencyHandler.() -> Unit) =

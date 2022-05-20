@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.gradle.execution.KotlinAggregateExecutionSource
 import org.jetbrains.kotlin.gradle.plugin.*
 import org.jetbrains.kotlin.gradle.plugin.PropertiesProvider
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinGradleFragment
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleFragment
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinGradleModule
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.hasKpmModel
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.kpmModules
@@ -135,7 +135,7 @@ private fun addStdlibToKpmProject(
     project: Project
 ) {
     project.kpmModules.matching { it.name == KotlinGradleModule.MAIN_MODULE_NAME }.configureEach { main ->
-        main.fragments.matching { it.name == KotlinGradleFragment.COMMON_FRAGMENT_NAME }.configureEach { common ->
+        main.fragments.matching { it.name == KpmGradleFragment.COMMON_FRAGMENT_NAME }.configureEach { common ->
             common.dependencies {
                 api(project.kotlinDependency("kotlin-stdlib-common", project.topLevelExtension.coreLibrariesVersion))
             }

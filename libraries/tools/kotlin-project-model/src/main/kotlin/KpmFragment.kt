@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.tooling.core.closure
 import org.jetbrains.kotlin.tooling.core.withClosure
 import java.io.File
 
-interface KotlinFragment {
+interface KpmFragment {
     val containingModule: KotlinModule
 
     val fragmentName: String
@@ -23,18 +23,18 @@ interface KotlinFragment {
     // TODO: scopes
     val declaredModuleDependencies: Iterable<KotlinModuleDependency>
 
-    val declaredRefinesDependencies: Iterable<KotlinFragment>
+    val declaredRefinesDependencies: Iterable<KpmFragment>
 
-    val refinesClosure: Set<KotlinFragment>
+    val refinesClosure: Set<KpmFragment>
         get() = this.closure { it.declaredRefinesDependencies }
 
-    val withRefinesClosure: Set<KotlinFragment>
+    val withRefinesClosure: Set<KpmFragment>
         get() = this.withClosure { it.declaredRefinesDependencies }
 
     companion object
 }
 
-val KotlinFragment.fragmentAttributeSets: Map<KotlinAttributeKey, Set<String>>
+val KpmFragment.fragmentAttributeSets: Map<KotlinAttributeKey, Set<String>>
     get() = mutableMapOf<KotlinAttributeKey, MutableSet<String>>().apply {
         containingModule.variantsContainingFragment(this@fragmentAttributeSets).forEach { variant ->
             variant.variantAttributes.forEach { (attribute, value) ->
@@ -43,15 +43,15 @@ val KotlinFragment.fragmentAttributeSets: Map<KotlinAttributeKey, Set<String>>
         }
     }
 
-val KotlinVariant.platform get() = variantAttributes[KotlinPlatformTypeAttribute]
+val KpmVariant.platform get() = variantAttributes[KotlinPlatformTypeAttribute]
 
-open class BasicKotlinFragment(
+open class KpmBasicFragment(
     override val containingModule: KotlinModule,
     override val fragmentName: String,
     override val languageSettings: LanguageSettings? = null
-) : KotlinFragment {
+) : KpmFragment {
 
-    override val declaredRefinesDependencies: MutableSet<BasicKotlinFragment> = mutableSetOf()
+    override val declaredRefinesDependencies: MutableSet<KpmBasicFragment> = mutableSetOf()
 
     override val declaredModuleDependencies: MutableSet<KotlinModuleDependency> = mutableSetOf()
 

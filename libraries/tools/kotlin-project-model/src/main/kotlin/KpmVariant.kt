@@ -5,15 +5,15 @@
 
 package org.jetbrains.kotlin.project.model
 
-interface KotlinVariant : KotlinFragment {
+interface KpmVariant : KpmFragment {
     val variantAttributes: Map<KotlinAttributeKey, String>
 }
 
-class BasicKotlinVariant(
+class KpmBasicVariant(
     containingModule: KotlinModule, fragmentName: String, languageSettings: LanguageSettings? = null
-) : BasicKotlinFragment(
+) : KpmBasicFragment(
     containingModule, fragmentName, languageSettings
-), KotlinVariant {
+), KpmVariant {
     override val variantAttributes: MutableMap<KotlinAttributeKey, String> = mutableMapOf()
     override fun toString(): String = "variant $fragmentName"
 }

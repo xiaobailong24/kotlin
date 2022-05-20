@@ -7,19 +7,19 @@ package org.jetbrains.kotlin.project.model
 
 fun module(name: String, classifier: String? = null) = BasicKotlinModule(LocalModuleIdentifier("current", name, classifier))
 
-fun BasicKotlinModule.fragment(vararg nameParts: String): BasicKotlinFragment =
+fun BasicKotlinModule.fragment(vararg nameParts: String): KpmBasicFragment =
     fragment(nameParts.drop(1).joinToString("", nameParts.first()) { it.capitalize() })
 
-fun BasicKotlinModule.fragment(name: String): BasicKotlinFragment =
-    fragments.firstOrNull { it.fragmentName == name } ?: BasicKotlinFragment(this, name).also { fragments.add(it) }
+fun BasicKotlinModule.fragment(name: String): KpmBasicFragment =
+    fragments.firstOrNull { it.fragmentName == name } ?: KpmBasicFragment(this, name).also { fragments.add(it) }
 
-fun BasicKotlinModule.variant(vararg nameParts: String): BasicKotlinVariant =
+fun BasicKotlinModule.variant(vararg nameParts: String): KpmBasicVariant =
     variant(nameParts.drop(1).joinToString("", nameParts.first()) { it.capitalize() })
 
-fun BasicKotlinModule.variant(name: String): BasicKotlinVariant =
+fun BasicKotlinModule.variant(name: String): KpmBasicVariant =
     fragments.firstOrNull { it.fragmentName == name }
-        ?.let { it as? BasicKotlinVariant ?: error("$name is not a variant") }
-        ?: BasicKotlinVariant(this, name).also { fragments.add(it) }
+        ?.let { it as? KpmBasicVariant ?: error("$name is not a variant") }
+        ?: KpmBasicVariant(this, name).also { fragments.add(it) }
 
 fun KotlinModuleIdentifier.equalsWithoutClassifier(other: KotlinModuleIdentifier) = when (this) {
     is LocalModuleIdentifier -> other is LocalModuleIdentifier &&
@@ -29,15 +29,15 @@ fun KotlinModuleIdentifier.equalsWithoutClassifier(other: KotlinModuleIdentifier
     else -> error("can't check equality yet")
 }
 
-fun BasicKotlinFragment.depends(module: BasicKotlinModule) {
+fun KpmBasicFragment.depends(module: BasicKotlinModule) {
     this.declaredModuleDependencies += KotlinModuleDependency(module.moduleIdentifier)
 }
 
-fun BasicKotlinFragment.refinedBy(fragment: BasicKotlinFragment) {
+fun KpmBasicFragment.refinedBy(fragment: KpmBasicFragment) {
     fragment.refines(this)
 }
 
-fun BasicKotlinFragment.refines(fragment: BasicKotlinFragment) {
+fun KpmBasicFragment.refines(fragment: KpmBasicFragment) {
     require(fragment.containingModule == containingModule)
     declaredRefinesDependencies.add(fragment)
 }

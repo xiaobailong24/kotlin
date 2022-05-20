@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.gradle.plugin.sources.createDefaultSourceDirectorySe
 class FragmentMappedKotlinSourceSet(
     private val sourceSetName: String,
     private val project: Project,
-    internal val underlyingFragment: KotlinGradleFragment
+    internal val underlyingFragment: KpmGradleFragment
 ) : KotlinSourceSet {
     val displayName: String
         get() = sourceSetName
