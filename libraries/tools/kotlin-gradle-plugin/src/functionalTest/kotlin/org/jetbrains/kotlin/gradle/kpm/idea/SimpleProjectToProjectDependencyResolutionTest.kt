@@ -80,10 +80,10 @@ class SimpleProjectToProjectDependencyResolutionTest : AbstractLightweightIdeaDe
 
         consumerKotlin.buildIdeaKotlinProjectModel().assertIsNotEmpty().modules.forEach { module ->
             fun ifTestModule(vararg any: Any?) =
-                listOf(*any).takeIf { module.name == KotlinGradleModule.TEST_MODULE_NAME }
+                listOf(*any).takeIf { module.name == KpmGradleModule.TEST_MODULE_NAME }
 
             fun ifMainModule(vararg any: Any?) =
-                listOf(*any).takeIf { module.name == KotlinGradleModule.MAIN_MODULE_NAME }
+                listOf(*any).takeIf { module.name == KpmGradleModule.MAIN_MODULE_NAME }
 
             module.assertContainsFragment("common").assertFragmentDependencies(
                 "regular::producer/main/common",

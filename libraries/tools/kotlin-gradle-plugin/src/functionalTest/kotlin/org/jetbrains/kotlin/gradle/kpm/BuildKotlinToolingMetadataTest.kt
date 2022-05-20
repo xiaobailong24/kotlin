@@ -30,7 +30,7 @@ private fun Project.kotlinToolingMetadataOfModule(moduleName: String): KotlinToo
     return module.buildKotlinToolingMetadataTask!!.get().kotlinToolingMetadata
 }
 
-private val Project.kotlinToolingMetadataOfMainModule get() = kotlinToolingMetadataOfModule(KotlinGradleModule.MAIN_MODULE_NAME)
+private val Project.kotlinToolingMetadataOfMainModule get() = kotlinToolingMetadataOfModule(KpmGradleModule.MAIN_MODULE_NAME)
 
 class BuildKotlinToolingMetadataTest : AbstractKpmExtensionTest() {
     @Test

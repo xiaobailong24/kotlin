@@ -10,7 +10,7 @@ interface KpmVariant : KpmFragment {
 }
 
 class KpmBasicVariant(
-    containingModule: KotlinModule, fragmentName: String, languageSettings: LanguageSettings? = null
+    containingModule: KpmModule, fragmentName: String, languageSettings: LanguageSettings? = null
 ) : KpmBasicFragment(
     containingModule, fragmentName, languageSettings
 ), KpmVariant {

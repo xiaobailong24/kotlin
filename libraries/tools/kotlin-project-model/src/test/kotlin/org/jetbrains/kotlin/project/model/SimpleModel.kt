@@ -5,18 +5,18 @@
 
 package org.jetbrains.kotlin.project.model
 
-fun module(name: String, classifier: String? = null) = BasicKotlinModule(KpmLocalModuleIdentifier("current", name, classifier))
+fun module(name: String, classifier: String? = null) = KpmBasicModule(KpmLocalModuleIdentifier("current", name, classifier))
 
-fun BasicKotlinModule.fragment(vararg nameParts: String): KpmBasicFragment =
+fun KpmBasicModule.fragment(vararg nameParts: String): KpmBasicFragment =
     fragment(nameParts.drop(1).joinToString("", nameParts.first()) { it.capitalize() })
 
-fun BasicKotlinModule.fragment(name: String): KpmBasicFragment =
+fun KpmBasicModule.fragment(name: String): KpmBasicFragment =
     fragments.firstOrNull { it.fragmentName == name } ?: KpmBasicFragment(this, name).also { fragments.add(it) }
 
-fun BasicKotlinModule.variant(vararg nameParts: String): KpmBasicVariant =
+fun KpmBasicModule.variant(vararg nameParts: String): KpmBasicVariant =
     variant(nameParts.drop(1).joinToString("", nameParts.first()) { it.capitalize() })
 
-fun BasicKotlinModule.variant(name: String): KpmBasicVariant =
+fun KpmBasicModule.variant(name: String): KpmBasicVariant =
     fragments.firstOrNull { it.fragmentName == name }
         ?.let { it as? KpmBasicVariant ?: error("$name is not a variant") }
         ?: KpmBasicVariant(this, name).also { fragments.add(it) }
@@ -29,7 +29,7 @@ fun KpmModuleIdentifier.equalsWithoutClassifier(other: KpmModuleIdentifier) = wh
     else -> error("can't check equality yet")
 }
 
-fun KpmBasicFragment.depends(module: BasicKotlinModule) {
+fun KpmBasicFragment.depends(module: KpmBasicModule) {
     this.declaredModuleDependencies += KotlinModuleDependency(module.moduleIdentifier)
 }
 
@@ -44,18 +44,18 @@ fun KpmBasicFragment.refines(fragment: KpmBasicFragment) {
 
 // ---
 
-internal data class ModuleBundle(val modules: List<BasicKotlinModule>) {
-    val main: BasicKotlinModule
+internal data class ModuleBundle(val modules: List<KpmBasicModule>) {
+    val main: KpmBasicModule
         get() = modules.single { it.moduleIdentifier.moduleClassifier == null }
 
-    operator fun get(modulePurpose: String): BasicKotlinModule = when (modulePurpose) {
+    operator fun get(modulePurpose: String): KpmBasicModule = when (modulePurpose) {
         "main" -> main
         else -> modules.single { it.moduleIdentifier.moduleClassifier == modulePurpose }
     }
 }
 
 internal fun simpleModuleBundle(name: String): ModuleBundle {
-    fun createModule(purpose: String): BasicKotlinModule =
+    fun createModule(purpose: String): KpmBasicModule =
         module(name, purpose.takeIf { it != "main" }).apply {
             val common = fragment("common")
 

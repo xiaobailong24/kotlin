@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.filterModuleName
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 open class KpmJvmVariant(
-    containingModule: KotlinGradleModule,
+    containingModule: KpmGradleModule,
     fragmentName: String,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations,
     compileDependenciesConfiguration: Configuration,

@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinSingleTargetExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.utils.isGradleVersionAtLeast
-import org.jetbrains.kotlin.project.model.KotlinModule
+import org.jetbrains.kotlin.project.model.KpmModule
 import org.jetbrains.kotlin.project.model.KpmLocalModuleIdentifier
 
 val KotlinProjectExtension.targets: Iterable<KotlinTarget>
@@ -26,7 +26,7 @@ val KotlinProjectExtension.targets: Iterable<KotlinTarget>
         else -> error("Unexpected 'kotlin' extension $this")
     }
 
-fun KotlinModule.representsProject(project: Project): Boolean =
+fun KpmModule.representsProject(project: Project): Boolean =
     moduleIdentifier.let { it is KpmLocalModuleIdentifier && it.buildId == project.currentBuildId().name && it.projectId == project.path }
 
 // FIXME internal API?

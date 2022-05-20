@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.tooling.core.withClosure
 interface KpmGradleFragment : KpmFragment, HasKotlinDependencies, KotlinFragmentDependencyConfigurations, Named {
     override val kotlinSourceRoots: SourceDirectorySet
 
-    override val containingModule: KotlinGradleModule
+    override val containingModule: KpmGradleModule
 
     override fun getName(): String = fragmentName
 

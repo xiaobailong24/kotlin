@@ -15,15 +15,15 @@ import org.jetbrains.kotlin.project.model.*
 import org.jetbrains.kotlin.project.model.utils.variantsContainingFragment
 import javax.inject.Inject
 
-open class KotlinGradleModuleInternal(
+open class KpmGradleModuleInternal(
     final override val project: Project,
     final override val moduleClassifier: String?
-) : KotlinGradleModule {
+) : KpmGradleModule {
 
     @Inject
     constructor(project: Project, moduleName: CharSequence) : this(
         project,
-        moduleName.takeIf { it != KotlinGradleModule.MAIN_MODULE_NAME }?.toString()
+        moduleName.takeIf { it != KpmGradleModule.MAIN_MODULE_NAME }?.toString()
     )
 
     override val moduleIdentifier: KpmModuleIdentifier =
@@ -70,14 +70,14 @@ open class KotlinGradleModuleInternal(
     override fun toString(): String = "$moduleIdentifier (Gradle)"
 }
 
-internal val KotlinGradleModule.resolvableMetadataConfigurationName: String
+internal val KpmGradleModule.resolvableMetadataConfigurationName: String
     get() = lowerCamelCaseName(name, "DependenciesMetadata")
 
-internal val KotlinGradleModule.isMain
+internal val KpmGradleModule.isMain
     get() = moduleIdentifier.moduleClassifier == null
 
-internal fun KotlinGradleModule.disambiguateName(simpleName: String) =
+internal fun KpmGradleModule.disambiguateName(simpleName: String) =
     lowerCamelCaseName(moduleClassifier, simpleName)
 
-internal fun KotlinGradleModule.variantsContainingFragment(fragment: KpmFragment): Iterable<KpmGradleVariant> =
-    (this as KotlinModule).variantsContainingFragment(fragment).onEach { it as KpmGradleVariant } as Iterable<KpmGradleVariant>
+internal fun KpmGradleModule.variantsContainingFragment(fragment: KpmFragment): Iterable<KpmGradleVariant> =
+    (this as KpmModule).variantsContainingFragment(fragment).onEach { it as KpmGradleVariant } as Iterable<KpmGradleVariant>

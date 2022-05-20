@@ -26,13 +26,13 @@ import org.jetbrains.kotlin.gradle.utils.getOrPutRootProjectProperty
 import org.jetbrains.kotlin.project.model.*
 
 class ProjectStructureMetadataModuleBuilder {
-    private val modulesCache = mutableMapOf<KpmModuleIdentifier, KotlinModule>()
+    private val modulesCache = mutableMapOf<KpmModuleIdentifier, KpmModule>()
 
     private fun buildModuleFromProjectStructureMetadata(
         component: ResolvedComponentResult,
         metadata: KotlinProjectStructureMetadata
-    ): KotlinModule {
-        val moduleData = BasicKotlinModule(component.toSingleModuleIdentifier()).apply {
+    ): KpmModule {
+        val moduleData = KpmBasicModule(component.toSingleModuleIdentifier()).apply {
             metadata.sourceSetNamesByVariantName.keys.forEach { variantName ->
                 fragments.add(KpmBasicVariant(this@apply, variantName))
             }
@@ -69,14 +69,14 @@ class ProjectStructureMetadataModuleBuilder {
                 }
             }
         }
-        return ExternalImportedKotlinModule(
+        return KpmExternalImportedModule(
             moduleData,
             metadata,
             moduleData.fragments.filterTo(mutableSetOf()) { it.fragmentName in metadata.hostSpecificSourceSets }
         )
     }
 
-    fun getModule(component: ResolvedComponentResult, projectStructureMetadata: KotlinProjectStructureMetadata): KotlinModule {
+    fun getModule(component: ResolvedComponentResult, projectStructureMetadata: KotlinProjectStructureMetadata): KpmModule {
         val moduleId = component.toSingleModuleIdentifier()
         return modulesCache.getOrPut(moduleId) {
             buildModuleFromProjectStructureMetadata(
@@ -123,7 +123,7 @@ private fun detectModules(targets: Iterable<KotlinTarget>, sourceSets: Iterable<
 class GradleProjectModuleBuilder(private val addInferredSourceSetVisibilityAsExplicit: Boolean) {
     private fun getModulesFromPm20Project(project: Project) = project.kpmModules.toList()
 
-    fun buildModulesFromProject(project: Project): List<KotlinModule> {
+    fun buildModulesFromProject(project: Project): List<KpmModule> {
         if (project.hasKpmModel)
             return getModulesFromPm20Project(project)
 
@@ -144,7 +144,7 @@ class GradleProjectModuleBuilder(private val addInferredSourceSetVisibilityAsExp
                 .flatMap { component -> (component as? KotlinVariant)?.usages.orEmpty() }
         }.groupBy { it.compilation }
 
-        val moduleByFragment = mutableMapOf<KpmFragment, KotlinModule>()
+        val moduleByFragment = mutableMapOf<KpmFragment, KpmModule>()
 
         val result = moduleCompilationCluster.entries.map { (classifier, compilationsToInclude) ->
             val sourceSetsToInclude = compilationsToInclude.flatMapTo(mutableSetOf()) { it.allKotlinSourceSets }
@@ -155,7 +155,7 @@ class GradleProjectModuleBuilder(private val addInferredSourceSetVisibilityAsExp
                 classifier.takeIf { it != KotlinCompilation.MAIN_COMPILATION_NAME }
             )
 
-            BasicKotlinModule(moduleIdentifier).apply {
+            KpmBasicModule(moduleIdentifier).apply {
                 val variantToCompilation = mutableMapOf<KpmBasicFragment, KotlinCompilation<*>>()
 
                 compilationsToInclude.forEach { compilation ->
@@ -258,24 +258,24 @@ internal fun Dependency.toModuleDependency(
     )
 }
 
-private fun BasicKotlinModule.fragmentByName(name: String) =
+private fun KpmBasicModule.fragmentByName(name: String) =
     fragments.single { it.fragmentName == name }
 
 class CachingModuleVariantResolver(private val actualResolver: ModuleVariantResolver) : ModuleVariantResolver {
-    private val resultCacheByRequestingVariant: MutableMap<org.jetbrains.kotlin.project.model.KpmVariant, MutableMap<KotlinModule, VariantResolution>> = mutableMapOf()
+    private val resultCacheByRequestingVariant: MutableMap<org.jetbrains.kotlin.project.model.KpmVariant, MutableMap<KpmModule, VariantResolution>> = mutableMapOf()
 
-    override fun getChosenVariant(requestingVariant: org.jetbrains.kotlin.project.model.KpmVariant, dependencyModule: KotlinModule): VariantResolution {
+    override fun getChosenVariant(requestingVariant: org.jetbrains.kotlin.project.model.KpmVariant, dependencyModule: KpmModule): VariantResolution {
         val resultCache = resultCacheByRequestingVariant.getOrPut(requestingVariant) { mutableMapOf() }
         return resultCache.getOrPut(dependencyModule) { actualResolver.getChosenVariant(requestingVariant, dependencyModule) }
     }
 }
 
 class GradleModuleVariantResolver : ModuleVariantResolver {
-    override fun getChosenVariant(requestingVariant: org.jetbrains.kotlin.project.model.KpmVariant, dependencyModule: KotlinModule): VariantResolution {
+    override fun getChosenVariant(requestingVariant: org.jetbrains.kotlin.project.model.KpmVariant, dependencyModule: KpmModule): VariantResolution {
         // TODO maybe improve this behavior? Currently it contradicts dependency resolution in that it may return a chosen variant for an
         //  unrequested dependency. This workaround is needed for synthetic modules which were not produced from module metadata, so maybe
         //  those modules should be marked somehow
-        if (dependencyModule is ExternalPlainKotlinModule) {
+        if (dependencyModule is KpmExternalPlainModule) {
             return VariantResolution.fromMatchingVariants(
                 requestingVariant,
                 dependencyModule,
@@ -300,7 +300,7 @@ class GradleModuleVariantResolver : ModuleVariantResolver {
         // FIXME check composite builds, it's likely that resolvedVariantProvider fails on them?
         val resolvedGradleVariantName = resolvedVariantProvider.getResolvedVariantName(dependencyModuleId, compileClasspath)
         val kotlinVariantName = when (dependencyModule) {
-            is KotlinGradleModule -> {
+            is KpmGradleModule -> {
                 dependencyModule.variants.singleOrNull { resolvedGradleVariantName in it.gradleVariantNames }?.name
                     ?: return VariantResolution.Unknown(requestingVariant, dependencyModule)
             }

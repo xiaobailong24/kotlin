@@ -13,9 +13,9 @@ val KotlinFragmentModuleCapability = FragmentCapabilities<KpmGradleFragment> {
     capability(fragment.containingModule.moduleCapability ?: return@FragmentCapabilities)
 }
 
-internal fun setModuleCapability(configuration: Configuration, module: KotlinGradleModule) {
+internal fun setModuleCapability(configuration: Configuration, module: KpmGradleModule) {
     configuration.outgoing.capability(module.moduleCapability ?: return)
 }
 
-internal val KotlinGradleModule.moduleCapability: Capability?
+internal val KpmGradleModule.moduleCapability: Capability?
     get() = if (moduleClassifier != null) ComputedCapability.fromModule(this) else null

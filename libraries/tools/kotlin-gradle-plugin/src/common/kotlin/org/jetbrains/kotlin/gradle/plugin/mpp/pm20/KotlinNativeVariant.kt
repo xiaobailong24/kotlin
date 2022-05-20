@@ -12,10 +12,9 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeCompileOptions
 import org.jetbrains.kotlin.gradle.plugin.mpp.publishedConfigurationName
 import org.jetbrains.kotlin.konan.target.KonanTarget
-import javax.inject.Inject
 
 abstract class KpmNativeVariantInternal(
-    containingModule: KotlinGradleModule,
+    containingModule: KpmGradleModule,
     fragmentName: String,
     val konanTarget: KonanTarget,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations,
@@ -48,7 +47,7 @@ class KotlinNativeVariantConstructor<T : KpmNativeVariantInternal>(
     val konanTarget: KonanTarget,
     val variantClass: Class<T>,
     private val constructor: (
-        containingModule: KotlinGradleModule,
+        containingModule: KpmGradleModule,
         fragmentName: String,
         dependencyConfigurations: KotlinFragmentDependencyConfigurations,
         compileDependencyConfiguration: Configuration,
@@ -57,7 +56,7 @@ class KotlinNativeVariantConstructor<T : KpmNativeVariantInternal>(
     ) -> T
 ) {
     operator fun invoke(
-        containingModule: KotlinGradleModule,
+        containingModule: KpmGradleModule,
         fragmentName: String,
         dependencyConfigurations: KotlinFragmentDependencyConfigurations,
         compileDependencyConfiguration: Configuration,

@@ -5,15 +5,15 @@
 
 package org.jetbrains.kotlin.project.model.utils
 
-import org.jetbrains.kotlin.project.model.KotlinModule
+import org.jetbrains.kotlin.project.model.KpmModule
 import org.jetbrains.kotlin.project.model.KpmFragment
 import org.jetbrains.kotlin.project.model.KpmVariant
 import org.jetbrains.kotlin.tooling.core.closure
 
-fun KotlinModule.variantsContainingFragment(fragment: KpmFragment): Iterable<KpmVariant> =
+fun KpmModule.variantsContainingFragment(fragment: KpmFragment): Iterable<KpmVariant> =
     variants.filter { variant -> fragment in variant.withRefinesClosure }
 
-fun KotlinModule.findRefiningFragments(fragment: KpmFragment): Iterable<KpmFragment> {
+fun KpmModule.findRefiningFragments(fragment: KpmFragment): Iterable<KpmFragment> {
     return fragment.closure { seedFragment ->
         fragments.filter { otherFragment -> seedFragment in otherFragment.declaredRefinesDependencies }
     }

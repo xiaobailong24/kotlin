@@ -8,11 +8,10 @@
 package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.FragmentNameDisambiguation
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.KotlinNameDisambiguation
 
 typealias KotlinCommonFragmentFactory = KotlinGradleFragmentFactory<KpmGradleFragmentInternal>
 
-fun KotlinCommonFragmentFactory(module: KotlinGradleModule): KotlinCommonFragmentFactory =
+fun KotlinCommonFragmentFactory(module: KpmGradleModule): KotlinCommonFragmentFactory =
     KotlinCommonFragmentFactory(KotlinCommonFragmentInstantiator(module))
 
 fun KotlinCommonFragmentFactory(
@@ -24,7 +23,7 @@ fun KotlinCommonFragmentFactory(
 )
 
 class KotlinCommonFragmentInstantiator(
-    private val module: KotlinGradleModule,
+    private val module: KpmGradleModule,
     private val dependencyConfigurationsFactory: KotlinFragmentDependencyConfigurationsFactory =
         DefaultKotlinFragmentDependencyConfigurationsFactory
 ) : KotlinGradleFragmentFactory.FragmentInstantiator<KpmGradleFragmentInternal> {

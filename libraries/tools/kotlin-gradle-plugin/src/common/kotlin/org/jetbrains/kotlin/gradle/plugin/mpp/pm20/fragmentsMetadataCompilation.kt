@@ -38,7 +38,7 @@ internal fun setupFragmentsMetadataForKpmModules(project: Project) {
     }
 }
 
-internal fun configureMetadataResolutionAndBuild(module: KotlinGradleModule) {
+internal fun configureMetadataResolutionAndBuild(module: KpmGradleModule) {
     val project = module.project
     createResolvableMetadataConfigurationForModule(module)
 
@@ -52,7 +52,7 @@ internal fun configureMetadataResolutionAndBuild(module: KotlinGradleModule) {
     generateAndExportProjectStructureMetadata(module)
 }
 
-internal fun configureMetadataExposure(module: KotlinGradleModule) {
+internal fun configureMetadataExposure(module: KpmGradleModule) {
     val project = module.project
     project.configurations.create(metadataElementsConfigurationName(module)).apply {
         isCanBeConsumed = false
@@ -83,14 +83,14 @@ internal fun configureMetadataExposure(module: KotlinGradleModule) {
     )
 }
 
-fun metadataElementsConfigurationName(module: KotlinGradleModule) =
+fun metadataElementsConfigurationName(module: KpmGradleModule) =
     module.disambiguateName("metadataElements")
 
-fun sourceElementsConfigurationName(module: KotlinGradleModule) =
+fun sourceElementsConfigurationName(module: KpmGradleModule) =
     module.disambiguateName("sourceElements")
 
 private fun generateAndExportProjectStructureMetadata(
-    module: KotlinGradleModule
+    module: KpmGradleModule
 ) {
     val project = module.project
     val projectStructureMetadata = project.createGenerateProjectStructureMetadataTask(module)
@@ -105,7 +105,7 @@ private fun generateAndExportProjectStructureMetadata(
     }
 }
 
-private fun createResolvableMetadataConfigurationForModule(module: KotlinGradleModule) {
+private fun createResolvableMetadataConfigurationForModule(module: KpmGradleModule) {
     val project = module.project
     project.configurations.create(module.resolvableMetadataConfigurationName).apply {
         isCanBeConsumed = false
@@ -121,7 +121,7 @@ private fun createResolvableMetadataConfigurationForModule(module: KotlinGradleM
 }
 
 private fun configureMetadataCompilationsAndCreateRegistry(
-    module: KotlinGradleModule,
+    module: KpmGradleModule,
     metadataCompilationRegistry: MetadataCompilationRegistry
 ) {
     val project = module.project
@@ -143,7 +143,7 @@ private fun configureMetadataCompilationsAndCreateRegistry(
 }
 
 private fun configureMetadataJarTask(
-    module: KotlinGradleModule,
+    module: KpmGradleModule,
     registry: MetadataCompilationRegistry
 ) {
     val project = module.project
@@ -169,7 +169,7 @@ private fun configureMetadataJarTask(
     }
 }
 
-internal fun metadataJarName(module: KotlinGradleModule) =
+internal fun metadataJarName(module: KpmGradleModule) =
     lowerCamelCaseName(module.moduleClassifier, KotlinMetadataTargetConfigurator.ALL_METADATA_JAR_NAME)
 
 private fun createCommonMetadataCompilation(

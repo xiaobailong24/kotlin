@@ -27,7 +27,7 @@ open class FragmentSourcesProvider {
     open fun getFragmentOwnSources(fragment: KpmGradleFragment): SourceRootsProvider =
         getSourcesFromFragmentsAsMap(listOf(fragment)).values.single()
 
-    open fun getAllFragmentSourcesAsMap(module: KotlinGradleModule): SourceRootsProvidersByFragment =
+    open fun getAllFragmentSourcesAsMap(module: KpmGradleModule): SourceRootsProvidersByFragment =
         getSourcesFromFragmentsAsMap(module.fragments)
 
     open fun getSourcesFromRefinesClosureAsMap(fragment: KpmGradleFragment): SourceRootsProvidersByFragment =

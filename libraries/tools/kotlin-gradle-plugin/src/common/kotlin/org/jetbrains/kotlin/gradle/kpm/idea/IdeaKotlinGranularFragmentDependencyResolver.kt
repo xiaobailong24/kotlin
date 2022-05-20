@@ -9,7 +9,7 @@ import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.ChooseVisibleSourceSets
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.FragmentGranularMetadataResolverFactory
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleFragment
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinGradleModule.Companion.moduleName
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleModule.Companion.moduleName
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.currentBuildId
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.toModuleDependency
 

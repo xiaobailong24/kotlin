@@ -20,7 +20,7 @@ interface ModuleVariantResolver {
      * In this case it should return [VariantResolution.Unknown], and the caller (which might be an aggregating [ModuleVariantResolver])
      * may consult other sources to get the variant match.
      */
-    fun getChosenVariant(requestingVariant: KpmVariant, dependencyModule: KotlinModule): VariantResolution
+    fun getChosenVariant(requestingVariant: KpmVariant, dependencyModule: KpmModule): VariantResolution
 }
 
 /**
@@ -29,12 +29,12 @@ interface ModuleVariantResolver {
  */
 sealed class VariantResolution(
     val requestingVariant: KpmVariant,
-    val dependencyModule: KotlinModule
+    val dependencyModule: KpmModule
 ) {
     companion object {
         fun fromMatchingVariants(
             requestingVariant: KpmVariant,
-            dependencyModule: KotlinModule,
+            dependencyModule: KpmModule,
             matchingVariants: Collection<KpmVariant>
         ) = when (matchingVariants.size) {
             0 -> NoVariantMatch(requestingVariant, dependencyModule)
@@ -56,19 +56,19 @@ sealed class VariantResolution(
      */
     class VariantMatch(
         requestingVariant: KpmVariant,
-        dependencyModule: KotlinModule,
+        dependencyModule: KpmModule,
         val chosenVariant: KpmVariant
     ) : VariantResolution(requestingVariant, dependencyModule)
 
     // TODO: think about restricting calls with the type system to avoid partial functions in resolvers?
-    class Unknown(requestingVariant: KpmVariant, dependencyModule: KotlinModule) :
+    class Unknown(requestingVariant: KpmVariant, dependencyModule: KpmModule) :
         VariantResolution(requestingVariant, dependencyModule)
 
     /**
      * Returned when the resolver detects that the [requestingVariant] does not depend on [dependencyModule] and therefore should not get
      * any variant of that module at all.
      */
-    class NotRequested(requestingVariant: KpmVariant, dependencyModule: KotlinModule) :
+    class NotRequested(requestingVariant: KpmVariant, dependencyModule: KpmModule) :
         VariantResolution(requestingVariant, dependencyModule)
 
     /**
@@ -77,7 +77,7 @@ sealed class VariantResolution(
      */
     class NoVariantMatch(
         requestingVariant: KpmVariant,
-        dependencyModule: KotlinModule
+        dependencyModule: KpmModule
     ) : VariantResolution(requestingVariant, dependencyModule)
 
     /**
@@ -86,7 +86,7 @@ sealed class VariantResolution(
      */
     class AmbiguousVariants(
         requestingVariant: KpmVariant,
-        dependencyModule: KotlinModule,
+        dependencyModule: KpmModule,
         val matchingVariants: Iterable<KpmVariant>
     ) : VariantResolution(requestingVariant, dependencyModule)
 }

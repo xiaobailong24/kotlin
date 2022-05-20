@@ -33,7 +33,7 @@ interface KotlinCommonFragmentMetadataCompilationData : KotlinMetadataCompilatio
 internal abstract class AbstractKotlinFragmentMetadataCompilationData<T : KotlinCommonOptions>(
     final override val project: Project,
     val fragment: KpmGradleFragment,
-    private val module: KotlinGradleModule,
+    private val module: KpmGradleModule,
     private val compileAllTask: TaskProvider<DefaultTask>,
     val metadataCompilationRegistry: MetadataCompilationRegistry,
     private val resolvedMetadataFiles: Lazy<Iterable<ResolvedMetadataFilesProvider>>
@@ -107,7 +107,7 @@ internal abstract class AbstractKotlinFragmentMetadataCompilationData<T : Kotlin
 internal open class KotlinCommonFragmentMetadataCompilationDataImpl(
     project: Project,
     fragment: KpmGradleFragment,
-    module: KotlinGradleModule,
+    module: KpmGradleModule,
     compileAllTask: TaskProvider<DefaultTask>,
     metadataCompilationRegistry: MetadataCompilationRegistry,
     resolvedMetadataFiles: Lazy<Iterable<ResolvedMetadataFilesProvider>>
@@ -144,7 +144,7 @@ internal fun KpmGradleFragment.isNativeHostSpecific(): Boolean =
 internal open class KotlinNativeFragmentMetadataCompilationDataImpl(
     project: Project,
     fragment: KpmGradleFragment,
-    module: KotlinGradleModule,
+    module: KpmGradleModule,
     compileAllTask: TaskProvider<DefaultTask>,
     metadataCompilationRegistry: MetadataCompilationRegistry,
     resolvedMetadataFiles: Lazy<Iterable<ResolvedMetadataFilesProvider>>

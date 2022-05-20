@@ -23,7 +23,7 @@ val KotlinPm20ProjectExtension.ideaKotlinProjectModelBuilder: IdeaKotlinProjectM
     get() = this.ideaKotlinProjectModelBuilder
 
 @ExternalVariantApi
-fun KotlinGradleModule.createExternalJvmVariant(
+fun KpmGradleModule.createExternalJvmVariant(
     name: String,
     config: KotlinJvmVariantConfig
 ): KpmJvmVariant {

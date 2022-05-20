@@ -9,21 +9,21 @@ package org.jetbrains.kotlin.project.model
 // TODO think about state management: unresolved -> (known dependency graph?) ... -> completely resolved
 //      it seems to be important to learn whether or not the model is final
 interface ModuleDependencyResolver {
-    fun resolveDependency(requestingModule: KotlinModule, moduleDependency: KotlinModuleDependency): KotlinModule?
+    fun resolveDependency(requestingModule: KpmModule, moduleDependency: KotlinModuleDependency): KpmModule?
 }
 
 interface KotlinDependencyGraphResolver {
-    fun resolveDependencyGraph(requestingModule: KotlinModule): DependencyGraphResolution
+    fun resolveDependencyGraph(requestingModule: KpmModule): DependencyGraphResolution
 }
 
-sealed class DependencyGraphResolution(open val requestingModule: KotlinModule) {
-    class Unknown(requestingModule: KotlinModule) : DependencyGraphResolution(requestingModule)
-    open class DependencyGraph(requestingModule: KotlinModule, open val root: DependencyGraphNode): DependencyGraphResolution(requestingModule)
+sealed class DependencyGraphResolution(open val requestingModule: KpmModule) {
+    class Unknown(requestingModule: KpmModule) : DependencyGraphResolution(requestingModule)
+    open class DependencyGraph(requestingModule: KpmModule, open val root: DependencyGraphNode): DependencyGraphResolution(requestingModule)
 }
 
 // TODO: should this be a single graph for all dependency scopes as well, not just for all fragments?
 open class DependencyGraphNode(
-    open val module: KotlinModule,
+    open val module: KpmModule,
     open val dependenciesByFragment: Map<KpmFragment, Iterable<DependencyGraphNode>>
 ) {
     override fun toString(): String = "node ${module}"

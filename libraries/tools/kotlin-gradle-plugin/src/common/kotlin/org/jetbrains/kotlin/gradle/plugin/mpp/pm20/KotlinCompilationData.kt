@@ -54,7 +54,7 @@ interface KotlinVariantCompilationDataInternal<T : KotlinCommonOptions> : Kotlin
     override val moduleName: String
         get() = // TODO accurate module names that don't rely on all variants having a main counterpart
             owner.containingModule.project.kpmModules
-                .getByName(KotlinGradleModule.MAIN_MODULE_NAME).variants.findByName(owner.name)?.ownModuleName() ?: ownModuleName
+                .getByName(KpmGradleModule.MAIN_MODULE_NAME).variants.findByName(owner.name)?.ownModuleName() ?: ownModuleName
 
     override val ownModuleName: String
         get() = owner.ownModuleName()
@@ -68,7 +68,7 @@ interface KotlinVariantCompilationDataInternal<T : KotlinCommonOptions> : Kotlin
             ((dependencyGraphResolver.resolveDependencyGraph(owner.containingModule) as? GradleDependencyGraph)
                 ?: error("Failed to resolve dependencies of ${owner.containingModule}"))
                 .allDependencyModules
-                .filterIsInstance<KotlinGradleModule>()
+                .filterIsInstance<KpmGradleModule>()
                 .filter { dependencyModule ->
                     // the module comes from the same Gradle project // todo: extend to other friends once supported
                     dependencyModule.project == owner.containingModule.project
@@ -84,5 +84,5 @@ interface KotlinVariantCompilationDataInternal<T : KotlinCommonOptions> : Kotlin
 
 fun KotlinCompilationData<*>.isMainCompilationData(): Boolean = when (this) {
     is KotlinCompilation<*> -> isMain()
-    else -> compilationPurpose == KotlinGradleModule.MAIN_MODULE_NAME
+    else -> compilationPurpose == KpmGradleModule.MAIN_MODULE_NAME
 }

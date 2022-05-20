@@ -15,12 +15,12 @@ import org.jetbrains.kotlin.gradle.plugin.sources.KotlinDependencyScope
 import org.jetbrains.kotlin.project.model.*
 
 internal fun resolvableMetadataConfiguration(
-    module: KotlinGradleModule
+    module: KpmGradleModule
 ) = module.project.configurations.getByName(module.resolvableMetadataConfigurationName)
 
-internal fun configurationToResolveMetadataDependencies(project: Project, requestingModule: KotlinModule): Configuration =
+internal fun configurationToResolveMetadataDependencies(project: Project, requestingModule: KpmModule): Configuration =
     when {
-        project.hasKpmModel -> resolvableMetadataConfiguration(requestingModule as KotlinGradleModule)
+        project.hasKpmModel -> resolvableMetadataConfiguration(requestingModule as KpmGradleModule)
         else -> resolvableMetadataConfiguration(
             project,
             project.kotlinExtension.sourceSets, // take dependencies from all source sets; TODO introduce consistency scopes?
@@ -33,36 +33,36 @@ class GradleKotlinDependencyGraphResolver(
     private val moduleResolver: ModuleDependencyResolver
 ) : KotlinDependencyGraphResolver {
 
-    private fun configurationToResolve(requestingModule: KotlinGradleModule): Configuration =
+    private fun configurationToResolve(requestingModule: KpmGradleModule): Configuration =
         configurationToResolveMetadataDependencies(requestingModule.project, requestingModule)
 
-    override fun resolveDependencyGraph(requestingModule: KotlinModule): DependencyGraphResolution {
-        if (requestingModule !is KotlinGradleModule)
+    override fun resolveDependencyGraph(requestingModule: KpmModule): DependencyGraphResolution {
+        if (requestingModule !is KpmGradleModule)
             return DependencyGraphResolution.Unknown(requestingModule)
         return resolveAsGraph(requestingModule)
     }
 
-    private fun resolveAsGraph(requestingModule: KotlinGradleModule): GradleDependencyGraph {
+    private fun resolveAsGraph(requestingModule: KpmGradleModule): GradleDependencyGraph {
         val nodeByModuleId = mutableMapOf<KpmModuleIdentifier, GradleDependencyGraphNode>()
 
-        fun getKotlinModuleFromComponentResult(component: ResolvedComponentResult): KotlinModule =
+        fun getKotlinModuleFromComponentResult(component: ResolvedComponentResult): KpmModule =
             moduleResolver.resolveDependency(requestingModule, component.toModuleDependency())
                 ?: buildSyntheticPlainModule(
                     component,
                     component.variants.singleOrNull()?.displayName ?: "default",
                 )
 
-        fun nodeFromModule(componentResult: ResolvedComponentResult, kotlinModule: KotlinModule): GradleDependencyGraphNode {
-            val id = kotlinModule.moduleIdentifier
+        fun nodeFromModule(componentResult: ResolvedComponentResult, kpmModule: KpmModule): GradleDependencyGraphNode {
+            val id = kpmModule.moduleIdentifier
             return nodeByModuleId.getOrPut(id) {
                 val metadataSourceComponent =
-                    (kotlinModule as? ExternalImportedKotlinModule)
+                    (kpmModule as? KpmExternalImportedModule)
                         ?.takeIf { it.hasLegacyMetadataModule }
                         ?.let { (componentResult.dependencies.singleOrNull() as? ResolvedDependencyResult)?.selected }
                         ?: componentResult
 
                 val dependenciesRequestedByModule =
-                    kotlinModule.fragments.flatMap { fragment -> fragment.declaredModuleDependencies.map { it.moduleIdentifier } }.toSet()
+                    kpmModule.fragments.flatMap { fragment -> fragment.declaredModuleDependencies.map { it.moduleIdentifier } }.toSet()
 
                 val resolvedComponentDependencies = metadataSourceComponent.dependencies
                     .filterIsInstance<ResolvedDependencyResult>()
@@ -72,7 +72,7 @@ class GradleKotlinDependencyGraphResolver(
                     .flatMap { dependency -> dependency.requested.toModuleIdentifiers().map { id -> id to dependency.selected } }
                     .toMap()
 
-                val fragmentDependencies = kotlinModule.fragments.associateWith { it.declaredModuleDependencies }
+                val fragmentDependencies = kpmModule.fragments.associateWith { it.declaredModuleDependencies }
 
                 val nodeDependenciesMap = fragmentDependencies.mapValues { (_, deps) ->
                     deps.mapNotNull { resolvedComponentDependencies[it.moduleIdentifier] }.map {
@@ -82,7 +82,7 @@ class GradleKotlinDependencyGraphResolver(
                 }
 
                 GradleDependencyGraphNode(
-                    kotlinModule,
+                    kpmModule,
                     componentResult,
                     metadataSourceComponent,
                     nodeDependenciesMap
@@ -98,7 +98,7 @@ class GradleKotlinDependencyGraphResolver(
 }
 
 class GradleDependencyGraphNode(
-    override val module: KotlinModule,
+    override val module: KpmModule,
     val selectedComponent: ResolvedComponentResult,
     /** If the Kotlin module description was provided by a different component, such as with legacy publishing layout using *-metadata
      * modules, then this property points to the other component. */
@@ -107,7 +107,7 @@ class GradleDependencyGraphNode(
 ) : DependencyGraphNode(module, dependenciesByFragment)
 
 class GradleDependencyGraph(
-    override val requestingModule: KotlinGradleModule,
+    override val requestingModule: KpmGradleModule,
     override val root: GradleDependencyGraphNode
 ) : DependencyGraphResolution.DependencyGraph(requestingModule, root)
 

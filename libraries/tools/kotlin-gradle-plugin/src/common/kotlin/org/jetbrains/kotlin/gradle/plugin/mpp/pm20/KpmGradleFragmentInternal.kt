@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.project.model.KotlinModuleDependency
 import javax.inject.Inject
 
 open class KpmGradleFragmentInternal @Inject constructor(
-    final override val containingModule: KotlinGradleModule,
+    final override val containingModule: KpmGradleModule,
     final override val fragmentName: String,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations
 ) : KpmGradleFragment,

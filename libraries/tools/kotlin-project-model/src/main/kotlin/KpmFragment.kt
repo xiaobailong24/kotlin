@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.tooling.core.withClosure
 import java.io.File
 
 interface KpmFragment {
-    val containingModule: KotlinModule
+    val containingModule: KpmModule
 
     val fragmentName: String
 
@@ -46,7 +46,7 @@ val KpmFragment.fragmentAttributeSets: Map<KotlinAttributeKey, Set<String>>
 val KpmVariant.platform get() = variantAttributes[KotlinPlatformTypeAttribute]
 
 open class KpmBasicFragment(
-    override val containingModule: KotlinModule,
+    override val containingModule: KpmModule,
     override val fragmentName: String,
     override val languageSettings: LanguageSettings? = null
 ) : KpmFragment {

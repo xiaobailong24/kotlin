@@ -12,11 +12,11 @@ import org.gradle.api.NamedDomainObjectSet
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.plugin.HasKotlinDependencies
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
-import org.jetbrains.kotlin.project.model.KotlinModule
+import org.jetbrains.kotlin.project.model.KpmModule
 import org.jetbrains.kotlin.project.model.KpmModuleIdentifier
 import org.jetbrains.kotlin.project.model.KpmCompilerPlugin
 
-interface KotlinGradleModule : KotlinModule, Named, HasKotlinDependencies {
+interface KpmGradleModule : KpmModule, Named, HasKotlinDependencies {
     val project: Project
     val moduleClassifier: String?
 

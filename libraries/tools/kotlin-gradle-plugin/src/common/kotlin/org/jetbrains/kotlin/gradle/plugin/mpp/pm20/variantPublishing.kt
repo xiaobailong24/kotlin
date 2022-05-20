@@ -5,7 +5,6 @@
 
 package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
-import com.android.build.gradle.internal.publishing.AndroidArtifacts
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ModuleDependency
@@ -33,14 +32,14 @@ import javax.inject.Inject
 
 interface PlatformPublicationToMavenRequest {
     val componentName: String
-    val fromModule: KotlinGradleModule
+    val fromModule: KpmGradleModule
     val publicationHolder: SingleMavenPublishedModuleHolder
     val variantPublicationRequests: Iterable<VariantPublicationRequest>
 }
 
 data class BasicPlatformPublicationToMavenRequest(
     override val componentName: String,
-    override val fromModule: KotlinGradleModule,
+    override val fromModule: KpmGradleModule,
     override val publicationHolder: SingleMavenPublishedModuleHolder,
     override val variantPublicationRequests: Iterable<VariantPublicationRequest>
 ) : PlatformPublicationToMavenRequest {
@@ -205,7 +204,7 @@ open class VariantPublishingConfigurator @Inject constructor(
 
     protected open fun registerPlatformVariantsInRootModule(
         publishedModuleHolder: SingleMavenPublishedModuleHolder,
-        kotlinModule: KotlinGradleModule,
+        kotlinModule: KpmGradleModule,
         variantRequests: Iterable<VariantPublicationRequest>
     ) {
         val platformModuleDependencyProvider = project.provider {

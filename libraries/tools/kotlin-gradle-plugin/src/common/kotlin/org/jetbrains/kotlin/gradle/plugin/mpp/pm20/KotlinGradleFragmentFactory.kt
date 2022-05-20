@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinGradleFragmentFactory.F
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinGradleFragmentFactory.FragmentInstantiator
 
 /**
- * Factory used by [KotlinGradleModule] to polymorphic-ally create fragments/variants.
+ * Factory used by [KpmGradleModule] to polymorphic-ally create fragments/variants.
  * Fragments are created in two stages with this factory:
  *
  * [FragmentInstantiator]:

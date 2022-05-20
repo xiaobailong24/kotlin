@@ -26,12 +26,12 @@ internal typealias ConfigurationContext = KotlinGradleFragmentConfigurationConte
 
 interface KotlinGradleFragmentConfigurationContext : KotlinNameDisambiguation {
     val project: Project get() = module.project
-    val module: KotlinGradleModule
+    val module: KpmGradleModule
     val dependencies: KotlinFragmentDependencyConfigurations
 }
 
 internal class KotlinGradleFragmentConfigurationContextImpl(
-    override val module: KotlinGradleModule,
+    override val module: KpmGradleModule,
     override val dependencies: KotlinFragmentDependencyConfigurations,
     names: KotlinNameDisambiguation
 ) : KotlinGradleFragmentConfigurationContext, KotlinNameDisambiguation by names

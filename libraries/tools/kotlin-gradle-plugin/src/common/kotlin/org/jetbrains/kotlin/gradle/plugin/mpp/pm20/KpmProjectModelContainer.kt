@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.gradle.plugin.PropertiesProvider
 import org.jetbrains.kotlin.project.model.KpmModuleIdentifier
 
 internal interface KpmGradleProjectModelContainer {
-    val modules: NamedDomainObjectContainer<KotlinGradleModule>
+    val modules: NamedDomainObjectContainer<KpmGradleModule>
     val metadataCompilationRegistryByModuleId: MutableMap<KpmModuleIdentifier, MetadataCompilationRegistry>
     val rootPublication: MavenPublication?
 }
@@ -32,14 +32,14 @@ internal val Project.kpmModelContainerOrNull: KpmGradleProjectModelContainer?
 internal val Project.hasKpmModel: Boolean
     get() = kpmModelContainerOrNull != null
 
-internal val Project.kpmModules: NamedDomainObjectContainer<KotlinGradleModule>
+internal val Project.kpmModules: NamedDomainObjectContainer<KpmGradleModule>
     get() = kpmModelContainer.modules
 
 internal val Project.metadataCompilationRegistryByModuleId: MutableMap<KpmModuleIdentifier, MetadataCompilationRegistry>
     get() = kpmModelContainer.metadataCompilationRegistryByModuleId
 
 internal class DefaultKpmGradleProjectModelContainer(
-    override val modules: NamedDomainObjectContainer<KotlinGradleModule>,
+    override val modules: NamedDomainObjectContainer<KpmGradleModule>,
     override val metadataCompilationRegistryByModuleId: MutableMap<KpmModuleIdentifier, MetadataCompilationRegistry>,
 ) : KpmGradleProjectModelContainer {
     override var rootPublication: MavenPublication? = null
@@ -49,9 +49,9 @@ internal class DefaultKpmGradleProjectModelContainer(
             return DefaultKpmGradleProjectModelContainer(createKpmModulesContainer(project), mutableMapOf())
         }
 
-        private fun createKpmModulesContainer(project: Project): NamedDomainObjectContainer<KotlinGradleModule> =
+        private fun createKpmModulesContainer(project: Project): NamedDomainObjectContainer<KpmGradleModule> =
             project.objects.domainObjectContainer(
-                KotlinGradleModule::class.java,
+                KpmGradleModule::class.java,
                 KotlinGradleModuleFactory(project)
             )
     }

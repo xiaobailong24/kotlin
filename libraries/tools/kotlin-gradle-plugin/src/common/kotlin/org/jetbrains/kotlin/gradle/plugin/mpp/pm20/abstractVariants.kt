@@ -15,14 +15,13 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultKotlinCompilationOutput
 import org.jetbrains.kotlin.gradle.plugin.mpp.MavenPublicationCoordinatesProvider
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.ComputedCapability
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.disambiguateName
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.newDependencyFilesHolder
 import org.jetbrains.kotlin.gradle.plugin.mpp.publishedConfigurationName
 import org.jetbrains.kotlin.gradle.utils.dashSeparatedName
 import org.jetbrains.kotlin.project.model.KotlinAttributeKey
 import org.jetbrains.kotlin.project.model.KotlinPlatformTypeAttribute
 
 abstract class KpmGradleVariantInternal(
-    containingModule: KotlinGradleModule,
+    containingModule: KpmGradleModule,
     fragmentName: String,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations,
     final override val compileDependenciesConfiguration: Configuration,
@@ -51,7 +50,7 @@ abstract class KpmGradleVariantInternal(
 }
 
 class DefaultSingleMavenPublishedModuleHolder(
-    private var module: KotlinGradleModule, override val defaultPublishedModuleSuffix: String?
+    private var module: KpmGradleModule, override val defaultPublishedModuleSuffix: String?
 ) : SingleMavenPublishedModuleHolder {
     private val project get() = module.project
 
@@ -84,7 +83,7 @@ internal val KpmGradleVariant.defaultSourceArtifactTaskName: String
     get() = disambiguateName("sourcesJar")
 
 abstract class KpmGradleVariantWithRuntimeInternal(
-    containingModule: KotlinGradleModule,
+    containingModule: KpmGradleModule,
     fragmentName: String,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
@@ -106,11 +105,11 @@ abstract class KpmGradleVariantWithRuntimeInternal(
         project.files(listOf({ compilationOutputs.allOutputs }, { runtimeDependencyFiles }))
 }
 
-private fun defaultModuleSuffix(module: KotlinGradleModule, variantName: String): String =
+private fun defaultModuleSuffix(module: KpmGradleModule, variantName: String): String =
     dashSeparatedName(variantName, module.moduleClassifier)
 
 abstract class KpmGradlePublishedVariantWithRuntime(
-    containingModule: KotlinGradleModule, fragmentName: String,
+    containingModule: KpmGradleModule, fragmentName: String,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,

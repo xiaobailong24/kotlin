@@ -10,23 +10,23 @@ import org.jetbrains.kotlin.project.model.utils.variantsContainingFragment
 interface ModuleFragmentsResolver {
     fun getChosenFragments(
         requestingFragment: KpmFragment,
-        dependencyModule: KotlinModule
+        dependencyModule: KpmModule
     ): FragmentResolution
 }
 
-sealed class FragmentResolution(val requestingFragment: KpmFragment, val dependencyModule: KotlinModule) {
+sealed class FragmentResolution(val requestingFragment: KpmFragment, val dependencyModule: KpmModule) {
     class ChosenFragments(
         requestingFragment: KpmFragment,
-        dependencyModule: KotlinModule,
+        dependencyModule: KpmModule,
         val visibleFragments: Iterable<KpmFragment>,
         val variantResolutions: Iterable<VariantResolution>
     ) : FragmentResolution(requestingFragment, dependencyModule)
 
-    class NotRequested(requestingFragment: KpmFragment, dependencyModule: KotlinModule) :
+    class NotRequested(requestingFragment: KpmFragment, dependencyModule: KpmModule) :
         FragmentResolution(requestingFragment, dependencyModule)
 
     // TODO: think about restricting calls with the type system to avoid partial functions in resolvers?
-    class Unknown(requestingFragment: KpmFragment, dependencyModule: KotlinModule) :
+    class Unknown(requestingFragment: KpmFragment, dependencyModule: KpmModule) :
         FragmentResolution(requestingFragment, dependencyModule)
 }
 
@@ -35,7 +35,7 @@ class DefaultModuleFragmentsResolver(
 ) : ModuleFragmentsResolver {
     override fun getChosenFragments(
         requestingFragment: KpmFragment,
-        dependencyModule: KotlinModule
+        dependencyModule: KpmModule
     ): FragmentResolution {
         val dependingModule = requestingFragment.containingModule
         val containingVariants = dependingModule.variantsContainingFragment(requestingFragment)

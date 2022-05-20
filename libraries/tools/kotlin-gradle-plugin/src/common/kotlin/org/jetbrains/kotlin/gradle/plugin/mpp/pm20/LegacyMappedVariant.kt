@@ -35,7 +35,7 @@ internal open class LegacyMappedVariant(
     private val fragmentForDefaultSourceSet =
         (compilation.defaultSourceSet as FragmentMappedKotlinSourceSet).underlyingFragment
 
-    override val containingModule: KotlinGradleModule get() = fragmentForDefaultSourceSet.containingModule
+    override val containingModule: KpmGradleModule get() = fragmentForDefaultSourceSet.containingModule
 
     override val platformType: KotlinPlatformType
         get() = compilation.platformType
@@ -190,7 +190,7 @@ internal fun mapTargetCompilationsToKpmVariants(target: AbstractKotlinTarget, pu
         }
 
     whenPublicationShouldRegister {
-        val mainModule = target.project.kpmModules.getByName(KotlinGradleModule.MAIN_MODULE_NAME)
+        val mainModule = target.project.kpmModules.getByName(KpmGradleModule.MAIN_MODULE_NAME)
         target.kotlinComponents.forEach { kotlinComponent ->
             val moduleHolder = DefaultSingleMavenPublishedModuleHolder(
                 mainModule,

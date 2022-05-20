@@ -20,34 +20,34 @@ import org.jetbrains.kotlin.project.model.KpmVariant
 import java.util.*
 
 class CachingModuleDependencyResolver(private val actualResolver: ModuleDependencyResolver) : ModuleDependencyResolver {
-    private val cacheByRequestingModule = WeakHashMap<KotlinModule, MutableMap<KotlinModuleDependency, KotlinModule?>>()
+    private val cacheByRequestingModule = WeakHashMap<KpmModule, MutableMap<KotlinModuleDependency, KpmModule?>>()
 
-    private fun cacheForRequestingModule(requestingModule: KotlinModule) =
+    private fun cacheForRequestingModule(requestingModule: KpmModule) =
         cacheByRequestingModule.getOrPut(requestingModule) { mutableMapOf() }
 
-    override fun resolveDependency(requestingModule: KotlinModule, moduleDependency: KotlinModuleDependency): KotlinModule? =
+    override fun resolveDependency(requestingModule: KpmModule, moduleDependency: KotlinModuleDependency): KpmModule? =
         cacheForRequestingModule(requestingModule).getOrPut(moduleDependency) {
             actualResolver.resolveDependency(requestingModule, moduleDependency)
         }
 }
 
 open class GradleComponentResultCachingResolver {
-    private val cachedResultsByRequestingModule = mutableMapOf<KotlinGradleModule, Map<KpmModuleIdentifier, ResolvedComponentResult>>()
+    private val cachedResultsByRequestingModule = mutableMapOf<KpmGradleModule, Map<KpmModuleIdentifier, ResolvedComponentResult>>()
 
-    protected open fun configurationToResolve(requestingModule: KotlinGradleModule): Configuration =
+    protected open fun configurationToResolve(requestingModule: KpmGradleModule): Configuration =
         configurationToResolveMetadataDependencies(requestingModule.project, requestingModule)
 
-    protected open fun resolveDependencies(module: KotlinGradleModule): Map<KpmModuleIdentifier, ResolvedComponentResult> {
+    protected open fun resolveDependencies(module: KpmGradleModule): Map<KpmModuleIdentifier, ResolvedComponentResult> {
         val allComponents = configurationToResolve(module).incoming.resolutionResult.allComponents
         // FIXME handle multi-component results
         return allComponents.flatMap { component -> component.toModuleIdentifiers().map { it to component } }.toMap()
     }
 
-    private fun getResultsForModule(module: KotlinGradleModule): Map<KpmModuleIdentifier, ResolvedComponentResult> =
+    private fun getResultsForModule(module: KpmGradleModule): Map<KpmModuleIdentifier, ResolvedComponentResult> =
         cachedResultsByRequestingModule.getOrPut(module) { resolveDependencies(module) }
 
     fun resolveModuleDependencyAsComponentResult(
-        requestingModule: KotlinGradleModule,
+        requestingModule: KpmGradleModule,
         moduleDependency: KotlinModuleDependency
     ): ResolvedComponentResult? =
         getResultsForModule(requestingModule)[moduleDependency.moduleIdentifier]
@@ -68,8 +68,8 @@ class GradleModuleDependencyResolver(
     private val projectModuleBuilder: GradleProjectModuleBuilder
 ) : ModuleDependencyResolver {
 
-    override fun resolveDependency(requestingModule: KotlinModule, moduleDependency: KotlinModuleDependency): KotlinModule? {
-        require(requestingModule is KotlinGradleModule)
+    override fun resolveDependency(requestingModule: KpmModule, moduleDependency: KotlinModuleDependency): KpmModule? {
+        require(requestingModule is KpmGradleModule)
         val project = requestingModule.project
 
         val component = gradleComponentResultResolver.resolveModuleDependencyAsComponentResult(requestingModule, moduleDependency)
@@ -117,9 +117,9 @@ class GradleModuleDependencyResolver(
 internal fun buildSyntheticPlainModule(
     resolvedComponentResult: ResolvedComponentResult,
     singleVariantName: String,
-): ExternalPlainKotlinModule {
+): KpmExternalPlainModule {
     val moduleDependency = resolvedComponentResult.toModuleDependency()
-    return ExternalPlainKotlinModule(BasicKotlinModule(moduleDependency.moduleIdentifier).apply {
+    return KpmExternalPlainModule(KpmBasicModule(moduleDependency.moduleIdentifier).apply {
         KpmBasicVariant(this@apply, singleVariantName, DefaultLanguageSettingsBuilder()).apply {
             fragments.add(this)
             this.declaredModuleDependencies.addAll(
@@ -131,7 +131,7 @@ internal fun buildSyntheticPlainModule(
     })
 }
 
-internal class ExternalPlainKotlinModule(private val moduleData: BasicKotlinModule) : KotlinModule by moduleData {
+internal class KpmExternalPlainModule(private val moduleData: KpmBasicModule) : KpmModule by moduleData {
     override fun toString(): String = "external plain $moduleData"
 
     val singleVariant: KpmVariant
@@ -139,11 +139,11 @@ internal class ExternalPlainKotlinModule(private val moduleData: BasicKotlinModu
             ?: error("synthetic $moduleData was expected to have a single variant, got: ${moduleData.variants}")
 }
 
-internal class ExternalImportedKotlinModule(
-    private val moduleData: BasicKotlinModule,
+internal class KpmExternalImportedModule(
+    private val moduleData: KpmBasicModule,
     val projectStructureMetadata: KotlinProjectStructureMetadata,
     val hostSpecificFragments: Set<KpmFragment>
-) : KotlinModule by moduleData {
+) : KpmModule by moduleData {
     val hasLegacyMetadataModule = !projectStructureMetadata.isPublishedAsRoot
 
     override fun toString(): String = "imported $moduleData"
@@ -152,7 +152,7 @@ internal class ExternalImportedKotlinModule(
 private fun ModuleComponentIdentifier.toSingleModuleIdentifier(classifier: String? = null): KpmMavenModuleIdentifier =
     KpmMavenModuleIdentifier(moduleIdentifier.group, moduleIdentifier.name, classifier)
 
-internal fun ComponentIdentifier.matchesModule(module: KotlinModule): Boolean =
+internal fun ComponentIdentifier.matchesModule(module: KpmModule): Boolean =
     matchesModuleIdentifier(module.moduleIdentifier)
 
 internal fun ResolvedComponentResult.toModuleIdentifiers(): List<KpmModuleIdentifier> {

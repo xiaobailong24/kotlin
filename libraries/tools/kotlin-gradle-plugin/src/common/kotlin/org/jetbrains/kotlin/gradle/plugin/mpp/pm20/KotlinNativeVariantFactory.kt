@@ -10,7 +10,7 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.FragmentNameDisambiguation
 
 fun <T : KpmNativeVariantInternal> KotlinNativeVariantFactory(
-    module: KotlinGradleModule,
+    module: KpmGradleModule,
     constructor: KotlinNativeVariantConstructor<T>,
     config: KotlinNativeVariantConfig<T> = KotlinNativeVariantConfig()
 ) = KotlinGradleFragmentFactory(
@@ -47,7 +47,7 @@ data class KotlinNativeVariantConfig<T : KpmNativeVariantInternal>(
 )
 
 class KotlinNativeVariantInstantiator<T : KpmNativeVariantInternal>(
-    private val module: KotlinGradleModule,
+    private val module: KpmGradleModule,
     private val kotlinNativeVariantConstructor: KotlinNativeVariantConstructor<T>,
     private val config: KotlinNativeVariantConfig<T>
 

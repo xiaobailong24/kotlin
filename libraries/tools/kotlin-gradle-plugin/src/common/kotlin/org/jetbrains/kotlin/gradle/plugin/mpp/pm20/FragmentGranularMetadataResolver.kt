@@ -74,7 +74,7 @@ internal class FragmentGranularMetadataResolver(
             val resolvedComponentResult = dependencyNode.selectedComponent
             val isResolvedAsProject = resolvedComponentResult.toProjectOrNull(project)
             val result = when (dependencyModule) {
-                is ExternalPlainKotlinModule -> {
+                is KpmExternalPlainModule -> {
                     MetadataDependencyResolution.KeepOriginalDependency(resolvedComponentResult, isResolvedAsProject)
                 }
                 else -> run {
@@ -96,7 +96,7 @@ internal class FragmentGranularMetadataResolver(
                                 "the presence of a proper Kotlin Module"
                     )
 
-                    val projectStructureMetadata = (dependencyModule as? ExternalImportedKotlinModule)?.projectStructureMetadata
+                    val projectStructureMetadata = (dependencyModule as? KpmExternalImportedModule)?.projectStructureMetadata
                         ?: checkNotNull(projectStructureMetadataExtractor.getProjectStructureMetadata())
 
 
@@ -111,7 +111,7 @@ internal class FragmentGranularMetadataResolver(
                             projectStructureMetadata = projectStructureMetadata,
                             primaryArtifactFile = projectStructureMetadataExtractor.primaryArtifactFile,
                             hostSpecificArtifactsBySourceSet = if (
-                                dependencyModule is ExternalImportedKotlinModule && chosenFragments != null
+                                dependencyModule is KpmExternalImportedModule && chosenFragments != null
                             ) resolveHostSpecificMetadataArtifacts(dependencyModule, chosenFragments) else emptyMap(),
                         ).asMetadataProvider()
                     }
@@ -147,7 +147,7 @@ internal class FragmentGranularMetadataResolver(
     }
 
     private fun resolveHostSpecificMetadataArtifacts(
-        dependencyModule: ExternalImportedKotlinModule,
+        dependencyModule: KpmExternalImportedModule,
         chosenFragments: FragmentResolution.ChosenFragments,
     ): Map<String, File> {
         val visibleFragments = chosenFragments.visibleFragments

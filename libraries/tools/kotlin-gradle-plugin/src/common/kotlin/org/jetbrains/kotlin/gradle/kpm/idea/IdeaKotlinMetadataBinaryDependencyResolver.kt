@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.Choos
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.ChooseVisibleSourceSets.MetadataProvider.ProjectMetadataProvider
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.FragmentGranularMetadataResolverFactory
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleFragment
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinGradleModule.Companion.moduleName
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleModule.Companion.moduleName
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.toModuleDependency
 import org.jetbrains.kotlin.gradle.utils.withTemporaryDirectory
 

@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.gradle.kpm.external.external
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.*
 
-fun KotlinGradleModule.createKotlinAndroidVariant(androidVariant: BaseVariant) {
+fun KpmGradleModule.createKotlinAndroidVariant(androidVariant: BaseVariant) {
     val androidOutgoingArtifacts = FragmentArtifacts<KpmJvmVariant> {
         variants.create("classes") { variant ->
             variant.attributes.attribute(AndroidArtifacts.ARTIFACT_TYPE, AndroidArtifacts.ArtifactType.CLASSES_JAR.type)

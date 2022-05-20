@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.FragmentNameDisambiguati
 typealias KotlinJvmVariantFactory = KotlinGradleFragmentFactory<KpmJvmVariant>
 
 fun KotlinJvmVariantFactory(
-    module: KotlinGradleModule, config: KotlinJvmVariantConfig = KotlinJvmVariantConfig()
+    module: KpmGradleModule, config: KotlinJvmVariantConfig = KotlinJvmVariantConfig()
 ): KotlinJvmVariantFactory = KotlinJvmVariantFactory(
     KotlinJvmVariantInstantiator(module, config),
     KotlinJvmVariantConfigurator(config)
@@ -48,7 +48,7 @@ data class KotlinJvmVariantConfig(
 )
 
 class KotlinJvmVariantInstantiator internal constructor(
-    private val module: KotlinGradleModule,
+    private val module: KpmGradleModule,
     private val config: KotlinJvmVariantConfig
 ) : KotlinGradleFragmentFactory.FragmentInstantiator<KpmJvmVariant> {
 

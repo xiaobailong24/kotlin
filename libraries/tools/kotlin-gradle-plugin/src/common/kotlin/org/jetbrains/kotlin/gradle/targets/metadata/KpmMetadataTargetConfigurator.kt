@@ -39,7 +39,7 @@ internal class KpmMetadataTargetConfigurator(private val metadataTargetConfigura
 
     private fun configureTargetWithKpm(target: KotlinMetadataTarget) {
         target.project.whenEvaluated {
-            val mainModule = target.project.kpmModules.getByName(KotlinGradleModule.MAIN_MODULE_NAME)
+            val mainModule = target.project.kpmModules.getByName(KpmGradleModule.MAIN_MODULE_NAME)
             val metadataCompilations = target.project.metadataCompilationRegistryByModuleId.getValue(mainModule.moduleIdentifier)
             mainModule.fragments.forEach { fragment ->
                 val compilationData = metadataCompilations.getForFragmentOrNull(fragment) ?: return@forEach
