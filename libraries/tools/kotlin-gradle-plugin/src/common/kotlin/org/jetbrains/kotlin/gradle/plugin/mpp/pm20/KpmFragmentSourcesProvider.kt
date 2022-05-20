@@ -18,7 +18,7 @@ typealias SourceRootsProvidersByFragment = Map<KpmGradleFragment, SourceRootsPro
 /** Note: the API is [Provider]-based rather than FileCollection-based because FileCollection API erases the internal structure of the
  * file sets, and this internal structure is currently needed for correctly inferring Java source roots from the sources added to the
  * JVM compilations (it is important to pass sources in SourceDirectorySets) */
-open class FragmentSourcesProvider {
+open class KpmFragmentSourcesProvider {
     protected open fun getSourcesFromFragmentsAsMap(
         fragments: Iterable<KpmGradleFragment>
     ): SourceRootsProvidersByFragment =

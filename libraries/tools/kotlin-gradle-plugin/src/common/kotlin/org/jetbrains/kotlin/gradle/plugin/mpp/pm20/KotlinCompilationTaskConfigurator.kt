@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinTasksProvider
 open class KotlinCompilationTaskConfigurator(
     protected val project: Project
 ) {
-    open val fragmentSourcesProvider: FragmentSourcesProvider = FragmentSourcesProvider()
+    open val fragmentSourcesProvider: KpmFragmentSourcesProvider = KpmFragmentSourcesProvider()
 
     open fun getSourcesForFragmentCompilation(fragment: KpmGradleFragment): MultipleSourceRootsProvider =
         fragmentSourcesProvider.getSourcesFromRefinesClosure(fragment)

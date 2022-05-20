@@ -74,7 +74,7 @@ internal fun configureMetadataExposure(module: KpmGradleModule) {
     val sourcesArtifact = sourcesJarTaskNamed(
         module.disambiguateName("allSourcesJar"),
         project,
-        lazy { FragmentSourcesProvider().getAllFragmentSourcesAsMap(module).entries.associate { it.key.fragmentName to it.value.get() } },
+        lazy { KpmFragmentSourcesProvider().getAllFragmentSourcesAsMap(module).entries.associate { it.key.fragmentName to it.value.get() } },
         sourcesArtifactAppendix
     )
     DocumentationVariantConfigurator().createSourcesElementsConfiguration(

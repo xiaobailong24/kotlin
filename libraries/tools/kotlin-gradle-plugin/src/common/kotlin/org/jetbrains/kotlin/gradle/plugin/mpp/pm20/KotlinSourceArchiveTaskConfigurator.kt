@@ -19,7 +19,7 @@ object DefaultKotlinSourceArchiveTaskConfigurator : KotlinSourceArchiveTaskConfi
             taskName = variant.sourceArchiveTaskName,
             project = variant.project,
             sourceSets = lazy {
-                FragmentSourcesProvider().getSourcesFromRefinesClosureAsMap(variant)
+                KpmFragmentSourcesProvider().getSourcesFromRefinesClosureAsMap(variant)
                     .entries.associate { it.key.unambiguousNameInProject to it.value.get() }
             },
             artifactNameAppendix = variant.name
