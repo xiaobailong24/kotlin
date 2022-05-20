@@ -19,7 +19,7 @@ sealed class KpmFragmentResolution(val requestingFragment: KpmFragment, val depe
         requestingFragment: KpmFragment,
         dependencyModule: KpmModule,
         val visibleFragments: Iterable<KpmFragment>,
-        val variantResolutions: Iterable<VariantResolution>
+        val variantResolutions: Iterable<KpmVariantResolution>
     ) : KpmFragmentResolution(requestingFragment, dependencyModule)
 
     class NotRequested(requestingFragment: KpmFragment, dependencyModule: KpmModule) :
@@ -31,7 +31,7 @@ sealed class KpmFragmentResolution(val requestingFragment: KpmFragment, val depe
 }
 
 class KpmDefaultFragmentsResolver(
-    private val variantResolver: ModuleVariantResolver
+    private val variantResolver: KpmModuleVariantResolver
 ) : KpmFragmentsResolver {
     override fun getChosenFragments(
         requestingFragment: KpmFragment,
@@ -44,12 +44,12 @@ class KpmDefaultFragmentsResolver(
 
         // TODO: extend this to more cases with non-matching variants, revisit the behavior when no matching variant is found once we fix
         //       local publishing of libraries with missing host-specific parts (it breaks transitive dependencies now)
-        if (chosenVariants.none { it is VariantResolution.VariantMatch })
+        if (chosenVariants.none { it is KpmVariantResolution.KpmVariantMatch })
             return KpmFragmentResolution.NotRequested(requestingFragment, dependencyModule)
 
         val chosenFragments = chosenVariants.map { variantResolution ->
             when (variantResolution) {
-                is VariantResolution.VariantMatch -> variantResolution.chosenVariant.withRefinesClosure
+                is KpmVariantResolution.KpmVariantMatch -> variantResolution.chosenVariant.withRefinesClosure
                 else -> emptySet()
             }
         }

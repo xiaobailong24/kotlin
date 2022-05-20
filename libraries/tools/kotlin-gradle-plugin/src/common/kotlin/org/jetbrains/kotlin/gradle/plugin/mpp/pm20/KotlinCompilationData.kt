@@ -10,13 +10,13 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonOptions
 import org.jetbrains.kotlin.gradle.plugin.*
-import org.jetbrains.kotlin.gradle.plugin.mpp.GradleModuleVariantResolver
+import org.jetbrains.kotlin.gradle.plugin.mpp.KpmGradleModuleVariantResolver
 import org.jetbrains.kotlin.gradle.plugin.mpp.isMain
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.allDependencyModules
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.disambiguateName
 import org.jetbrains.kotlin.gradle.utils.filesProvider
 import org.jetbrains.kotlin.gradle.utils.lowerCamelCaseName
-import org.jetbrains.kotlin.project.model.VariantResolution
+import org.jetbrains.kotlin.project.model.KpmVariantResolution
 
 interface KotlinVariantCompilationDataInternal<T : KotlinCommonOptions> : KotlinVariantCompilationData<T> {
     override val compileKotlinTaskName: String
@@ -61,7 +61,7 @@ interface KotlinVariantCompilationDataInternal<T : KotlinCommonOptions> : Kotlin
 
     private fun resolveFriendVariants(): Iterable<KpmGradleVariant> {
         val moduleResolver = KpmGradleModuleDependencyResolver.getForCurrentBuild(project)
-        val variantResolver = GradleModuleVariantResolver.getForCurrentBuild(project)
+        val variantResolver = KpmGradleModuleVariantResolver.getForCurrentBuild(project)
         val dependencyGraphResolver = KpmGradleDependencyGraphResolver(moduleResolver)
 
         val friendModules =
@@ -77,7 +77,7 @@ interface KotlinVariantCompilationDataInternal<T : KotlinCommonOptions> : Kotlin
         return friendModules
             .map { friendModule -> variantResolver.getChosenVariant(owner, friendModule) }
             // also, important to check that the owner variant really requests this module:
-            .filterIsInstance<VariantResolution.VariantMatch>()
+            .filterIsInstance<KpmVariantResolution.KpmVariantMatch>()
             .mapNotNull { variantMatch -> variantMatch.chosenVariant as? KpmGradleVariant }
     }
 }

@@ -261,22 +261,22 @@ internal fun Dependency.toModuleDependency(
 private fun KpmBasicModule.fragmentByName(name: String) =
     fragments.single { it.fragmentName == name }
 
-class CachingModuleVariantResolver(private val actualResolver: ModuleVariantResolver) : ModuleVariantResolver {
-    private val resultCacheByRequestingVariant: MutableMap<org.jetbrains.kotlin.project.model.KpmVariant, MutableMap<KpmModule, VariantResolution>> = mutableMapOf()
+class KpmCachingModuleVariantResolver(private val actualResolver: KpmModuleVariantResolver) : KpmModuleVariantResolver {
+    private val resultCacheByRequestingVariant: MutableMap<KpmVariant, MutableMap<KpmModule, KpmVariantResolution>> = mutableMapOf()
 
-    override fun getChosenVariant(requestingVariant: org.jetbrains.kotlin.project.model.KpmVariant, dependencyModule: KpmModule): VariantResolution {
+    override fun getChosenVariant(requestingVariant: KpmVariant, dependencyModule: KpmModule): KpmVariantResolution {
         val resultCache = resultCacheByRequestingVariant.getOrPut(requestingVariant) { mutableMapOf() }
         return resultCache.getOrPut(dependencyModule) { actualResolver.getChosenVariant(requestingVariant, dependencyModule) }
     }
 }
 
-class GradleModuleVariantResolver : ModuleVariantResolver {
-    override fun getChosenVariant(requestingVariant: org.jetbrains.kotlin.project.model.KpmVariant, dependencyModule: KpmModule): VariantResolution {
+class KpmGradleModuleVariantResolver : KpmModuleVariantResolver {
+    override fun getChosenVariant(requestingVariant: KpmVariant, dependencyModule: KpmModule): KpmVariantResolution {
         // TODO maybe improve this behavior? Currently it contradicts dependency resolution in that it may return a chosen variant for an
         //  unrequested dependency. This workaround is needed for synthetic modules which were not produced from module metadata, so maybe
         //  those modules should be marked somehow
         if (dependencyModule is KpmExternalPlainModule) {
-            return VariantResolution.fromMatchingVariants(
+            return KpmVariantResolution.fromMatchingVariants(
                 requestingVariant,
                 dependencyModule,
                 listOf(dependencyModule.singleVariant)
@@ -284,7 +284,7 @@ class GradleModuleVariantResolver : ModuleVariantResolver {
         }
 
         if (requestingVariant !is KpmGradleVariant) {
-            return VariantResolution.Unknown(requestingVariant, dependencyModule)
+            return KpmVariantResolution.Unknown(requestingVariant, dependencyModule)
         }
 
         val module = requestingVariant.containingModule
@@ -302,7 +302,7 @@ class GradleModuleVariantResolver : ModuleVariantResolver {
         val kotlinVariantName = when (dependencyModule) {
             is KpmGradleModule -> {
                 dependencyModule.variants.singleOrNull { resolvedGradleVariantName in it.gradleVariantNames }?.name
-                    ?: return VariantResolution.Unknown(requestingVariant, dependencyModule)
+                    ?: return KpmVariantResolution.Unknown(requestingVariant, dependencyModule)
             }
             else -> resolvedGradleVariantName?.let(::kotlinVariantNameFromPublishedVariantName)
         }
@@ -310,12 +310,12 @@ class GradleModuleVariantResolver : ModuleVariantResolver {
         val resultVariant = dependencyModule.variants.singleOrNull { it.fragmentName == kotlinVariantName }
 
         return if (resultVariant == null)
-            VariantResolution.NoVariantMatch(requestingVariant, dependencyModule)
+            KpmVariantResolution.KpmNoVariantMatch(requestingVariant, dependencyModule)
         else
-            VariantResolution.VariantMatch(requestingVariant, dependencyModule, resultVariant)
+            KpmVariantResolution.KpmVariantMatch(requestingVariant, dependencyModule, resultVariant)
     }
 
-    private fun getCompileDependenciesConfigurationForVariant(project: Project, requestingVariant: org.jetbrains.kotlin.project.model.KpmVariant): Configuration =
+    private fun getCompileDependenciesConfigurationForVariant(project: Project, requestingVariant: KpmVariant): Configuration =
         when {
             project.hasKpmModel -> {
                 (requestingVariant as KpmGradleVariant).compileDependenciesConfiguration
@@ -342,10 +342,10 @@ class GradleModuleVariantResolver : ModuleVariantResolver {
         }
 
     companion object {
-        fun getForCurrentBuild(project: Project): ModuleVariantResolver {
+        fun getForCurrentBuild(project: Project): KpmModuleVariantResolver {
             val extraPropertyName = "org.jetbrains.kotlin.dependencyResolution.variantResolver.${project.getKotlinPluginVersion()}"
             return project.getOrPutRootProjectProperty(extraPropertyName) {
-                CachingModuleVariantResolver(GradleModuleVariantResolver())
+                KpmCachingModuleVariantResolver(KpmGradleModuleVariantResolver())
             }
         }
     }

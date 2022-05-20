@@ -30,7 +30,7 @@ internal class FragmentGranularMetadataResolver(
     }
 
     private val moduleResolver = KpmGradleModuleDependencyResolver.getForCurrentBuild(project)
-    private val variantResolver = GradleModuleVariantResolver.getForCurrentBuild(project)
+    private val variantResolver = KpmGradleModuleVariantResolver.getForCurrentBuild(project)
     private val fragmentResolver = KpmDefaultFragmentsResolver(variantResolver)
     private val dependencyGraphResolver = KpmGradleDependencyGraphResolver(moduleResolver)
 
@@ -155,7 +155,7 @@ internal class FragmentGranularMetadataResolver(
         val hostSpecificFragments = dependencyModule.hostSpecificFragments
         return visibleFragments.intersect(hostSpecificFragments).mapNotNull { hostSpecificFragment ->
             val relevantVariantResolution = variantResolutions
-                .filterIsInstance<VariantResolution.VariantMatch>()
+                .filterIsInstance<KpmVariantResolution.KpmVariantMatch>()
                 // find some of our variants that resolved a dependency's variant containing the fragment
                 .find { hostSpecificFragment in it.chosenVariant.withRefinesClosure }
             // resolve the dependencies of that variant getting the host-specific metadata artifact
