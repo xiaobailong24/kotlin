@@ -64,8 +64,8 @@ fun KpmGradleModule.createKotlinAndroidVariant(androidVariant: BaseVariant) {
             runtimeElements = DefaultKotlinRuntimeElementsDefinition + androidElementsAttributes + androidOutgoingArtifacts,
 
             /* For now: Just publish 'release' (non-debuggable) variants */
-            publicationConfigurator = if (androidVariant.buildType.isDebuggable) KotlinPublicationConfigurator.NoPublication else
-                KotlinPublicationConfigurator.SingleVariantPublication
+            publicationConfigurator = if (androidVariant.buildType.isDebuggable) GradleKpmPublicationConfigurator.NoPublication else
+                GradleKpmPublicationConfigurator.SingleVariantPublication
         )
     )
 

@@ -42,8 +42,8 @@ data class KpmNativeVariantConfig<T : GradleKpmNativeVariantInternal>(
     val sourceDirectoriesConfigurator: KpmSourceDirectoriesConfigurator<T> =
         KpmDefaultSourceDirectoriesConfigurator,
 
-    val publicationConfigurator: KotlinPublicationConfigurator<GradleKpmNativeVariantInternal> =
-        KotlinPublicationConfigurator.NativeVariantPublication
+    val publicationConfigurator: GradleKpmPublicationConfigurator<GradleKpmNativeVariantInternal> =
+        GradleKpmPublicationConfigurator.NativeVariantPublication
 )
 
 class KpmNativeVariantInstantiator<T : GradleKpmNativeVariantInternal>(

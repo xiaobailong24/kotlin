@@ -43,8 +43,8 @@ data class KpmJvmVariantConfig(
     val sourceDirectoriesConfigurator: KpmSourceDirectoriesConfigurator<GradleKpmJvmVariant>
     = KpmDefaultSourceDirectoriesConfigurator,
 
-    val publicationConfigurator: KotlinPublicationConfigurator<GradleKpmJvmVariant>
-    = KotlinPublicationConfigurator.SingleVariantPublication
+    val publicationConfigurator: GradleKpmPublicationConfigurator<GradleKpmJvmVariant>
+    = GradleKpmPublicationConfigurator.SingleVariantPublication
 )
 
 class KpmJvmVariantInstantiator internal constructor(
