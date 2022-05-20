@@ -17,37 +17,6 @@ import org.jetbrains.kotlin.gradle.plugin.sources.DefaultLanguageSettingsBuilder
 import org.jetbrains.kotlin.gradle.utils.getOrPutRootProjectProperty
 import org.jetbrains.kotlin.project.model.*
 
-open class KpmGradleComponentResultCachingResolver {
-    private val cachedResultsByRequestingModule = mutableMapOf<KpmGradleModule, Map<KpmModuleIdentifier, ResolvedComponentResult>>()
-
-    protected open fun configurationToResolve(requestingModule: KpmGradleModule): Configuration =
-        configurationToResolveMetadataDependencies(requestingModule.project, requestingModule)
-
-    protected open fun resolveDependencies(module: KpmGradleModule): Map<KpmModuleIdentifier, ResolvedComponentResult> {
-        val allComponents = configurationToResolve(module).incoming.resolutionResult.allComponents
-        // FIXME handle multi-component results
-        return allComponents.flatMap { component -> component.toModuleIdentifiers().map { it to component } }.toMap()
-    }
-
-    private fun getResultsForModule(module: KpmGradleModule): Map<KpmModuleIdentifier, ResolvedComponentResult> =
-        cachedResultsByRequestingModule.getOrPut(module) { resolveDependencies(module) }
-
-    fun resolveModuleDependencyAsComponentResult(
-        requestingModule: KpmGradleModule,
-        moduleDependency: KpmModuleDependency
-    ): ResolvedComponentResult? =
-        getResultsForModule(requestingModule)[moduleDependency.moduleIdentifier]
-
-    companion object {
-        fun getForCurrentBuild(project: Project): KpmGradleComponentResultCachingResolver {
-            val extraPropertyName = "org.jetbrains.kotlin.dependencyResolution.gradleComponentResolver.${project.getKotlinPluginVersion()}"
-            return project.getOrPutRootProjectProperty(extraPropertyName) {
-                KpmGradleComponentResultCachingResolver()
-            }
-        }
-    }
-}
-
 class KpmGradleModuleDependencyResolver(
     private val gradleComponentResultResolver: KpmGradleComponentResultCachingResolver,
     private val projectStructureMetadataModuleBuilder: ProjectStructureMetadataModuleBuilder,
