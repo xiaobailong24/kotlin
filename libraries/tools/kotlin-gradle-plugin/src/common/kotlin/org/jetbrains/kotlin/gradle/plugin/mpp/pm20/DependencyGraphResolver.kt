@@ -36,13 +36,13 @@ class KpmGradleDependencyGraphResolver(
     private fun configurationToResolve(requestingModule: KpmGradleModule): Configuration =
         configurationToResolveMetadataDependencies(requestingModule.project, requestingModule)
 
-    override fun resolveDependencyGraph(requestingModule: KpmModule): DependencyGraphResolution {
+    override fun resolveDependencyGraph(requestingModule: KpmModule): KpmDependencyGraphResolution {
         if (requestingModule !is KpmGradleModule)
-            return DependencyGraphResolution.Unknown(requestingModule)
+            return KpmDependencyGraphResolution.Unknown(requestingModule)
         return resolveAsGraph(requestingModule)
     }
 
-    private fun resolveAsGraph(requestingModule: KpmGradleModule): GradleDependencyGraph {
+    private fun resolveAsGraph(requestingModule: KpmGradleModule): KpmGradleDependencyGraph {
         val nodeByModuleId = mutableMapOf<KpmModuleIdentifier, GradleDependencyGraphNode>()
 
         fun getKotlinModuleFromComponentResult(component: ResolvedComponentResult): KpmModule =
@@ -90,7 +90,7 @@ class KpmGradleDependencyGraphResolver(
             }
         }
 
-        return GradleDependencyGraph(
+        return KpmGradleDependencyGraph(
             requestingModule,
             nodeFromModule(configurationToResolve(requestingModule).incoming.resolutionResult.root, requestingModule)
         )
@@ -106,8 +106,8 @@ class GradleDependencyGraphNode(
     override val dependenciesByFragment: Map<KpmFragment, Iterable<GradleDependencyGraphNode>>
 ) : DependencyGraphNode(module, dependenciesByFragment)
 
-class GradleDependencyGraph(
+class KpmGradleDependencyGraph(
     override val requestingModule: KpmGradleModule,
     override val root: GradleDependencyGraphNode
-) : DependencyGraphResolution.DependencyGraph(requestingModule, root)
+) : KpmDependencyGraphResolution.KpmDependencyGraph(requestingModule, root)
 

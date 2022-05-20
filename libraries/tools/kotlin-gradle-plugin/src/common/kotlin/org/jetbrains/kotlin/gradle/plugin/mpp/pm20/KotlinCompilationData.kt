@@ -65,7 +65,7 @@ interface KotlinVariantCompilationDataInternal<T : KotlinCommonOptions> : Kotlin
         val dependencyGraphResolver = KpmGradleDependencyGraphResolver(moduleResolver)
 
         val friendModules =
-            ((dependencyGraphResolver.resolveDependencyGraph(owner.containingModule) as? GradleDependencyGraph)
+            ((dependencyGraphResolver.resolveDependencyGraph(owner.containingModule) as? KpmGradleDependencyGraph)
                 ?: error("Failed to resolve dependencies of ${owner.containingModule}"))
                 .allDependencyModules
                 .filterIsInstance<KpmGradleModule>()

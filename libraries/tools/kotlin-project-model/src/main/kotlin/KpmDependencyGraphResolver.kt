@@ -6,12 +6,14 @@
 package org.jetbrains.kotlin.project.model
 
 interface KpmDependencyGraphResolver {
-    fun resolveDependencyGraph(requestingModule: KpmModule): DependencyGraphResolution
+    fun resolveDependencyGraph(requestingModule: KpmModule): KpmDependencyGraphResolution
 }
 
-sealed class DependencyGraphResolution(open val requestingModule: KpmModule) {
-    class Unknown(requestingModule: KpmModule) : DependencyGraphResolution(requestingModule)
-    open class DependencyGraph(requestingModule: KpmModule, open val root: DependencyGraphNode): DependencyGraphResolution(requestingModule)
+sealed class KpmDependencyGraphResolution(open val requestingModule: KpmModule) {
+    class Unknown(requestingModule: KpmModule) : KpmDependencyGraphResolution(requestingModule)
+    open class KpmDependencyGraph(
+        requestingModule: KpmModule, open val root: DependencyGraphNode
+    ) : KpmDependencyGraphResolution(requestingModule)
 }
 
 // TODO: should this be a single graph for all dependency scopes as well, not just for all fragments?

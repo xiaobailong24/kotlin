@@ -44,10 +44,10 @@ internal class FragmentGranularMetadataResolver(
 
         val dependencyGraph = dependencyGraphResolver.resolveDependencyGraph(requestingFragment.containingModule)
 
-        if (dependencyGraph is DependencyGraphResolution.Unknown)
+        if (dependencyGraph is KpmDependencyGraphResolution.Unknown)
             error("unexpected failure in dependency graph resolution for $requestingFragment in $project")
 
-        dependencyGraph as GradleDependencyGraph // refactor the type hierarchy to avoid this downcast? FIXME?
+        dependencyGraph as KpmGradleDependencyGraph // refactor the type hierarchy to avoid this downcast? FIXME?
         val fragmentsToInclude = requestingFragment.withRefinesClosure
         val requestedDependencies = dependencyGraph.root.dependenciesByFragment.filterKeys { it in fragmentsToInclude }.values.flatten()
 
