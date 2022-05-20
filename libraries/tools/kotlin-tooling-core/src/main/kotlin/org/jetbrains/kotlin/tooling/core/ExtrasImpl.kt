@@ -18,7 +18,7 @@ internal class MutableExtrasImpl(
         initialEntries.associateByTo(mutableMapOf()) { it.key }
 
     override val keys: Set<Key<*>>
-        get() = extras.keys
+        get() = extras.keys.toSet()
 
     override val entries: Set<Entry<*>>
         get() = extras.values.toSet()
