@@ -9,20 +9,20 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.FragmentNameDisambiguation
 
-typealias KotlinCommonFragmentFactory = KpmGradleFragmentFactory<KpmGradleFragmentInternal>
+typealias KpmCommonFragmentFactory = KpmGradleFragmentFactory<KpmGradleFragmentInternal>
 
-fun KotlinCommonFragmentFactory(module: KpmGradleModule): KotlinCommonFragmentFactory =
-    KotlinCommonFragmentFactory(KotlinCommonFragmentInstantiator(module))
+fun KpmCommonFragmentFactory(module: KpmGradleModule): KpmCommonFragmentFactory =
+    KpmCommonFragmentFactory(KpmCommonFragmentInstantiator(module))
 
-fun KotlinCommonFragmentFactory(
-    commonFragmentInstantiator: KotlinCommonFragmentInstantiator,
-    commonFragmentConfigurator: KotlinCommonFragmentConfigurator = KotlinCommonFragmentConfigurator()
+fun KpmCommonFragmentFactory(
+    commonFragmentInstantiator: KpmCommonFragmentInstantiator,
+    commonFragmentConfigurator: KpmCommonFragmentConfigurator = KpmCommonFragmentConfigurator()
 ): KpmGradleFragmentFactory<KpmGradleFragmentInternal> = KpmGradleFragmentFactory(
     fragmentInstantiator = commonFragmentInstantiator,
     fragmentConfigurator = commonFragmentConfigurator
 )
 
-class KotlinCommonFragmentInstantiator(
+class KpmCommonFragmentInstantiator(
     private val module: KpmGradleModule,
     private val dependencyConfigurationsFactory: KotlinFragmentDependencyConfigurationsFactory =
         DefaultKotlinFragmentDependencyConfigurationsFactory
@@ -33,7 +33,7 @@ class KotlinCommonFragmentInstantiator(
     }
 }
 
-class KotlinCommonFragmentConfigurator(
+class KpmCommonFragmentConfigurator(
     private val sourceDirectoriesSetup: KotlinSourceDirectoriesConfigurator<KpmGradleFragmentInternal> =
         DefaultKotlinSourceDirectoriesConfigurator
 ) : KpmGradleFragmentFactory.FragmentConfigurator<KpmGradleFragmentInternal> {
