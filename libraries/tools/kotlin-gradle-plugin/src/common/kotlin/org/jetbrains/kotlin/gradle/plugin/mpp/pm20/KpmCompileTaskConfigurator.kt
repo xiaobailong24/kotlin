@@ -7,11 +7,11 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.gradle.api.tasks.TaskProvider
 
-interface KotlinCompileTaskConfigurator<in T : KpmGradleVariant> {
+interface KpmCompileTaskConfigurator<in T : KpmGradleVariant> {
     fun registerCompileTasks(variant: T): TaskProvider<*>
 }
 
-object KotlinJvmCompileTaskConfigurator : KotlinCompileTaskConfigurator<KpmJvmVariant> {
+object KpmJvmCompileTaskConfigurator : KpmCompileTaskConfigurator<KpmJvmVariant> {
     override fun registerCompileTasks(variant: KpmJvmVariant): TaskProvider<*> {
         val compilationData = variant.compilationData
         LifecycleTasksManager(variant.project).registerClassesTask(compilationData)
@@ -19,7 +19,7 @@ object KotlinJvmCompileTaskConfigurator : KotlinCompileTaskConfigurator<KpmJvmVa
     }
 }
 
-object KotlinNativeCompileTaskConfigurator : KotlinCompileTaskConfigurator<KpmNativeVariantInternal> {
+object KpmNativeCompileTaskConfigurator : KpmCompileTaskConfigurator<KpmNativeVariantInternal> {
     override fun registerCompileTasks(variant: KpmNativeVariantInternal): TaskProvider<*> {
         val compilationData = variant.compilationData
         LifecycleTasksManager(variant.project).registerClassesTask(compilationData)

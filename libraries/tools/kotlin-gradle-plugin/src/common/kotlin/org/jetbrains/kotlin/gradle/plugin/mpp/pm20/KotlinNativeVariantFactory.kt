@@ -33,8 +33,8 @@ data class KotlinNativeVariantConfig<T : KpmNativeVariantInternal>(
     val hostSpecificMetadataElements: ConfigurationDefinition<T> =
         DefaultKotlinHostSpecificMetadataElementsDefinition,
 
-    val compileTaskConfigurator: KotlinCompileTaskConfigurator<T> =
-        KotlinNativeCompileTaskConfigurator,
+    val compileTaskConfigurator: KpmCompileTaskConfigurator<T> =
+        KpmNativeCompileTaskConfigurator,
 
     val sourceArchiveTaskConfigurator: KotlinSourceArchiveTaskConfigurator<T> =
         DefaultKotlinSourceArchiveTaskConfigurator,

@@ -34,8 +34,8 @@ data class KotlinJvmVariantConfig(
     val runtimeElements: KotlinGradleFragmentConfigurationDefinition<KpmJvmVariant>
     = DefaultKotlinRuntimeElementsDefinition,
 
-    val compileTaskConfigurator: KotlinCompileTaskConfigurator<KpmJvmVariant>
-    = KotlinJvmCompileTaskConfigurator,
+    val compileTaskConfigurator: KpmCompileTaskConfigurator<KpmJvmVariant>
+    = KpmJvmCompileTaskConfigurator,
 
     val sourceArchiveTaskConfigurator: KotlinSourceArchiveTaskConfigurator<KpmJvmVariant>
     = DefaultKotlinSourceArchiveTaskConfigurator,
