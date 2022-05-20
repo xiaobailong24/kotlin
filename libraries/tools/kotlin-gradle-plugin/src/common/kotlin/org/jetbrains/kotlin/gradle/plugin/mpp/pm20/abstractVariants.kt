@@ -23,7 +23,7 @@ import org.jetbrains.kotlin.project.model.KotlinPlatformTypeAttribute
 abstract class KpmGradleVariantInternal(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     final override val compileDependenciesConfiguration: Configuration,
     final override val apiElementsConfiguration: Configuration
 ) : KpmGradleFragmentInternal(
@@ -85,7 +85,7 @@ internal val KpmGradleVariant.defaultSourceArtifactTaskName: String
 abstract class KpmGradleVariantWithRuntimeInternal(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     final override val runtimeDependenciesConfiguration: Configuration,
@@ -110,7 +110,7 @@ private fun defaultModuleSuffix(module: KpmGradleModule, variantName: String): S
 
 abstract class KpmGradlePublishedVariantWithRuntimeKpm(
     containingModule: KpmGradleModule, fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     runtimeDependencyConfiguration: Configuration,

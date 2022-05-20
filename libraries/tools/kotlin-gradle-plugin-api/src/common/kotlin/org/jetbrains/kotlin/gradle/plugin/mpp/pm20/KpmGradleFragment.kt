@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.project.model.utils.variantsContainingFragment
 import org.jetbrains.kotlin.tooling.core.closure
 import org.jetbrains.kotlin.tooling.core.withClosure
 
-interface KpmGradleFragment : KpmFragment, HasKotlinDependencies, KotlinFragmentDependencyConfigurations, Named {
+interface KpmGradleFragment : KpmFragment, HasKotlinDependencies, KpmFragmentDependencyConfigurations, Named {
     override val kotlinSourceRoots: SourceDirectorySet
 
     override val containingModule: KpmGradleModule

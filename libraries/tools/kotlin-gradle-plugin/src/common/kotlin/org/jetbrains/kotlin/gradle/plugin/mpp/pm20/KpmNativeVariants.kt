@@ -8,7 +8,7 @@ import javax.inject.Inject
 open class KpmAndroidNativeX64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -31,7 +31,7 @@ open class KpmAndroidNativeX64Variant @Inject constructor(
 open class KpmAndroidNativeX86Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -54,7 +54,7 @@ open class KpmAndroidNativeX86Variant @Inject constructor(
 open class KpmAndroidNativeArm32Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -77,7 +77,7 @@ open class KpmAndroidNativeArm32Variant @Inject constructor(
 open class KpmAndroidNativeArm64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -100,7 +100,7 @@ open class KpmAndroidNativeArm64Variant @Inject constructor(
 open class KpmIosArm32Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -123,7 +123,7 @@ open class KpmIosArm32Variant @Inject constructor(
 open class KpmIosArm64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -146,7 +146,7 @@ open class KpmIosArm64Variant @Inject constructor(
 open class KpmIosX64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -169,7 +169,7 @@ open class KpmIosX64Variant @Inject constructor(
 open class KpmIosSimulatorArm64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -192,7 +192,7 @@ open class KpmIosSimulatorArm64Variant @Inject constructor(
 open class KpmWatchosArm32Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -215,7 +215,7 @@ open class KpmWatchosArm32Variant @Inject constructor(
 open class KpmWatchosArm64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -238,7 +238,7 @@ open class KpmWatchosArm64Variant @Inject constructor(
 open class KpmWatchosX86Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -261,7 +261,7 @@ open class KpmWatchosX86Variant @Inject constructor(
 open class KpmWatchosX64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -284,7 +284,7 @@ open class KpmWatchosX64Variant @Inject constructor(
 open class KpmWatchosSimulatorArm64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -307,7 +307,7 @@ open class KpmWatchosSimulatorArm64Variant @Inject constructor(
 open class KpmTvosArm64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -330,7 +330,7 @@ open class KpmTvosArm64Variant @Inject constructor(
 open class KpmTvosX64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -353,7 +353,7 @@ open class KpmTvosX64Variant @Inject constructor(
 open class KpmTvosSimulatorArm64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -376,7 +376,7 @@ open class KpmTvosSimulatorArm64Variant @Inject constructor(
 open class KpmLinuxX64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -399,7 +399,7 @@ open class KpmLinuxX64Variant @Inject constructor(
 open class KpmMingwX86Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -422,7 +422,7 @@ open class KpmMingwX86Variant @Inject constructor(
 open class KpmMingwX64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -445,7 +445,7 @@ open class KpmMingwX64Variant @Inject constructor(
 open class KpmMacosX64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -468,7 +468,7 @@ open class KpmMacosX64Variant @Inject constructor(
 open class KpmMacosArm64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -491,7 +491,7 @@ open class KpmMacosArm64Variant @Inject constructor(
 open class KpmLinuxArm64Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -514,7 +514,7 @@ open class KpmLinuxArm64Variant @Inject constructor(
 open class KpmLinuxArm32HfpVariant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -537,7 +537,7 @@ open class KpmLinuxArm32HfpVariant @Inject constructor(
 open class KpmLinuxMips32Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -560,7 +560,7 @@ open class KpmLinuxMips32Variant @Inject constructor(
 open class KpmLinuxMipsel32Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?
@@ -583,7 +583,7 @@ open class KpmLinuxMipsel32Variant @Inject constructor(
 open class KpmWasm32Variant @Inject constructor(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     hostSpecificMetadataElementsConfiguration: Configuration?

@@ -28,9 +28,9 @@ import javax.inject.Inject
 open class KpmGradleFragmentInternal @Inject constructor(
     final override val containingModule: KpmGradleModule,
     final override val fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations
+    dependencyConfigurations: KpmFragmentDependencyConfigurations
 ) : KpmGradleFragment,
-    KotlinFragmentDependencyConfigurations by dependencyConfigurations {
+    KpmFragmentDependencyConfigurations by dependencyConfigurations {
 
     final override fun getName(): String = fragmentName
 

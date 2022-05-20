@@ -8,12 +8,12 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.KotlinNameDisambiguation
 
 interface KotlinFragmentDependencyConfigurationsFactory {
-    fun create(module: KpmGradleModule, names: KotlinNameDisambiguation): KotlinFragmentDependencyConfigurations
+    fun create(module: KpmGradleModule, names: KotlinNameDisambiguation): KpmFragmentDependencyConfigurations
 }
 
 object DefaultKotlinFragmentDependencyConfigurationsFactory : KotlinFragmentDependencyConfigurationsFactory {
 
-    override fun create(module: KpmGradleModule, names: KotlinNameDisambiguation): KotlinFragmentDependencyConfigurations {
+    override fun create(module: KpmGradleModule, names: KotlinNameDisambiguation): KpmFragmentDependencyConfigurations {
         val configurations = module.project.configurations
         val apiConfiguration = configurations.maybeCreate(names.disambiguateName("api"))
         val implementationConfiguration = configurations.maybeCreate(names.disambiguateName("implementation"))
@@ -40,7 +40,7 @@ object DefaultKotlinFragmentDependencyConfigurationsFactory : KotlinFragmentDepe
         transitiveImplementationConfiguration.extendsFrom(implementationConfiguration)
         transitiveRuntimeOnlyConfiguration.extendsFrom(runtimeOnlyConfiguration)
 
-        return KotlinFragmentDependencyConfigurations.create(
+        return KpmFragmentDependencyConfigurations.create(
             apiConfiguration = apiConfiguration,
             implementationConfiguration = implementationConfiguration,
             compileOnlyConfiguration = compileOnlyConfiguration,

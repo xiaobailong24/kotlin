@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 open class KpmJvmVariant(
     containingModule: KpmGradleModule,
     fragmentName: String,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependenciesConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     runtimeDependenciesConfiguration: Configuration,

@@ -17,7 +17,7 @@ abstract class KpmNativeVariantInternal(
     containingModule: KpmGradleModule,
     fragmentName: String,
     val konanTarget: KonanTarget,
-    dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+    dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     final override val hostSpecificMetadataElementsConfiguration: Configuration?
@@ -49,7 +49,7 @@ class KotlinNativeVariantConstructor<T : KpmNativeVariantInternal>(
     private val constructor: (
         containingModule: KpmGradleModule,
         fragmentName: String,
-        dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+        dependencyConfigurations: KpmFragmentDependencyConfigurations,
         compileDependencyConfiguration: Configuration,
         apiElementsConfiguration: Configuration,
         hostSpecificMetadataElementsConfiguration: Configuration?
@@ -58,7 +58,7 @@ class KotlinNativeVariantConstructor<T : KpmNativeVariantInternal>(
     operator fun invoke(
         containingModule: KpmGradleModule,
         fragmentName: String,
-        dependencyConfigurations: KotlinFragmentDependencyConfigurations,
+        dependencyConfigurations: KpmFragmentDependencyConfigurations,
         compileDependencyConfiguration: Configuration,
         apiElementsConfiguration: Configuration,
         hostSpecificMetadataElementsConfiguration: Configuration?
