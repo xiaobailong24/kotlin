@@ -8,7 +8,7 @@ package org.jetbrains.kotlin.gradle.mpp
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmCompilerPlugin
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleCompilerPlugin
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmLinuxX64Variant
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.jvm
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
@@ -163,7 +163,7 @@ class KpmCompilerPluginTest {
         val metadataArtifact: String? = null,
         val metadataNativeArtifact: String? = null,
         val platformArtifact: String? = null
-    ) : KpmCompilerPlugin, GradleKpmCompilerPlugin {
+    ) : KpmCompilerPlugin, KpmGradleCompilerPlugin {
         override fun apply(target: Project) = Unit
         override val kpmCompilerPlugin get() = this
 
@@ -184,7 +184,7 @@ class KpmCompilerPluginTest {
 
     }
 
-    open class TestPluginWithListeners : KpmCompilerPlugin, GradleKpmCompilerPlugin {
+    open class TestPluginWithListeners : KpmCompilerPlugin, KpmGradleCompilerPlugin {
         override val kpmCompilerPlugin: KpmCompilerPlugin get() = this.also { onGetKpmCompilerPlugin() }
         override fun apply(target: Project) = onApply()
         override fun forMetadataCompilation(fragment: KpmFragment): PluginData? = null.also { onPluginDataGet() }

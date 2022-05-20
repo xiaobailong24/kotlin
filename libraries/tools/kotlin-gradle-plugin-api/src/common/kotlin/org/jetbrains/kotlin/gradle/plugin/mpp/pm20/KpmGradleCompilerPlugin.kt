@@ -12,6 +12,6 @@ import org.jetbrains.kotlin.project.model.*
 /**
  * Gradle plugin that provides [KpmCompilerPlugin] from applied [Project]
  */
-interface GradleKpmCompilerPlugin : Plugin<Project> {
+interface KpmGradleCompilerPlugin : Plugin<Project> {
     val kpmCompilerPlugin: KpmCompilerPlugin
 }

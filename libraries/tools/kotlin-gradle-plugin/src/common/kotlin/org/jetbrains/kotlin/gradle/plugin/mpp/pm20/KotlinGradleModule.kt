@@ -41,8 +41,8 @@ open class KpmGradleModuleInternal(
         mutableSetOf<KpmCompilerPlugin>().also { set ->
             project
                 .plugins
-                .withType(GradleKpmCompilerPlugin::class.java)
-                .mapTo(set, GradleKpmCompilerPlugin::kpmCompilerPlugin)
+                .withType(KpmGradleCompilerPlugin::class.java)
+                .mapTo(set, KpmGradleCompilerPlugin::kpmCompilerPlugin)
         }
     }
 
