@@ -97,11 +97,15 @@ abstract class AbstractExtras : Extras {
 
     override fun isEmpty(): Boolean = keys.isEmpty()
 
+    override fun contains(key: Extras.Key<*>): Boolean = key in keys
+
     override fun contains(element: Extras.Entry<*>): Boolean =
         entries.contains(element)
 
     override fun containsAll(elements: Collection<Extras.Entry<*>>): Boolean =
         entries.containsAll(elements)
+
+    override fun iterator(): Iterator<Extras.Entry<out Any>> = entries.iterator()
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

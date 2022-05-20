@@ -130,8 +130,8 @@ interface Extras : Collection<Entry<out Any>> {
     val keys: Set<Key<*>>
     val entries: Set<Entry<*>>
     operator fun <T : Any> get(key: Key<T>): T?
-    operator fun contains(key: Key<*>): Boolean = key in keys
-    override fun iterator(): Iterator<Entry<out Any>> = entries.iterator()
+    operator fun contains(key: Key<*>): Boolean
+    override fun iterator(): Iterator<Entry<out Any>>
 }
 
 interface MutableExtras : Extras {
