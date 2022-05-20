@@ -52,7 +52,7 @@ internal class DefaultKpmGradleProjectModelContainer(
         private fun createKpmModulesContainer(project: Project): NamedDomainObjectContainer<KpmGradleModule> =
             project.objects.domainObjectContainer(
                 KpmGradleModule::class.java,
-                KotlinGradleModuleFactory(project)
+                KpmGradleModuleFactory(project)
             )
     }
 }

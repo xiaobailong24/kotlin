@@ -8,7 +8,7 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.Project
 
-open class KotlinGradleModuleFactory(private val project: Project) : NamedDomainObjectFactory<KpmGradleModule> {
+open class KpmGradleModuleFactory(private val project: Project) : NamedDomainObjectFactory<KpmGradleModule> {
     override fun create(name: String): KpmGradleModule {
         val result = project.objects.newInstance(KpmGradleModuleInternal::class.java, project, name)
         registerFragmentFactory(result)
