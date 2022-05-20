@@ -16,20 +16,6 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.plugin.sources.DefaultLanguageSettingsBuilder
 import org.jetbrains.kotlin.gradle.utils.getOrPutRootProjectProperty
 import org.jetbrains.kotlin.project.model.*
-import org.jetbrains.kotlin.project.model.KpmVariant
-import java.util.*
-
-class KpmCachingModuleDependencyResolver(private val actualResolver: KpmModuleDependencyResolver) : KpmModuleDependencyResolver {
-    private val cacheByRequestingModule = WeakHashMap<KpmModule, MutableMap<KpmModuleDependency, KpmModule?>>()
-
-    private fun cacheForRequestingModule(requestingModule: KpmModule) =
-        cacheByRequestingModule.getOrPut(requestingModule) { mutableMapOf() }
-
-    override fun resolveDependency(requestingModule: KpmModule, moduleDependency: KpmModuleDependency): KpmModule? =
-        cacheForRequestingModule(requestingModule).getOrPut(moduleDependency) {
-            actualResolver.resolveDependency(requestingModule, moduleDependency)
-        }
-}
 
 open class GradleComponentResultCachingResolver {
     private val cachedResultsByRequestingModule = mutableMapOf<KpmGradleModule, Map<KpmModuleIdentifier, ResolvedComponentResult>>()
