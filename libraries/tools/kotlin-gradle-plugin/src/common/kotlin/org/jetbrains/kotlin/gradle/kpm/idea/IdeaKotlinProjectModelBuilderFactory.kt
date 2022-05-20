@@ -8,7 +8,7 @@
 package org.jetbrains.kotlin.gradle.kpm.idea
 
 import org.jetbrains.kotlin.gradle.kpm.external.ExternalVariantApi
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.FragmentGranularMetadataResolverFactory
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmFragmentGranularMetadataResolverFactory
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinPm20ProjectExtension
 import org.jetbrains.kotlin.gradle.utils.UnsafeApi
 
@@ -16,7 +16,7 @@ import org.jetbrains.kotlin.gradle.utils.UnsafeApi
 internal fun IdeaKotlinProjectModelBuilder.Companion.default(
     extension: KotlinPm20ProjectExtension
 ) = IdeaKotlinProjectModelBuilderImpl(extension).apply {
-    val fragmentMetadataResolverFactory = FragmentGranularMetadataResolverFactory()
+    val fragmentMetadataResolverFactory = KpmFragmentGranularMetadataResolverFactory()
 
     registerDependencyResolver(
         resolver = IdeaKotlinRefinesDependencyResolver,
