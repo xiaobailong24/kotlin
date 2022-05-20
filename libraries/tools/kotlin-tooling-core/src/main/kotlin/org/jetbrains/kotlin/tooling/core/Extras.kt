@@ -5,6 +5,8 @@
 
 package org.jetbrains.kotlin.tooling.core
 
+import org.jetbrains.kotlin.tooling.core.Extras.Entry
+import org.jetbrains.kotlin.tooling.core.Extras.Key
 import java.io.Serializable
 
 /**
@@ -60,7 +62,7 @@ import java.io.Serializable
  *     .toExtras()
  * ```
  */
-interface Extras : Collection<Extras.Entry<out Any>> {
+interface Extras : Collection<Entry<out Any>> {
     class Key<T : Any> @PublishedApi internal constructor(
         internal val type: ReifiedTypeSignature<T>,
         val name: String? = null,
@@ -136,13 +138,13 @@ interface MutableExtras : Extras {
     /**
      * @return The previous value or null if no previous value was set
      */
-    operator fun <T : Any> set(key: Extras.Key<T>, value: T): T?
+    operator fun <T : Any> set(key: Key<T>, value: T): T?
 
-    fun <T : Any> put(entry: Extras.Entry<T>): T?
+    fun <T : Any> put(entry: Entry<T>): T?
 
-    fun putAll(from: Iterable<Extras.Entry<*>>)
+    fun putAll(from: Iterable<Entry<*>>)
 
-    fun <T : Any> remove(key: Extras.Key<T>): T?
+    fun <T : Any> remove(key: Key<T>): T?
 
     fun clear()
 }
