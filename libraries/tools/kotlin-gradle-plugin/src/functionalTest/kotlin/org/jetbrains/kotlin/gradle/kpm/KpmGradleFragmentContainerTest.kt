@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.*
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-class KotlinGradleModuleFragmentContainerTest : AbstractKpmExtensionTest() {
+class KpmGradleFragmentContainerTest : AbstractKpmExtensionTest() {
 
     @Test
     fun `test creating several different fragment types`() {
