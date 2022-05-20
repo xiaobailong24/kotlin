@@ -43,7 +43,7 @@ class KpmGradleDependencyGraphResolver(
     }
 
     private fun resolveAsGraph(requestingModule: KpmGradleModule): KpmGradleDependencyGraph {
-        val nodeByModuleId = mutableMapOf<KpmModuleIdentifier, GradleDependencyGraphNode>()
+        val nodeByModuleId = mutableMapOf<KpmModuleIdentifier, KpmGradleDependencyGraphNode>()
 
         fun getKotlinModuleFromComponentResult(component: ResolvedComponentResult): KpmModule =
             moduleResolver.resolveDependency(requestingModule, component.toModuleDependency())
@@ -52,7 +52,7 @@ class KpmGradleDependencyGraphResolver(
                     component.variants.singleOrNull()?.displayName ?: "default",
                 )
 
-        fun nodeFromModule(componentResult: ResolvedComponentResult, kpmModule: KpmModule): GradleDependencyGraphNode {
+        fun nodeFromModule(componentResult: ResolvedComponentResult, kpmModule: KpmModule): KpmGradleDependencyGraphNode {
             val id = kpmModule.moduleIdentifier
             return nodeByModuleId.getOrPut(id) {
                 val metadataSourceComponent =
@@ -81,7 +81,7 @@ class KpmGradleDependencyGraphResolver(
                     }
                 }
 
-                GradleDependencyGraphNode(
+                KpmGradleDependencyGraphNode(
                     kpmModule,
                     componentResult,
                     metadataSourceComponent,
@@ -97,17 +97,17 @@ class KpmGradleDependencyGraphResolver(
     }
 }
 
-class GradleDependencyGraphNode(
+class KpmGradleDependencyGraphNode(
     override val module: KpmModule,
     val selectedComponent: ResolvedComponentResult,
     /** If the Kotlin module description was provided by a different component, such as with legacy publishing layout using *-metadata
      * modules, then this property points to the other component. */
     val metadataSourceComponent: ResolvedComponentResult?,
-    override val dependenciesByFragment: Map<KpmFragment, Iterable<GradleDependencyGraphNode>>
+    override val dependenciesByFragment: Map<KpmFragment, Iterable<KpmGradleDependencyGraphNode>>
 ) : KpmDependencyGraphNode(module, dependenciesByFragment)
 
 class KpmGradleDependencyGraph(
     override val requestingModule: KpmGradleModule,
-    override val root: GradleDependencyGraphNode
+    override val root: KpmGradleDependencyGraphNode
 ) : KpmDependencyGraphResolution.KpmDependencyGraph(requestingModule, root)
 

@@ -51,8 +51,8 @@ internal class FragmentGranularMetadataResolver(
         val fragmentsToInclude = requestingFragment.withRefinesClosure
         val requestedDependencies = dependencyGraph.root.dependenciesByFragment.filterKeys { it in fragmentsToInclude }.values.flatten()
 
-        val visited = mutableSetOf<GradleDependencyGraphNode>()
-        val fragmentResolutionQueue = ArrayDeque<GradleDependencyGraphNode>(requestedDependencies)
+        val visited = mutableSetOf<KpmGradleDependencyGraphNode>()
+        val fragmentResolutionQueue = ArrayDeque<KpmGradleDependencyGraphNode>(requestedDependencies)
 
         val results = mutableSetOf<MetadataDependencyResolution>()
 
