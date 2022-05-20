@@ -35,7 +35,7 @@ abstract class KpmGradleVariantInternal(
 
     override var compileDependencyFiles: FileCollection = project.files({ compileDependenciesConfiguration })
 
-    internal abstract val compilationData: KotlinVariantCompilationDataInternal<*>
+    internal abstract val compilationData: KpmVariantCompilationDataInternal<*>
 
     // TODO rewrite using our own artifacts API?
     override val compilationOutputs: KotlinCompilationOutput = DefaultKotlinCompilationOutput(

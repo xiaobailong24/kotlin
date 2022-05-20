@@ -40,7 +40,7 @@ abstract class KpmNativeVariantInternal(
         DefaultCInteropSettings(project, cinteropName, compilationData)
     }
 
-    override val compilationData by lazy { KotlinNativeVariantCompilationData(this) }
+    override val compilationData by lazy { KpmNativeVariantCompilationData(this) }
 }
 
 class KotlinNativeVariantConstructor<T : KpmNativeVariantInternal>(
@@ -76,9 +76,9 @@ interface KotlinNativeCompilationData<T : KotlinCommonOptions> : KotlinCompilati
     val enableEndorsedLibs: Boolean
 }
 
-internal class KotlinNativeVariantCompilationData(
+internal class KpmNativeVariantCompilationData(
     val variant: KpmNativeVariantInternal
-) : KotlinVariantCompilationDataInternal<KotlinCommonOptions>, KotlinNativeCompilationData<KotlinCommonOptions> {
+) : KpmVariantCompilationDataInternal<KotlinCommonOptions>, KotlinNativeCompilationData<KotlinCommonOptions> {
     override val konanTarget: KonanTarget
         get() = variant.konanTarget
 

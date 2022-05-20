@@ -18,7 +18,7 @@ import org.jetbrains.kotlin.gradle.utils.filesProvider
 import org.jetbrains.kotlin.gradle.utils.lowerCamelCaseName
 import org.jetbrains.kotlin.project.model.KpmVariantResolution
 
-interface KotlinVariantCompilationDataInternal<T : KotlinCommonOptions> : KotlinVariantCompilationData<T> {
+interface KpmVariantCompilationDataInternal<T : KotlinCommonOptions> : KpmVariantCompilationData<T> {
     override val compileKotlinTaskName: String
         get() = lowerCamelCaseName("compile", compilationPurpose.takeIf { it != "main" }, "Kotlin", compilationClassifier)
 

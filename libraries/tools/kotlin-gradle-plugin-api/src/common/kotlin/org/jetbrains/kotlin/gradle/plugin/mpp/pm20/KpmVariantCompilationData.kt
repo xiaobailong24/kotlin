@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationOutput
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.project.model.LanguageSettings
 
-interface KotlinVariantCompilationData<T : KotlinCommonOptions> : KotlinCompilationData<T> {
+interface KpmVariantCompilationData<T : KotlinCommonOptions> : KotlinCompilationData<T> {
     override val owner: KpmGradleVariant
 
     override val project: Project get() = owner.containingModule.project

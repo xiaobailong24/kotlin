@@ -30,13 +30,13 @@ open class KpmJvmVariant(
     runtimeDependencyConfiguration = runtimeDependenciesConfiguration,
     runtimeElementsConfiguration = runtimeElementsConfiguration
 ) {
-    override val compilationData: KotlinJvmVariantCompilationData by lazy { KotlinJvmVariantCompilationData(this) }
+    override val compilationData: KpmJvmVariantCompilationData by lazy { KpmJvmVariantCompilationData(this) }
 
     override val platformType: KotlinPlatformType
         get() = KotlinPlatformType.jvm
 }
 
-class KotlinJvmVariantCompilationData(val variant: KpmJvmVariant) : KotlinVariantCompilationDataInternal<KotlinJvmOptions> {
+class KpmJvmVariantCompilationData(val variant: KpmJvmVariant) : KpmVariantCompilationDataInternal<KotlinJvmOptions> {
     override val owner: KpmJvmVariant get() = variant
 
     // TODO pull out to the variant
