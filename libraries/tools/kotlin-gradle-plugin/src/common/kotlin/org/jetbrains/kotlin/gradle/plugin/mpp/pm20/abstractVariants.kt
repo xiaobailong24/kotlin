@@ -93,7 +93,7 @@ abstract class KpmGradlePublishedVariantWithRuntimeKpm(
     apiElementsConfiguration = apiElementsConfiguration,
     runtimeDependenciesConfiguration = runtimeDependencyConfiguration,
     runtimeElementsConfiguration = runtimeElementsConfiguration
-), KpmSingleMavenPublishedModuleHolder by KpmDefaultKpmSingleMavenPublishedModuleHolder(
+), KpmSingleMavenPublishedModuleHolder by KpmDefaultSingleMavenPublishedModuleHolder(
     containingModule, defaultModuleSuffix(containingModule, fragmentName)
 ) {
     override val gradleVariantNames: Set<String>

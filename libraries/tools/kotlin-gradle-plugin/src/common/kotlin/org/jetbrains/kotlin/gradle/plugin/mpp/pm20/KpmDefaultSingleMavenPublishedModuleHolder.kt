@@ -9,7 +9,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.jetbrains.kotlin.gradle.plugin.mpp.MavenPublicationCoordinatesProvider
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.ComputedCapability
 
-class KpmDefaultKpmSingleMavenPublishedModuleHolder(
+class KpmDefaultSingleMavenPublishedModuleHolder(
     private var module: KpmGradleModule, override val defaultPublishedModuleSuffix: String?
 ) : KpmSingleMavenPublishedModuleHolder {
     private val project get() = module.project
