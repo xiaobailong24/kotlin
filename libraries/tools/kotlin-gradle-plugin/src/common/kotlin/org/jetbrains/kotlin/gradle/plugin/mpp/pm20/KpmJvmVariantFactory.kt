@@ -9,16 +9,16 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.FragmentNameDisambiguationOmittingMain
 
-typealias KotlinJvmVariantFactory = KpmGradleFragmentFactory<KpmJvmVariant>
+typealias KpmJvmVariantFactory = KpmGradleFragmentFactory<KpmJvmVariant>
 
-fun KotlinJvmVariantFactory(
-    module: KpmGradleModule, config: KotlinJvmVariantConfig = KotlinJvmVariantConfig()
-): KotlinJvmVariantFactory = KotlinJvmVariantFactory(
-    KotlinJvmVariantInstantiator(module, config),
-    KotlinJvmVariantConfigurator(config)
+fun KpmJvmVariantFactory(
+    module: KpmGradleModule, config: KpmJvmVariantConfig = KpmJvmVariantConfig()
+): KpmJvmVariantFactory = KpmJvmVariantFactory(
+    KpmJvmVariantInstantiator(module, config),
+    KpmJvmVariantConfigurator(config)
 )
 
-data class KotlinJvmVariantConfig(
+data class KpmJvmVariantConfig(
     val dependenciesConfigurationFactory: KpmFragmentDependencyConfigurationsFactory
     = KpmDefaultFragmentDependencyConfigurationsFactory,
 
@@ -47,9 +47,9 @@ data class KotlinJvmVariantConfig(
     = KotlinPublicationConfigurator.SingleVariantPublication
 )
 
-class KotlinJvmVariantInstantiator internal constructor(
+class KpmJvmVariantInstantiator internal constructor(
     private val module: KpmGradleModule,
-    private val config: KotlinJvmVariantConfig
+    private val config: KpmJvmVariantConfig
 ) : KpmGradleFragmentFactory.FragmentInstantiator<KpmJvmVariant> {
 
     override fun create(name: String): KpmJvmVariant {
@@ -78,8 +78,8 @@ class KotlinJvmVariantInstantiator internal constructor(
     }
 }
 
-class KotlinJvmVariantConfigurator internal constructor(
-    private val config: KotlinJvmVariantConfig
+class KpmJvmVariantConfigurator internal constructor(
+    private val config: KpmJvmVariantConfig
 ) : KpmGradleFragmentFactory.FragmentConfigurator<KpmJvmVariant> {
 
     override fun configure(fragment: KpmJvmVariant) {
