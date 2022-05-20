@@ -180,9 +180,9 @@ private fun KpmGradleModule.buildProjectTargets(): List<KotlinToolingMetadata.Pr
         )
     }.distinct() // some variants may look identical. e.g. androidRelease and androidDebug, so just keep one of them.
 
-private fun KpmGradleVariant.jvmExtrasOrNull() =
+private fun GradleKpmVariant.jvmExtrasOrNull() =
     when (this) {
-        is KpmJvmVariant -> KotlinToolingMetadata.ProjectTargetMetadata.JvmExtras(
+        is GradleKpmJvmVariant -> KotlinToolingMetadata.ProjectTargetMetadata.JvmExtras(
             jvmTarget = compilationData.kotlinOptions.jvmTarget,
             withJavaEnabled = false
         )
@@ -190,21 +190,21 @@ private fun KpmGradleVariant.jvmExtrasOrNull() =
         else -> null
     }
 
-private fun KpmGradleVariant.androidExtrasOrNull() =
+private fun GradleKpmVariant.androidExtrasOrNull() =
     when (this) {
         is LegacyMappedVariant -> buildAndroidExtrasOrNull(compilation.target)
         else -> null
     }
 
-private fun KpmGradleVariant.jsExtrasOrNull() =
+private fun GradleKpmVariant.jsExtrasOrNull() =
     when (this) {
         is LegacyMappedVariant -> buildJsExtrasOrNull(compilation.target)
         else -> null
     }
 
-private fun KpmGradleVariant.nativeExtrasOrNull() =
+private fun GradleKpmVariant.nativeExtrasOrNull() =
     when (this) {
-        is KpmNativeVariantInternal -> KotlinToolingMetadata.ProjectTargetMetadata.NativeExtras(
+        is GradleKpmNativeVariantInternal -> KotlinToolingMetadata.ProjectTargetMetadata.NativeExtras(
             konanTarget = konanTarget.name,
             konanVersion = project.konanVersion.toString(),
             konanAbiVersion = KotlinAbiVersion.CURRENT.toString()

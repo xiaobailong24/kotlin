@@ -283,7 +283,7 @@ class KpmGradleModuleVariantResolver : KpmModuleVariantResolver {
             )
         }
 
-        if (requestingVariant !is KpmGradleVariant) {
+        if (requestingVariant !is GradleKpmVariant) {
             return KpmVariantResolution.Unknown(requestingVariant, dependencyModule)
         }
 
@@ -318,7 +318,7 @@ class KpmGradleModuleVariantResolver : KpmModuleVariantResolver {
     private fun getCompileDependenciesConfigurationForVariant(project: Project, requestingVariant: KpmVariant): Configuration =
         when {
             project.hasKpmModel -> {
-                (requestingVariant as KpmGradleVariant).compileDependenciesConfiguration
+                (requestingVariant as GradleKpmVariant).compileDependenciesConfiguration
             }
             else -> {
                 val targets =

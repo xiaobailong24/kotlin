@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.filterModuleName
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
-open class KpmJvmVariant(
+open class GradleKpmJvmVariant(
     containingModule: KpmGradleModule,
     fragmentName: String,
     dependencyConfigurations: KpmFragmentDependencyConfigurations,
@@ -21,7 +21,7 @@ open class KpmJvmVariant(
     apiElementsConfiguration: Configuration,
     runtimeDependenciesConfiguration: Configuration,
     runtimeElementsConfiguration: Configuration
-) : KpmGradlePublishedVariantWithRuntime(
+) : GradleKpmPublishedVariantWithRuntime(
     containingModule = containingModule,
     fragmentName = fragmentName,
     dependencyConfigurations = dependencyConfigurations,
@@ -36,14 +36,14 @@ open class KpmJvmVariant(
         get() = KotlinPlatformType.jvm
 }
 
-class KpmJvmVariantCompilationData(val variant: KpmJvmVariant) : KpmVariantCompilationDataInternal<KotlinJvmOptions> {
-    override val owner: KpmJvmVariant get() = variant
+class KpmJvmVariantCompilationData(val variant: GradleKpmJvmVariant) : KpmVariantCompilationDataInternal<KotlinJvmOptions> {
+    override val owner: GradleKpmJvmVariant get() = variant
 
     // TODO pull out to the variant
     override val kotlinOptions: KotlinJvmOptions = KotlinJvmOptionsImpl()
 }
 
-internal fun KpmGradleVariant.ownModuleName(): String {
+internal fun GradleKpmVariant.ownModuleName(): String {
     val project = containingModule.project
     val baseName = project.archivesName
         ?: project.name
@@ -56,7 +56,7 @@ internal class KotlinMappedJvmCompilationFactory(
 ) : KotlinJvmCompilationFactory(target) {
     override fun create(name: String): KotlinJvmCompilation {
         val module = target.project.kpmModules.maybeCreate(name)
-        val variant = module.fragments.create(target.name, KpmJvmVariant::class.java)
+        val variant = module.fragments.create(target.name, GradleKpmJvmVariant::class.java)
 
         return KotlinJvmCompilation(
             VariantMappedCompilationDetailsWithRuntime(variant, target),

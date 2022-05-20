@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationOutput
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.project.model.KpmVariant
 
-interface KpmGradleVariant : KpmGradleFragment, KpmVariant {
+interface GradleKpmVariant : GradleKpmFragment, KpmVariant {
     val platformType: KotlinPlatformType
 
     // TODO generalize with KotlinCompilation?
@@ -32,7 +32,7 @@ interface KpmGradleVariant : KpmGradleFragment, KpmVariant {
     val gradleVariantNames: Set<String>
 }
 
-interface KpmGradleVariantWithRuntime : KpmGradleVariant {
+interface GradleKpmVariantWithRuntime : GradleKpmVariant {
     // TODO deduplicate with KotlinCompilation?
     val runtimeDependenciesConfiguration: Configuration
 
@@ -44,7 +44,7 @@ interface KpmGradleVariantWithRuntime : KpmGradleVariant {
     val runtimeElementsConfiguration: Configuration
 }
 
-interface KpmNativeVariant : KpmGradleVariant {
+interface GradleKpmNativeVariant : GradleKpmVariant {
     override val platformType: KotlinPlatformType
         get() = KotlinPlatformType.native
 

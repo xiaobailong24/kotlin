@@ -29,7 +29,7 @@ import org.jetbrains.kotlin.project.model.KpmModuleDependency
 
 internal open class LegacyMappedVariant(
     internal val compilation: KotlinCompilation<*>,
-) : KpmGradleVariant {
+) : GradleKpmVariant {
     override fun toString(): String = "variant mapped to $compilation"
 
     private val fragmentForDefaultSourceSet =
@@ -85,11 +85,11 @@ internal open class LegacyMappedVariant(
     override val languageSettings: LanguageSettingsBuilder
         get() = compilation.defaultSourceSet.languageSettings
 
-    override fun refines(other: KpmGradleFragment) {
+    override fun refines(other: GradleKpmFragment) {
         fragmentForDefaultSourceSet.refines(other)
     }
 
-    override fun refines(other: NamedDomainObjectProvider<KpmGradleFragment>) {
+    override fun refines(other: NamedDomainObjectProvider<GradleKpmFragment>) {
         fragmentForDefaultSourceSet.refines(other)
     }
 
@@ -101,7 +101,7 @@ internal open class LegacyMappedVariant(
     override val fragmentName: String
         get() = fragmentForDefaultSourceSet.fragmentName + "Variant"
 
-    override val declaredRefinesDependencies: Iterable<KpmGradleFragment>
+    override val declaredRefinesDependencies: Iterable<GradleKpmFragment>
         get() = fragmentForDefaultSourceSet.declaredRefinesDependencies
 
     override val declaredModuleDependencies: Iterable<KpmModuleDependency>
@@ -146,7 +146,7 @@ internal open class LegacyMappedVariant(
 
 internal class LegacyMappedVariantWithRuntime(private val compilationWithRuntime: KotlinCompilationToRunnableFiles<*>) :
     LegacyMappedVariant(compilationWithRuntime),
-    KpmGradleVariantWithRuntime {
+    GradleKpmVariantWithRuntime {
 
     override val runtimeDependenciesConfiguration: Configuration
         get() = project.configurations.getByName(compilationWithRuntime.runtimeDependencyConfigurationName)

@@ -8,14 +8,14 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 import org.gradle.api.artifacts.Configuration
 import org.jetbrains.kotlin.gradle.plugin.mpp.publishedConfigurationName
 
-abstract class KpmGradlePublishedVariantWithRuntime(
+abstract class GradleKpmPublishedVariantWithRuntime(
     containingModule: KpmGradleModule, fragmentName: String,
     dependencyConfigurations: KpmFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     runtimeDependencyConfiguration: Configuration,
     runtimeElementsConfiguration: Configuration
-) : KpmGradleVariantWithRuntimeInternal(
+) : GradleKpmVariantWithRuntimeInternal(
     containingModule = containingModule,
     fragmentName = fragmentName,
     dependencyConfigurations = dependencyConfigurations,

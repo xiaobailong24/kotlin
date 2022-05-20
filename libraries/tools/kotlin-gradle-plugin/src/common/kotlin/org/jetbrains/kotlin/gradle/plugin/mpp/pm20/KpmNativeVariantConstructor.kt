@@ -8,7 +8,7 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 import org.gradle.api.artifacts.Configuration
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
-class KpmNativeVariantConstructor<T : KpmNativeVariantInternal>(
+class KpmNativeVariantConstructor<T : GradleKpmNativeVariantInternal>(
     val konanTarget: KonanTarget,
     val variantClass: Class<T>,
     private val constructor: (

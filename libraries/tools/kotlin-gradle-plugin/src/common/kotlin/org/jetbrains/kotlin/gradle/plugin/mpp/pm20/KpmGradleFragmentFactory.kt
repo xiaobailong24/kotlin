@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleFragmentFactory.Frag
  *   - Setting up additional Gradle tasks
  *   - Setting up publication
  */
-class KpmGradleFragmentFactory<T : KpmGradleFragment>(
+class KpmGradleFragmentFactory<T : GradleKpmFragment>(
     private val fragmentInstantiator: FragmentInstantiator<T>,
     private val fragmentConfigurator: FragmentConfigurator<T>
 ) : NamedDomainObjectFactory<T> {
@@ -34,14 +34,14 @@ class KpmGradleFragmentFactory<T : KpmGradleFragment>(
     /**
      * @see KpmGradleFragmentFactory
      */
-    interface FragmentInstantiator<out T : KpmGradleFragment> {
+    interface FragmentInstantiator<out T : GradleKpmFragment> {
         fun create(name: String): T
     }
 
     /**
      * @see KpmGradleFragmentFactory
      */
-    interface FragmentConfigurator<in T : KpmGradleFragment> {
+    interface FragmentConfigurator<in T : GradleKpmFragment> {
         fun configure(fragment: T)
     }
 
@@ -50,7 +50,7 @@ class KpmGradleFragmentFactory<T : KpmGradleFragment>(
     }
 }
 
-internal fun <T : KpmGradleFragment> Configuration.configure(
+internal fun <T : GradleKpmFragment> Configuration.configure(
     definition: KotlinGradleFragmentConfigurationDefinition<T>, fragment: T
 ) {
     definition.attributes.setAttributes(attributes, fragment)

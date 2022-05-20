@@ -20,7 +20,7 @@ internal open class TransformKotlinGranularMetadataForFragment
 @Inject constructor(
     @get:Internal
     @field:Transient
-    val fragment: KpmGradleFragment,
+    val fragment: GradleKpmFragment,
     //FIXME annotations
     private val transformation: KpmFragmentGranularMetadataResolver
 ) : DefaultTask() {

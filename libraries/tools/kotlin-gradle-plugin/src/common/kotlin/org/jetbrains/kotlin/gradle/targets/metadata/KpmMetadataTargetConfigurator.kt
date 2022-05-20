@@ -53,7 +53,7 @@ internal class KpmMetadataTargetConfigurator(private val metadataTargetConfigura
                 val compilation = when {
                     isNative -> {
                         val konanTargets =
-                            mainModule.variantsContainingFragment(fragment).map { (it as KpmNativeVariantInternal).konanTarget }
+                            mainModule.variantsContainingFragment(fragment).map { (it as GradleKpmNativeVariantInternal).konanTarget }
                         KotlinSharedNativeCompilation(konanTargets, compilationDetails as CompilationDetails<KotlinCommonOptions>)
                     }
                     else -> KotlinCommonCompilation(compilationDetails as CompilationDetails<KotlinMultiplatformCommonOptions>)

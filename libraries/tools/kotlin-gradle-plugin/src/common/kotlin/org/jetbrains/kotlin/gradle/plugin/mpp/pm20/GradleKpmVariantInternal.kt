@@ -15,15 +15,15 @@ import org.jetbrains.kotlin.gradle.utils.dashSeparatedName
 import org.jetbrains.kotlin.project.model.KotlinAttributeKey
 import org.jetbrains.kotlin.project.model.KotlinPlatformTypeAttribute
 
-abstract class KpmGradleVariantInternal(
+abstract class GradleKpmVariantInternal(
     containingModule: KpmGradleModule,
     fragmentName: String,
     dependencyConfigurations: KpmFragmentDependencyConfigurations,
     final override val compileDependenciesConfiguration: Configuration,
     final override val apiElementsConfiguration: Configuration
-) : KpmGradleFragmentInternal(
+) : GradleKpmFragmentInternal(
     containingModule, fragmentName, dependencyConfigurations
-), KpmGradleVariant {
+), GradleKpmVariant {
 
     override val variantAttributes: Map<KotlinAttributeKey, String>
         get() = mapOf(KotlinPlatformTypeAttribute to kotlinPlatformTypeAttributeFromPlatform(platformType)) // TODO user attributes
@@ -47,7 +47,7 @@ abstract class KpmGradleVariantInternal(
 private fun kotlinPlatformTypeAttributeFromPlatform(platformType: KotlinPlatformType) = platformType.name
 
 // TODO: rewrite with the artifacts API
-internal val KpmGradleVariant.defaultSourceArtifactTaskName: String
+internal val GradleKpmVariant.defaultSourceArtifactTaskName: String
     get() = disambiguateName("sourcesJar")
 
 private fun defaultModuleSuffix(module: KpmGradleModule, variantName: String): String =

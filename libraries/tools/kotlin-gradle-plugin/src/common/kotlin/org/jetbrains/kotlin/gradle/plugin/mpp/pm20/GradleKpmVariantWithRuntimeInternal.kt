@@ -9,7 +9,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 
-abstract class KpmGradleVariantWithRuntimeInternal(
+abstract class GradleKpmVariantWithRuntimeInternal(
     containingModule: KpmGradleModule,
     fragmentName: String,
     dependencyConfigurations: KpmFragmentDependencyConfigurations,
@@ -17,13 +17,13 @@ abstract class KpmGradleVariantWithRuntimeInternal(
     apiElementsConfiguration: Configuration,
     final override val runtimeDependenciesConfiguration: Configuration,
     final override val runtimeElementsConfiguration: Configuration
-) : KpmGradleVariantInternal(
+) : GradleKpmVariantInternal(
     containingModule = containingModule,
     fragmentName = fragmentName,
     dependencyConfigurations = dependencyConfigurations,
     compileDependenciesConfiguration = compileDependencyConfiguration,
     apiElementsConfiguration = apiElementsConfiguration
-), KpmGradleVariantWithRuntime {
+), GradleKpmVariantWithRuntime {
     // TODO deduplicate with KotlinCompilation?
 
     override var runtimeDependencyFiles: FileCollection = project.files(runtimeDependenciesConfiguration)

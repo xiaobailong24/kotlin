@@ -9,12 +9,12 @@ import org.gradle.api.tasks.TaskProvider
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.unambiguousNameInProject
 import org.jetbrains.kotlin.gradle.plugin.mpp.sourcesJarTaskNamed
 
-interface KotlinSourceArchiveTaskConfigurator<in T : KpmGradleVariant> {
+interface KotlinSourceArchiveTaskConfigurator<in T : GradleKpmVariant> {
     fun registerSourceArchiveTask(variant: T): TaskProvider<*>?
 }
 
-object DefaultKotlinSourceArchiveTaskConfigurator : KotlinSourceArchiveTaskConfigurator<KpmGradleVariant> {
-    override fun registerSourceArchiveTask(variant: KpmGradleVariant): TaskProvider<*> {
+object DefaultKotlinSourceArchiveTaskConfigurator : KotlinSourceArchiveTaskConfigurator<GradleKpmVariant> {
+    override fun registerSourceArchiveTask(variant: GradleKpmVariant): TaskProvider<*> {
         return sourcesJarTaskNamed(
             taskName = variant.sourceArchiveTaskName,
             project = variant.project,

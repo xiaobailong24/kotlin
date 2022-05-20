@@ -10,11 +10,11 @@ import org.gradle.api.Project
 internal fun registerDefaultVariantFactories(project: Project) {
     project.kpmModules.configureEach { module ->
         module.fragments.registerFactory(
-            KpmJvmVariant::class.java,
+            GradleKpmJvmVariant::class.java,
             KpmJvmVariantFactory(module)
         )
 
-        fun <T : KpmNativeVariantInternal> registerNativeVariantFactory(
+        fun <T : GradleKpmNativeVariantInternal> registerNativeVariantFactory(
             constructor: KpmNativeVariantConstructor<T>
         ) = module.fragments.registerFactory(
             constructor.variantClass, KpmNativeVariantFactory(module, constructor)

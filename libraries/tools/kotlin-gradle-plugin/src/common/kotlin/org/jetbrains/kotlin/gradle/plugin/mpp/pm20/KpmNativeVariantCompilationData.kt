@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.NativeCompileOptions
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
 internal class KpmNativeVariantCompilationData(
-    val variant: KpmNativeVariantInternal
+    val variant: GradleKpmNativeVariantInternal
 ) : KpmVariantCompilationDataInternal<KotlinCommonOptions>, KotlinNativeCompilationData<KotlinCommonOptions> {
     override val konanTarget: KonanTarget
         get() = variant.konanTarget
@@ -22,7 +22,7 @@ internal class KpmNativeVariantCompilationData(
     override val project: Project
         get() = variant.containingModule.project
 
-    override val owner: KpmNativeVariant
+    override val owner: GradleKpmNativeVariant
         get() = variant
 
     override val kotlinOptions: KotlinCommonOptions = NativeCompileOptions { variant.languageSettings }

@@ -53,17 +53,17 @@ data class BasicPlatformPublicationToMavenRequest(
 /** TODO: consider also using this class for exposing a KPM variant's configurations for project-to-project dependencies,
  *        so that a variant may expose an arbitrary set of configurations rather just { API, runtime } or { API } */
 interface VariantPublicationRequest {
-    val fromVariant: KpmGradleVariant
+    val fromVariant: GradleKpmVariant
     val publishConfiguration: Configuration
 }
 
 data class BasicVariantPublicationRequest(
-    override val fromVariant: KpmGradleVariant,
+    override val fromVariant: GradleKpmVariant,
     override val publishConfiguration: Configuration
 ) : VariantPublicationRequest
 
 
-fun VariantPublishingConfigurator.configureNativeVariantPublication(variant: KpmNativeVariantInternal) {
+fun VariantPublishingConfigurator.configureNativeVariantPublication(variant: GradleKpmNativeVariantInternal) {
     val publishConfigurations = listOfNotNull(
         variant.apiElementsConfiguration,
         variant.hostSpecificMetadataElementsConfiguration // host-specific metadata may be absent
@@ -71,13 +71,13 @@ fun VariantPublishingConfigurator.configureNativeVariantPublication(variant: Kpm
     configureSingleVariantPublishing(variant, variant, publishConfigurations)
 }
 
-fun VariantPublishingConfigurator.configureSingleVariantPublication(variant: KpmGradlePublishedVariantWithRuntime) {
+fun VariantPublishingConfigurator.configureSingleVariantPublication(variant: GradleKpmPublishedVariantWithRuntime) {
     val publishConfigurations = listOf(variant.apiElementsConfiguration, variant.runtimeElementsConfiguration)
     configureSingleVariantPublishing(variant, variant, publishConfigurations)
 }
 
 fun VariantPublishingConfigurator.configureSingleVariantPublishing(
-    variant: KpmGradleVariant,
+    variant: GradleKpmVariant,
     publishedModuleHolder: KpmSingleMavenPublishedModuleHolder,
     publishConfigurations: Iterable<Configuration>
 ) {
@@ -102,12 +102,12 @@ open class VariantPublishingConfigurator @Inject constructor(
             project.objects.newInstance(VariantPublishingConfigurator::class.java, project)
     }
 
-    open fun platformComponentName(variant: KpmGradleVariant) = variant.disambiguateName("")
+    open fun platformComponentName(variant: GradleKpmVariant) = variant.disambiguateName("")
 
-    open fun inferMavenScope(variant: KpmGradleVariant, configurationName: String): String? =
+    open fun inferMavenScope(variant: GradleKpmVariant, configurationName: String): String? =
         when {
             configurationName == variant.apiElementsConfiguration.name -> "compile"
-            variant is KpmGradleVariantWithRuntime && configurationName == variant.runtimeElementsConfiguration.name -> "runtime"
+            variant is GradleKpmVariantWithRuntime && configurationName == variant.runtimeElementsConfiguration.name -> "runtime"
             else -> null
         }
 
@@ -143,7 +143,7 @@ open class VariantPublishingConfigurator @Inject constructor(
         )
     }
 
-    protected open fun configureSourceElementsPublishing(componentName: String, variant: KpmGradleVariant) {
+    protected open fun configureSourceElementsPublishing(componentName: String, variant: GradleKpmVariant) {
         val configurationName = variant.disambiguateName("sourceElements")
         val docsVariants = DocumentationVariantConfigurator().createSourcesElementsConfiguration(configurationName, variant)
         project.components.withType(AdhocComponentWithVariants::class.java).named(componentName).configure { component ->
@@ -237,7 +237,7 @@ open class VariantPublishingConfigurator @Inject constructor(
 }
 
 internal data class AdvancedVariantPublicationRequest(
-    override val fromVariant: KpmGradleVariant,
+    override val fromVariant: GradleKpmVariant,
     override val publishConfiguration: Configuration,
     val overrideConfigurationAttributesForPublication: AttributeContainer?,
     val overrideConfigurationArtifactsForPublication: Provider<out Iterable<PublishArtifact>>?,
@@ -270,7 +270,7 @@ open class DocumentationVariantConfigurator {
 
     open fun createSourcesElementsConfiguration(
         configurationName: String,
-        variant: KpmGradleVariant
+        variant: GradleKpmVariant
     ): Configuration {
         val sourcesArtifactTask = variant.project.tasks.withType<AbstractArchiveTask>().named(variant.sourceArchiveTaskName)
         val artifactClassifier = dashSeparatedName(variant.containingModule.moduleClassifier, "sources")

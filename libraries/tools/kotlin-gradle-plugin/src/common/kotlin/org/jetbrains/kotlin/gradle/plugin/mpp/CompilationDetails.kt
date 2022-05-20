@@ -432,7 +432,7 @@ internal open class MetadataMappedCompilationDetails<T : KotlinCommonOptions>(
 }
 
 internal open class VariantMappedCompilationDetails<T : KotlinCommonOptions>(
-    open val variant: KpmGradleVariantInternal,
+    open val variant: GradleKpmVariantInternal,
     override val target: KotlinTarget
 ) : CompilationDetails<T> {
 
@@ -469,7 +469,7 @@ internal open class VariantMappedCompilationDetails<T : KotlinCommonOptions>(
 }
 
 internal open class VariantMappedCompilationDetailsWithRuntime<T : KotlinCommonOptions>(
-    override val variant: KpmGradleVariantWithRuntimeInternal,
+    override val variant: GradleKpmVariantWithRuntimeInternal,
     target: KotlinTarget
 ) : VariantMappedCompilationDetails<T>(variant, target),
     CompilationDetailsWithRuntime<T> {

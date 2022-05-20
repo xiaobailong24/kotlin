@@ -26,7 +26,7 @@ interface KpmVariantCompilationDataInternal<T : KotlinCommonOptions> : KpmVarian
         get() = owner.disambiguateName("classes")
 
     override val kotlinSourceDirectoriesByFragmentName: Map<String, SourceDirectorySet>
-        get() = owner.withRefinesClosure.filterIsInstance<KpmGradleVariant>().associate { it.disambiguateName("") to it.kotlinSourceRoots }
+        get() = owner.withRefinesClosure.filterIsInstance<GradleKpmVariant>().associate { it.disambiguateName("") to it.kotlinSourceRoots }
 
     override val friendPaths: Iterable<FileCollection>
         get() {
@@ -59,7 +59,7 @@ interface KpmVariantCompilationDataInternal<T : KotlinCommonOptions> : KpmVarian
     override val ownModuleName: String
         get() = owner.ownModuleName()
 
-    private fun resolveFriendVariants(): Iterable<KpmGradleVariant> {
+    private fun resolveFriendVariants(): Iterable<GradleKpmVariant> {
         val moduleResolver = KpmGradleModuleDependencyResolver.getForCurrentBuild(project)
         val variantResolver = KpmGradleModuleVariantResolver.getForCurrentBuild(project)
         val dependencyGraphResolver = KpmGradleDependencyGraphResolver(moduleResolver)
@@ -78,7 +78,7 @@ interface KpmVariantCompilationDataInternal<T : KotlinCommonOptions> : KpmVarian
             .map { friendModule -> variantResolver.getChosenVariant(owner, friendModule) }
             // also, important to check that the owner variant really requests this module:
             .filterIsInstance<KpmVariantResolution.KpmVariantMatch>()
-            .mapNotNull { variantMatch -> variantMatch.chosenVariant as? KpmGradleVariant }
+            .mapNotNull { variantMatch -> variantMatch.chosenVariant as? GradleKpmVariant }
     }
 }
 

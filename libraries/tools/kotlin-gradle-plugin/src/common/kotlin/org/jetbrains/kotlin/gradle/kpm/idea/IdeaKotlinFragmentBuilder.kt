@@ -8,12 +8,12 @@ package org.jetbrains.kotlin.gradle.kpm.idea
 import org.jetbrains.kotlin.gradle.kpm.KotlinExternalModelContainer
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.*
 
-internal fun IdeaKotlinProjectModelBuildingContext.IdeaKotlinFragment(fragment: KpmGradleFragment): IdeaKotlinFragment {
-    return if (fragment is KpmGradleVariant) buildIdeaKotlinVariant(fragment)
+internal fun IdeaKotlinProjectModelBuildingContext.IdeaKotlinFragment(fragment: GradleKpmFragment): IdeaKotlinFragment {
+    return if (fragment is GradleKpmVariant) buildIdeaKotlinVariant(fragment)
     else buildIdeaKotlinFragment(fragment)
 }
 
-private fun IdeaKotlinProjectModelBuildingContext.buildIdeaKotlinFragment(fragment: KpmGradleFragment): IdeaKotlinFragment {
+private fun IdeaKotlinProjectModelBuildingContext.buildIdeaKotlinFragment(fragment: GradleKpmFragment): IdeaKotlinFragment {
     return IdeaKotlinFragmentImpl(
         coordinates = IdeaKotlinFragmentCoordinates(fragment),
         platforms = fragment.containingVariants.map { variant -> IdeaKotlinPlatform(variant) }.toSet(),
@@ -21,11 +21,11 @@ private fun IdeaKotlinProjectModelBuildingContext.buildIdeaKotlinFragment(fragme
         dependencies = dependencyResolver.resolve(fragment).toList(),
         sourceDirectories = fragment.kotlinSourceRoots.sourceDirectories.files.toList().map { file -> IdeaKotlinSourceDirectoryImpl(file) },
         resourceDirectories = emptyList(),
-        external = (fragment as? KpmGradleFragmentInternal)?.external ?: KotlinExternalModelContainer.Empty
+        external = (fragment as? GradleKpmFragmentInternal)?.external ?: KotlinExternalModelContainer.Empty
     )
 }
 
-private fun IdeaKotlinProjectModelBuildingContext.buildIdeaKotlinVariant(variant: KpmGradleVariant): IdeaKotlinVariant {
+private fun IdeaKotlinProjectModelBuildingContext.buildIdeaKotlinVariant(variant: GradleKpmVariant): IdeaKotlinVariant {
     return IdeaKotlinVariantImpl(
         fragment = buildIdeaKotlinFragment(variant),
         platform = IdeaKotlinPlatform(variant),

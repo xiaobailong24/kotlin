@@ -25,11 +25,11 @@ import org.jetbrains.kotlin.gradle.utils.runProjectConfigurationHealthCheckWhenE
 import org.jetbrains.kotlin.project.model.KpmModuleDependency
 import javax.inject.Inject
 
-open class KpmGradleFragmentInternal @Inject constructor(
+open class GradleKpmFragmentInternal @Inject constructor(
     final override val containingModule: KpmGradleModule,
     final override val fragmentName: String,
     dependencyConfigurations: KpmFragmentDependencyConfigurations
-) : KpmGradleFragment,
+) : GradleKpmFragment,
     KpmFragmentDependencyConfigurations by dependencyConfigurations {
 
     final override fun getName(): String = fragmentName
@@ -44,12 +44,12 @@ open class KpmGradleFragmentInternal @Inject constructor(
 
     internal val external: KotlinMutableExternalModelContainer = KotlinExternalModelContainer.mutable()
 
-    override fun refines(other: KpmGradleFragment) {
+    override fun refines(other: GradleKpmFragment) {
         checkCanRefine(other)
         refines(containingModule.fragments.named(other.name))
     }
 
-    override fun refines(other: NamedDomainObjectProvider<KpmGradleFragment>) {
+    override fun refines(other: NamedDomainObjectProvider<GradleKpmFragment>) {
         _directRefinesDependencies.add(other)
         other.configure { checkCanRefine(it) }
 
@@ -66,11 +66,11 @@ open class KpmGradleFragmentInternal @Inject constructor(
         )
 
         project.runProjectConfigurationHealthCheckWhenEvaluated {
-            kotlinGradleFragmentConsistencyChecker.runAllChecks(this@KpmGradleFragmentInternal, other.get())
+            kotlinGradleFragmentConsistencyChecker.runAllChecks(this@GradleKpmFragmentInternal, other.get())
         }
     }
 
-    private fun checkCanRefine(other: KpmGradleFragment) {
+    private fun checkCanRefine(other: GradleKpmFragment) {
         check(containingModule == other.containingModule) {
             "Fragments can only refine each other within one module. Can't make $this refine $other"
         }
@@ -82,9 +82,9 @@ open class KpmGradleFragmentInternal @Inject constructor(
     override fun dependencies(configureClosure: Closure<Any?>) =
         dependencies f@{ ConfigureUtil.configure(configureClosure, this@f) }
 
-    private val _directRefinesDependencies = mutableSetOf<Provider<KpmGradleFragment>>()
+    private val _directRefinesDependencies = mutableSetOf<Provider<GradleKpmFragment>>()
 
-    override val declaredRefinesDependencies: Iterable<KpmGradleFragment>
+    override val declaredRefinesDependencies: Iterable<GradleKpmFragment>
         get() = _directRefinesDependencies.map { it.get() }.toSet()
 
     // TODO: separate the declared module dependencies and exported module dependencies? we need this to keep implementation dependencies
@@ -106,7 +106,7 @@ open class KpmGradleFragmentInternal @Inject constructor(
         FragmentConsistencyChecker(
             unitsName = "fragments",
             name = { name },
-            checks = FragmentConsistencyChecks<KpmGradleFragment>(
+            checks = FragmentConsistencyChecks<GradleKpmFragment>(
                 unitName = "fragment",
                 languageSettings = { languageSettings }
             ).allChecks

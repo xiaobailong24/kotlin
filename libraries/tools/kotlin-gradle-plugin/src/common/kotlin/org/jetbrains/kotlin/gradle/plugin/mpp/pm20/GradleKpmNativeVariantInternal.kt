@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.publishedConfigurationName
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
-abstract class KpmNativeVariantInternal(
+abstract class GradleKpmNativeVariantInternal(
     containingModule: KpmGradleModule,
     fragmentName: String,
     val konanTarget: KonanTarget,
@@ -19,8 +19,8 @@ abstract class KpmNativeVariantInternal(
     compileDependencyConfiguration: Configuration,
     apiElementsConfiguration: Configuration,
     final override val hostSpecificMetadataElementsConfiguration: Configuration?
-) : KpmNativeVariant,
-    KpmGradleVariantInternal(
+) : GradleKpmNativeVariant,
+    GradleKpmVariantInternal(
         containingModule = containingModule,
         fragmentName = fragmentName,
         dependencyConfigurations = dependencyConfigurations,
@@ -48,7 +48,7 @@ interface KotlinNativeCompilationData<T : KotlinCommonOptions> : KotlinCompilati
 
 internal class KotlinMappedNativeCompilationFactory(
     target: KotlinNativeTarget,
-    private val variantClass: Class<out KpmNativeVariantInternal>
+    private val variantClass: Class<out GradleKpmNativeVariantInternal>
 ) : KotlinNativeCompilationFactory(target) {
     override fun create(name: String): KotlinNativeCompilation {
         val module = target.project.kpmModules.maybeCreate(name)

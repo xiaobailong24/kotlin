@@ -20,8 +20,8 @@ import org.jetbrains.kotlin.gradle.kpm.external.external
 import org.jetbrains.kotlin.gradle.kpm.idea.testFixtures.deserialize
 import org.jetbrains.kotlin.gradle.kpm.idea.testFixtures.serialize
 import org.jetbrains.kotlin.gradle.plugin.KotlinPm20PluginWrapper
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmIosX64Variant
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmLinuxX64Variant
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmIosX64Variant
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmLinuxX64Variant
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinPm20ProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.jvm
 import unwrapProxyInstance
@@ -48,8 +48,8 @@ class BackwardsCompatibilityDeserializationTest {
         kotlinExtension.mainAndTest {
             jvm
             val native = fragments.create("native")
-            val linux = fragments.create<KpmLinuxX64Variant>("linuxX64")
-            val ios = fragments.create<KpmIosX64Variant>("iosX64")
+            val linux = fragments.create<GradleKpmLinuxX64Variant>("linuxX64")
+            val ios = fragments.create<GradleKpmIosX64Variant>("iosX64")
             native.refines(common)
             linux.refines(native)
             ios.refines(native)

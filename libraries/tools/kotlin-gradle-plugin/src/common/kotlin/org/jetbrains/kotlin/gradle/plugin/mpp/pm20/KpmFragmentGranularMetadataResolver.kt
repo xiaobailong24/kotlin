@@ -15,7 +15,7 @@ import java.io.File
 import java.util.*
 
 internal class KpmFragmentGranularMetadataResolver(
-    private val requestingFragment: KpmGradleFragment,
+    private val requestingFragment: GradleKpmFragment,
     private val refinesParentResolvers: Lazy<Iterable<KpmFragmentGranularMetadataResolver>>
 ) {
     val resolutions: Iterable<MetadataDependencyResolution> by lazy {
@@ -161,7 +161,7 @@ internal class KpmFragmentGranularMetadataResolver(
             // resolve the dependencies of that variant getting the host-specific metadata artifact
             relevantVariantResolution?.let { resolution ->
                 val configurationResolvingPlatformVariant =
-                    (resolution.requestingVariant as KpmGradleVariant).compileDependenciesConfiguration
+                    (resolution.requestingVariant as GradleKpmVariant).compileDependenciesConfiguration
                 val hostSpecificArtifact = ResolvedMppVariantsProvider.get(project)
                     .getHostSpecificMetadataArtifactByRootModule(
                         dependencyModule.moduleIdentifier,

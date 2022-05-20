@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.Choos
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.ChooseVisibleSourceSets.MetadataProvider.JarMetadataProvider
 import org.jetbrains.kotlin.gradle.plugin.mpp.MetadataDependencyResolution.ChooseVisibleSourceSets.MetadataProvider.ProjectMetadataProvider
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmFragmentGranularMetadataResolverFactory
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleFragment
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmFragment
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleModule.Companion.moduleName
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.toKpmModuleDependency
 import org.jetbrains.kotlin.gradle.utils.withTemporaryDirectory
@@ -18,14 +18,14 @@ import org.jetbrains.kotlin.gradle.utils.withTemporaryDirectory
 internal class IdeaKotlinMetadataBinaryDependencyResolver(
     private val fragmentGranularMetadataResolverFactory: KpmFragmentGranularMetadataResolverFactory
 ) : IdeaKotlinDependencyResolver {
-    override fun resolve(fragment: KpmGradleFragment): Set<IdeaKotlinDependency> {
+    override fun resolve(fragment: GradleKpmFragment): Set<IdeaKotlinDependency> {
         return fragmentGranularMetadataResolverFactory.getOrCreate(fragment).resolutions
             .filterIsInstance<ChooseVisibleSourceSets>()
             .flatMap { resolution -> resolve(fragment, resolution) }
             .toSet()
     }
 
-    private fun resolve(fragment: KpmGradleFragment, resolution: ChooseVisibleSourceSets): Iterable<IdeaKotlinDependency> {
+    private fun resolve(fragment: GradleKpmFragment, resolution: ChooseVisibleSourceSets): Iterable<IdeaKotlinDependency> {
         val gradleModuleIdentifier = resolution.dependency.id as? ModuleComponentIdentifier ?: return emptySet()
         val kotlinModuleIdentifier = resolution.dependency.toKpmModuleDependency().moduleIdentifier
 

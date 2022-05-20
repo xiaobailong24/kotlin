@@ -159,11 +159,11 @@ private fun <T> getHostSpecificElements(
 
 internal fun getHostSpecificFragments(
     module: KpmGradleModule
-): Set<KpmGradleFragment> = getHostSpecificElements<KpmGradleFragment>(
+): Set<GradleKpmFragment> = getHostSpecificElements<GradleKpmFragment>(
     module.fragments,
     isNativeShared = { it.isNativeShared() },
     getKonanTargets = {
-        val nativeVariants = module.variantsContainingFragment(it).filterIsInstance<KpmNativeVariantInternal>()
+        val nativeVariants = module.variantsContainingFragment(it).filterIsInstance<GradleKpmNativeVariantInternal>()
         nativeVariants.mapTo(mutableSetOf()) { it.konanTarget }
     }
 )

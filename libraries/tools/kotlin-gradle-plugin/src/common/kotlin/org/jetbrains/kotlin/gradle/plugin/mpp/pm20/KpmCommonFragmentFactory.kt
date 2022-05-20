@@ -9,7 +9,7 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.FragmentNameDisambiguation
 
-typealias KpmCommonFragmentFactory = KpmGradleFragmentFactory<KpmGradleFragmentInternal>
+typealias KpmCommonFragmentFactory = KpmGradleFragmentFactory<GradleKpmFragmentInternal>
 
 fun KpmCommonFragmentFactory(module: KpmGradleModule): KpmCommonFragmentFactory =
     KpmCommonFragmentFactory(KpmCommonFragmentInstantiator(module))
@@ -17,7 +17,7 @@ fun KpmCommonFragmentFactory(module: KpmGradleModule): KpmCommonFragmentFactory 
 fun KpmCommonFragmentFactory(
     commonFragmentInstantiator: KpmCommonFragmentInstantiator,
     commonFragmentConfigurator: KpmCommonFragmentConfigurator = KpmCommonFragmentConfigurator()
-): KpmGradleFragmentFactory<KpmGradleFragmentInternal> = KpmGradleFragmentFactory(
+): KpmGradleFragmentFactory<GradleKpmFragmentInternal> = KpmGradleFragmentFactory(
     fragmentInstantiator = commonFragmentInstantiator,
     fragmentConfigurator = commonFragmentConfigurator
 )
@@ -26,18 +26,18 @@ class KpmCommonFragmentInstantiator(
     private val module: KpmGradleModule,
     private val dependencyConfigurationsFactory: KpmFragmentDependencyConfigurationsFactory =
         KpmDefaultFragmentDependencyConfigurationsFactory
-) : KpmGradleFragmentFactory.FragmentInstantiator<KpmGradleFragmentInternal> {
-    override fun create(name: String): KpmGradleFragmentInternal {
+) : KpmGradleFragmentFactory.FragmentInstantiator<GradleKpmFragmentInternal> {
+    override fun create(name: String): GradleKpmFragmentInternal {
         val names = FragmentNameDisambiguation(module, name)
-        return KpmGradleFragmentInternal(module, name, dependencyConfigurationsFactory.create(module, names))
+        return GradleKpmFragmentInternal(module, name, dependencyConfigurationsFactory.create(module, names))
     }
 }
 
 class KpmCommonFragmentConfigurator(
-    private val sourceDirectoriesSetup: KpmSourceDirectoriesConfigurator<KpmGradleFragmentInternal> =
+    private val sourceDirectoriesSetup: KpmSourceDirectoriesConfigurator<GradleKpmFragmentInternal> =
         KpmDefaultSourceDirectoriesConfigurator
-) : KpmGradleFragmentFactory.FragmentConfigurator<KpmGradleFragmentInternal> {
-    override fun configure(fragment: KpmGradleFragmentInternal) {
+) : KpmGradleFragmentFactory.FragmentConfigurator<GradleKpmFragmentInternal> {
+    override fun configure(fragment: GradleKpmFragmentInternal) {
         sourceDirectoriesSetup.configure(fragment)
     }
 }

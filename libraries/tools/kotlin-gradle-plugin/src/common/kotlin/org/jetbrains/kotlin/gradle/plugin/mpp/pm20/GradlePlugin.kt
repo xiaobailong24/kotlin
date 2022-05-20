@@ -119,19 +119,19 @@ open class KotlinPm20ProjectExtension(project: Project) : KotlinTopLevelExtensio
     internal fun isAllowCommonizerForIde(@Suppress("UNUSED_PARAMETER") project: Project): Boolean = false
 }
 
-val KpmGradleModule.jvm: KpmJvmVariant
-    get() = fragments.maybeCreate("jvm", KpmJvmVariant::class.java)
+val KpmGradleModule.jvm: GradleKpmJvmVariant
+    get() = fragments.maybeCreate("jvm", GradleKpmJvmVariant::class.java)
 
-fun KpmGradleModule.jvm(configure: KpmJvmVariant.() -> Unit): KpmJvmVariant = jvm.apply(configure)
+fun KpmGradleModule.jvm(configure: GradleKpmJvmVariant.() -> Unit): GradleKpmJvmVariant = jvm.apply(configure)
 
-fun KotlinPm20ProjectExtension.jvm(configure: KotlinFragmentSlice<KpmJvmVariant>.() -> Unit) {
-    val getOrCreateVariant: KpmGradleModule.() -> KpmJvmVariant = { jvm }
+fun KotlinPm20ProjectExtension.jvm(configure: KotlinFragmentSlice<GradleKpmJvmVariant>.() -> Unit) {
+    val getOrCreateVariant: KpmGradleModule.() -> GradleKpmJvmVariant = { jvm }
     mainAndTest { getOrCreateVariant(this) }
     val slice = KotlinFragmentSlice(this, getOrCreateVariant)
     configure(slice)
 }
 
-open class KotlinFragmentSlice<T : KpmGradleFragment>(
+open class KotlinFragmentSlice<T : GradleKpmFragment>(
     val pm20ProjectExtension: KotlinPm20ProjectExtension,
     val getOrCreateFragment: (KpmGradleModule) -> T
 ) {

@@ -9,7 +9,7 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.FragmentNameDisambiguation
 
-fun <T : KpmNativeVariantInternal> KpmNativeVariantFactory(
+fun <T : GradleKpmNativeVariantInternal> KpmNativeVariantFactory(
     module: KpmGradleModule,
     constructor: KpmNativeVariantConstructor<T>,
     config: KpmNativeVariantConfig<T> = KpmNativeVariantConfig()
@@ -18,7 +18,7 @@ fun <T : KpmNativeVariantInternal> KpmNativeVariantFactory(
     fragmentConfigurator = KpmNativeVariantConfigurator(config)
 )
 
-data class KpmNativeVariantConfig<T : KpmNativeVariantInternal>(
+data class KpmNativeVariantConfig<T : GradleKpmNativeVariantInternal>(
     val dependenciesConfigurationFactory: KpmFragmentDependencyConfigurationsFactory =
         KpmDefaultFragmentDependencyConfigurationsFactory,
 
@@ -42,11 +42,11 @@ data class KpmNativeVariantConfig<T : KpmNativeVariantInternal>(
     val sourceDirectoriesConfigurator: KpmSourceDirectoriesConfigurator<T> =
         KpmDefaultSourceDirectoriesConfigurator,
 
-    val publicationConfigurator: KotlinPublicationConfigurator<KpmNativeVariantInternal> =
+    val publicationConfigurator: KotlinPublicationConfigurator<GradleKpmNativeVariantInternal> =
         KotlinPublicationConfigurator.NativeVariantPublication
 )
 
-class KpmNativeVariantInstantiator<T : KpmNativeVariantInternal>(
+class KpmNativeVariantInstantiator<T : GradleKpmNativeVariantInternal>(
     private val module: KpmGradleModule,
     private val variantConstructor: KpmNativeVariantConstructor<T>,
     private val config: KpmNativeVariantConfig<T>
@@ -76,7 +76,7 @@ class KpmNativeVariantInstantiator<T : KpmNativeVariantInternal>(
     }
 }
 
-class KpmNativeVariantConfigurator<T : KpmNativeVariantInternal>(
+class KpmNativeVariantConfigurator<T : GradleKpmNativeVariantInternal>(
     private val config: KpmNativeVariantConfig<T>
 ) : KpmGradleFragmentFactory.FragmentConfigurator<T> {
 

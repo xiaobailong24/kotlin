@@ -173,7 +173,7 @@ internal fun metadataJarName(module: KpmGradleModule) =
     lowerCamelCaseName(module.moduleClassifier, KotlinMetadataTargetConfigurator.ALL_METADATA_JAR_NAME)
 
 private fun createCommonMetadataCompilation(
-    fragment: KpmGradleFragment,
+    fragment: GradleKpmFragment,
     compileAllTask: TaskProvider<DefaultTask>,
     metadataCompilationRegistry: MetadataCompilationRegistry
 ) {
@@ -194,7 +194,7 @@ private fun createCommonMetadataCompilation(
 }
 
 private fun createNativeMetadataCompilation(
-    fragment: KpmGradleFragment,
+    fragment: GradleKpmFragment,
     compileAllTask: TaskProvider<DefaultTask>,
     metadataCompilationRegistry: MetadataCompilationRegistry
 ) {
@@ -216,7 +216,7 @@ private fun createNativeMetadataCompilation(
 
 private class MetadataCompilationTasksConfigurator(project: Project) : KpmCompilationTaskConfigurator(project) {
     fun createKotlinCommonCompilationTask(
-        fragment: KpmGradleFragment,
+        fragment: GradleKpmFragment,
         compilationData: KotlinCommonFragmentMetadataCompilationData
     ) {
         KotlinCommonSourceSetProcessor(
@@ -235,22 +235,22 @@ private class MetadataCompilationTasksConfigurator(project: Project) : KpmCompil
     }
 
     fun createKotlinNativeMetadataCompilationTask(
-        fragment: KpmGradleFragment,
+        fragment: GradleKpmFragment,
         compilationData: KotlinNativeFragmentMetadataCompilationData
     ): TaskProvider<KotlinNativeCompile> = createKotlinNativeCompilationTask(fragment, compilationData) {
         kotlinPluginData = project.compilerPluginProviderForNativeMetadata(fragment, compilationData)
     }
 
-    override fun getSourcesForFragmentCompilation(fragment: KpmGradleFragment): MultipleSourceRootsProvider {
+    override fun getSourcesForFragmentCompilation(fragment: GradleKpmFragment): MultipleSourceRootsProvider {
         return project.provider { listOf(fragmentSourcesProvider.getFragmentOwnSources(fragment)) }
     }
 
-    override fun getCommonSourcesForFragmentCompilation(fragment: KpmGradleFragment): MultipleSourceRootsProvider {
+    override fun getCommonSourcesForFragmentCompilation(fragment: GradleKpmFragment): MultipleSourceRootsProvider {
         return project.provider { listOf(fragmentSourcesProvider.getFragmentOwnSources(fragment)) }
     }
 }
 
-private fun resolvedMetadataProviders(fragment: KpmGradleFragment) =
+private fun resolvedMetadataProviders(fragment: GradleKpmFragment) =
     fragment.withRefinesClosure.map {
         FragmentResolvedMetadataProvider(
             fragment.project.tasks.withType<TransformKotlinGranularMetadataForFragment>().named(transformFragmentMetadataTaskName(it))
@@ -259,7 +259,7 @@ private fun resolvedMetadataProviders(fragment: KpmGradleFragment) =
 
 private fun createExtractMetadataTask(
     project: Project,
-    fragment: KpmGradleFragment,
+    fragment: GradleKpmFragment,
     transformation: KpmFragmentGranularMetadataResolver
 ) {
     project.tasks.register(

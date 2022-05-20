@@ -29,12 +29,12 @@ open class KpmGradleModuleInternal(
     override val moduleIdentifier: KpmModuleIdentifier =
         KpmLocalModuleIdentifier(project.currentBuildId().name, project.path, moduleClassifier)
 
-    override val fragments: ExtensiblePolymorphicDomainObjectContainer<KpmGradleFragment> =
-        project.objects.polymorphicDomainObjectContainer(KpmGradleFragment::class.java)
+    override val fragments: ExtensiblePolymorphicDomainObjectContainer<GradleKpmFragment> =
+        project.objects.polymorphicDomainObjectContainer(GradleKpmFragment::class.java)
 
     // TODO DSL & build script model: find a way to create a flexible typed view on fragments?
-    override val variants: NamedDomainObjectSet<KpmGradleVariant> by lazy {
-        fragments.withType(KpmGradleVariant::class.java)
+    override val variants: NamedDomainObjectSet<GradleKpmVariant> by lazy {
+        fragments.withType(GradleKpmVariant::class.java)
     }
 
     override val plugins: Set<KpmCompilerPlugin> by lazy {
@@ -79,5 +79,5 @@ internal val KpmGradleModule.isMain
 internal fun KpmGradleModule.disambiguateName(simpleName: String) =
     lowerCamelCaseName(moduleClassifier, simpleName)
 
-internal fun KpmGradleModule.variantsContainingFragment(fragment: KpmFragment): Iterable<KpmGradleVariant> =
-    (this as KpmModule).variantsContainingFragment(fragment).onEach { it as KpmGradleVariant } as Iterable<KpmGradleVariant>
+internal fun KpmGradleModule.variantsContainingFragment(fragment: KpmFragment): Iterable<GradleKpmVariant> =
+    (this as KpmModule).variantsContainingFragment(fragment).onEach { it as GradleKpmVariant } as Iterable<GradleKpmVariant>
