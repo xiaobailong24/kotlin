@@ -9,16 +9,16 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.FragmentNameDisambiguation
 
-fun <T : KpmNativeVariantInternal> KotlinNativeVariantFactory(
+fun <T : KpmNativeVariantInternal> KpmNativeVariantFactory(
     module: KpmGradleModule,
     constructor: KpmNativeVariantConstructor<T>,
-    config: KotlinNativeVariantConfig<T> = KotlinNativeVariantConfig()
+    config: KpmNativeVariantConfig<T> = KpmNativeVariantConfig()
 ) = KpmGradleFragmentFactory(
-    fragmentInstantiator = KotlinNativeVariantInstantiator(module, constructor, config),
-    fragmentConfigurator = KotlinNativeVariantConfigurator(config)
+    fragmentInstantiator = KpmNativeVariantInstantiator(module, constructor, config),
+    fragmentConfigurator = KpmNativeVariantConfigurator(config)
 )
 
-data class KotlinNativeVariantConfig<T : KpmNativeVariantInternal>(
+data class KpmNativeVariantConfig<T : KpmNativeVariantInternal>(
     val dependenciesConfigurationFactory: KpmFragmentDependencyConfigurationsFactory =
         KpmDefaultFragmentDependencyConfigurationsFactory,
 
@@ -46,10 +46,10 @@ data class KotlinNativeVariantConfig<T : KpmNativeVariantInternal>(
         KotlinPublicationConfigurator.NativeVariantPublication
 )
 
-class KotlinNativeVariantInstantiator<T : KpmNativeVariantInternal>(
+class KpmNativeVariantInstantiator<T : KpmNativeVariantInternal>(
     private val module: KpmGradleModule,
     private val variantConstructor: KpmNativeVariantConstructor<T>,
-    private val config: KotlinNativeVariantConfig<T>
+    private val config: KpmNativeVariantConfig<T>
 
 ) : KpmGradleFragmentFactory.FragmentInstantiator<T> {
 
@@ -76,8 +76,8 @@ class KotlinNativeVariantInstantiator<T : KpmNativeVariantInternal>(
     }
 }
 
-class KotlinNativeVariantConfigurator<T : KpmNativeVariantInternal>(
-    private val config: KotlinNativeVariantConfig<T>
+class KpmNativeVariantConfigurator<T : KpmNativeVariantInternal>(
+    private val config: KpmNativeVariantConfig<T>
 ) : KpmGradleFragmentFactory.FragmentConfigurator<T> {
 
     override fun configure(fragment: T) {

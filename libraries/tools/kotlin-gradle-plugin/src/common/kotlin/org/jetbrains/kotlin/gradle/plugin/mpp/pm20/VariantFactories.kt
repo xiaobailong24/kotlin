@@ -17,7 +17,7 @@ internal fun registerDefaultVariantFactories(project: Project) {
         fun <T : KpmNativeVariantInternal> registerNativeVariantFactory(
             constructor: KpmNativeVariantConstructor<T>
         ) = module.fragments.registerFactory(
-            constructor.variantClass, KotlinNativeVariantFactory(module, constructor)
+            constructor.variantClass, KpmNativeVariantFactory(module, constructor)
         )
 
         allKpmNativeVariantConstructors.forEach { constructor -> registerNativeVariantFactory(constructor) }

@@ -29,7 +29,7 @@ class KotlinNativeVariantFactoryTest(
 
     @BeforeTest
     fun createVariant() {
-        variant = KotlinNativeVariantFactory(kotlin.main, variantConstructor).create("native")
+        variant = KpmNativeVariantFactory(kotlin.main, variantConstructor).create("native")
     }
 
     @Test
