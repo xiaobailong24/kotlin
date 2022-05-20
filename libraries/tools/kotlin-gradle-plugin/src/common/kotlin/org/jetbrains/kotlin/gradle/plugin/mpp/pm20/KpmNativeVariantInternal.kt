@@ -5,11 +5,9 @@
 
 package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
-import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonOptions
 import org.jetbrains.kotlin.gradle.plugin.mpp.*
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeCompileOptions
 import org.jetbrains.kotlin.gradle.plugin.mpp.publishedConfigurationName
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
@@ -46,24 +44,6 @@ abstract class KpmNativeVariantInternal(
 interface KotlinNativeCompilationData<T : KotlinCommonOptions> : KotlinCompilationData<T> {
     val konanTarget: KonanTarget
     val enableEndorsedLibs: Boolean
-}
-
-internal class KpmNativeVariantCompilationData(
-    val variant: KpmNativeVariantInternal
-) : KpmVariantCompilationDataInternal<KotlinCommonOptions>, KotlinNativeCompilationData<KotlinCommonOptions> {
-    override val konanTarget: KonanTarget
-        get() = variant.konanTarget
-
-    override val enableEndorsedLibs: Boolean
-        get() = variant.enableEndorsedLibraries
-
-    override val project: Project
-        get() = variant.containingModule.project
-
-    override val owner: KpmNativeVariant
-        get() = variant
-
-    override val kotlinOptions: KotlinCommonOptions = NativeCompileOptions { variant.languageSettings }
 }
 
 internal class KotlinMappedNativeCompilationFactory(
