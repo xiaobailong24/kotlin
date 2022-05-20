@@ -1,9 +1,14 @@
 // KT-46643
 // IGNORE_BACKEND: WASM
+// WITH_STDLIB
 
-external abstract class Base {
-    open val foo: String
+import kotlin.reflect.KProperty
+
+external interface IBase {
+    val foo: String
 }
+
+external abstract class Base : IBase
 
 open class A : Base() {
     override var foo: String = "Error: A setter was not called."
@@ -36,6 +41,28 @@ open class E : D() {
     override lateinit var result: String
 }
 
+open class F: B() {
+    override var foo: String by CustomDelegator
+
+    private object CustomDelegator {
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
+            return "Error: F setter was not called."
+        }
+
+        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
+            result = "O$value"
+        }
+
+        lateinit var result: String
+    }
+
+    override val result: String get() = CustomDelegator.result
+}
+
+class G(val b: B): IBase by b {
+    val result: String get() = b.result
+}
+
 fun box(): String {
     val a = A()
     if (a.result != "OK") return a.foo
@@ -51,6 +78,12 @@ fun box(): String {
 
     val e = E()
     if (e.result != "OK") return e.foo
+
+    val f = F()
+    if (f.result != "OK") return f.foo
+
+    val g = G(e)
+    if (g.result != "OK") return g.foo
 
     return "OK"
 }
