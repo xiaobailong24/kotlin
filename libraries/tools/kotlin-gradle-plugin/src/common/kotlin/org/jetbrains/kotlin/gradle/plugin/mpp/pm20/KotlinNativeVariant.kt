@@ -29,7 +29,7 @@ abstract class KpmNativeVariantInternal(
         compileDependenciesConfiguration = compileDependencyConfiguration,
         apiElementsConfiguration = apiElementsConfiguration
     ),
-    SingleMavenPublishedModuleHolder by DefaultSingleMavenPublishedModuleHolder(containingModule, fragmentName) {
+    KpmSingleMavenPublishedModuleHolder by KpmDefaultKpmSingleMavenPublishedModuleHolder(containingModule, fragmentName) {
 
     override var enableEndorsedLibraries: Boolean = false
 

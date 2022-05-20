@@ -33,14 +33,14 @@ import javax.inject.Inject
 interface PlatformPublicationToMavenRequest {
     val componentName: String
     val fromModule: KpmGradleModule
-    val publicationHolder: SingleMavenPublishedModuleHolder
+    val publicationHolder: KpmSingleMavenPublishedModuleHolder
     val variantPublicationRequests: Iterable<VariantPublicationRequest>
 }
 
 data class BasicPlatformPublicationToMavenRequest(
     override val componentName: String,
     override val fromModule: KpmGradleModule,
-    override val publicationHolder: SingleMavenPublishedModuleHolder,
+    override val publicationHolder: KpmSingleMavenPublishedModuleHolder,
     override val variantPublicationRequests: Iterable<VariantPublicationRequest>
 ) : PlatformPublicationToMavenRequest {
     init {
@@ -71,14 +71,14 @@ fun VariantPublishingConfigurator.configureNativeVariantPublication(variant: Kpm
     configureSingleVariantPublishing(variant, variant, publishConfigurations)
 }
 
-fun VariantPublishingConfigurator.configureSingleVariantPublication(variant: KpmGradlePublishedVariantWithRuntime) {
+fun VariantPublishingConfigurator.configureSingleVariantPublication(variant: KpmGradlePublishedVariantWithRuntimeKpm) {
     val publishConfigurations = listOf(variant.apiElementsConfiguration, variant.runtimeElementsConfiguration)
     configureSingleVariantPublishing(variant, variant, publishConfigurations)
 }
 
 fun VariantPublishingConfigurator.configureSingleVariantPublishing(
     variant: KpmGradleVariant,
-    publishedModuleHolder: SingleMavenPublishedModuleHolder,
+    publishedModuleHolder: KpmSingleMavenPublishedModuleHolder,
     publishConfigurations: Iterable<Configuration>
 ) {
     configurePublishing(
@@ -158,7 +158,7 @@ open class VariantPublishingConfigurator @Inject constructor(
      */
     protected open fun registerPlatformModulePublication(
         componentName: String,
-        publishedModuleHolder: SingleMavenPublishedModuleHolder,
+        publishedModuleHolder: KpmSingleMavenPublishedModuleHolder,
         variantRequests: Iterable<VariantPublicationRequest>,
         whenShouldRegisterPublication: (() -> Unit) -> Unit
     ) {
@@ -203,7 +203,7 @@ open class VariantPublishingConfigurator @Inject constructor(
     }
 
     protected open fun registerPlatformVariantsInRootModule(
-        publishedModuleHolder: SingleMavenPublishedModuleHolder,
+        publishedModuleHolder: KpmSingleMavenPublishedModuleHolder,
         kotlinModule: KpmGradleModule,
         variantRequests: Iterable<VariantPublicationRequest>
     ) {

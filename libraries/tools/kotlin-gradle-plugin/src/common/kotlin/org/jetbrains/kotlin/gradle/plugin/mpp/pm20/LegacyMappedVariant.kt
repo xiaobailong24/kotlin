@@ -192,7 +192,7 @@ internal fun mapTargetCompilationsToKpmVariants(target: AbstractKotlinTarget, pu
     whenPublicationShouldRegister {
         val mainModule = target.project.kpmModules.getByName(KpmGradleModule.MAIN_MODULE_NAME)
         target.kotlinComponents.forEach { kotlinComponent ->
-            val moduleHolder = DefaultSingleMavenPublishedModuleHolder(
+            val moduleHolder = KpmDefaultKpmSingleMavenPublishedModuleHolder(
                 mainModule,
                 kotlinComponent.defaultArtifactId.removePrefix(target.project.name.toLowerCase() + "-")
             )

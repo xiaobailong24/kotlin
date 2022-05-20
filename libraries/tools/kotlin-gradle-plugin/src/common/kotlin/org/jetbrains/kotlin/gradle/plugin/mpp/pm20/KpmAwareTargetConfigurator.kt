@@ -31,7 +31,7 @@ internal open class KpmAwareTargetConfigurator<T : KotlinTarget>(
                 val compilationDetails = (compilation as? AbstractKotlinCompilation)?.compilationDetails
                 if (compilationDetails is VariantMappedCompilationDetails<*> && compilationDetails.variant.containingModule.isMain) {
                     val variant = compilationDetails.variant
-                    if (variant is SingleMavenPublishedModuleHolder) {
+                    if (variant is KpmSingleMavenPublishedModuleHolder) {
                         variant.whenPublicationAssigned { publication ->
                             target.publicationConfigureActions.all { action ->
                                 action.execute(publication)

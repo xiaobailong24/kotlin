@@ -11,8 +11,8 @@ interface KotlinPublicationConfigurator<in T : KpmGradleVariant> : KotlinGradleF
         override fun configure(fragment: KpmGradleVariant) = Unit
     }
 
-    object SingleVariantPublication : KotlinPublicationConfigurator<KpmGradlePublishedVariantWithRuntime> {
-        override fun configure(fragment: KpmGradlePublishedVariantWithRuntime) {
+    object SingleVariantPublication : KotlinPublicationConfigurator<KpmGradlePublishedVariantWithRuntimeKpm> {
+        override fun configure(fragment: KpmGradlePublishedVariantWithRuntimeKpm) {
             VariantPublishingConfigurator.get(fragment.project).configureSingleVariantPublication(fragment)
         }
     }

@@ -21,7 +21,7 @@ open class KpmJvmVariant(
     apiElementsConfiguration: Configuration,
     runtimeDependenciesConfiguration: Configuration,
     runtimeElementsConfiguration: Configuration
-) : KpmGradlePublishedVariantWithRuntime(
+) : KpmGradlePublishedVariantWithRuntimeKpm(
     containingModule = containingModule,
     fragmentName = fragmentName,
     dependencyConfigurations = dependencyConfigurations,

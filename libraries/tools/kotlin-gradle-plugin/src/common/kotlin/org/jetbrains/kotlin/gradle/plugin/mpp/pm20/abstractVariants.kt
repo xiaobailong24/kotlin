@@ -49,9 +49,9 @@ abstract class KpmGradleVariantInternal(
     override fun toString(): String = "variant $fragmentName in $containingModule"
 }
 
-class DefaultSingleMavenPublishedModuleHolder(
+class KpmDefaultKpmSingleMavenPublishedModuleHolder(
     private var module: KpmGradleModule, override val defaultPublishedModuleSuffix: String?
-) : SingleMavenPublishedModuleHolder {
+) : KpmSingleMavenPublishedModuleHolder {
     private val project get() = module.project
 
     private var assignedMavenPublication: MavenPublication? = null
@@ -108,7 +108,7 @@ abstract class KpmGradleVariantWithRuntimeInternal(
 private fun defaultModuleSuffix(module: KpmGradleModule, variantName: String): String =
     dashSeparatedName(variantName, module.moduleClassifier)
 
-abstract class KpmGradlePublishedVariantWithRuntime(
+abstract class KpmGradlePublishedVariantWithRuntimeKpm(
     containingModule: KpmGradleModule, fragmentName: String,
     dependencyConfigurations: KotlinFragmentDependencyConfigurations,
     compileDependencyConfiguration: Configuration,
@@ -123,7 +123,7 @@ abstract class KpmGradlePublishedVariantWithRuntime(
     apiElementsConfiguration = apiElementsConfiguration,
     runtimeDependenciesConfiguration = runtimeDependencyConfiguration,
     runtimeElementsConfiguration = runtimeElementsConfiguration
-), SingleMavenPublishedModuleHolder by DefaultSingleMavenPublishedModuleHolder(
+), KpmSingleMavenPublishedModuleHolder by KpmDefaultKpmSingleMavenPublishedModuleHolder(
     containingModule, defaultModuleSuffix(containingModule, fragmentName)
 ) {
     override val gradleVariantNames: Set<String>
