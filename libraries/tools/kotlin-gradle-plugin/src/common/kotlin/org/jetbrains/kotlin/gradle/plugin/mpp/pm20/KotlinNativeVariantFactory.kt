@@ -13,7 +13,7 @@ fun <T : KpmNativeVariantInternal> KotlinNativeVariantFactory(
     module: KpmGradleModule,
     constructor: KotlinNativeVariantConstructor<T>,
     config: KotlinNativeVariantConfig<T> = KotlinNativeVariantConfig()
-) = KotlinGradleFragmentFactory(
+) = KpmGradleFragmentFactory(
     fragmentInstantiator = KotlinNativeVariantInstantiator(module, constructor, config),
     fragmentConfigurator = KotlinNativeVariantConfigurator(config)
 )
@@ -51,7 +51,7 @@ class KotlinNativeVariantInstantiator<T : KpmNativeVariantInternal>(
     private val kotlinNativeVariantConstructor: KotlinNativeVariantConstructor<T>,
     private val config: KotlinNativeVariantConfig<T>
 
-) : KotlinGradleFragmentFactory.FragmentInstantiator<T> {
+) : KpmGradleFragmentFactory.FragmentInstantiator<T> {
 
     override fun create(name: String): T {
         val names = FragmentNameDisambiguation(module, name)
@@ -78,7 +78,7 @@ class KotlinNativeVariantInstantiator<T : KpmNativeVariantInternal>(
 
 class KotlinNativeVariantConfigurator<T : KpmNativeVariantInternal>(
     private val config: KotlinNativeVariantConfig<T>
-) : KotlinGradleFragmentFactory.FragmentConfigurator<T> {
+) : KpmGradleFragmentFactory.FragmentConfigurator<T> {
 
     override fun configure(fragment: T) {
         fragment.compileDependenciesConfiguration.configure(config.compileDependencies, fragment)

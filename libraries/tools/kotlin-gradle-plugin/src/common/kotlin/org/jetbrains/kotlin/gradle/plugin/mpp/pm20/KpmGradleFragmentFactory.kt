@@ -7,8 +7,8 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.gradle.api.NamedDomainObjectFactory
 import org.gradle.api.artifacts.Configuration
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinGradleFragmentFactory.FragmentConfigurator
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinGradleFragmentFactory.FragmentInstantiator
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleFragmentFactory.FragmentConfigurator
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KpmGradleFragmentFactory.FragmentInstantiator
 
 /**
  * Factory used by [KpmGradleModule] to polymorphic-ally create fragments/variants.
@@ -26,20 +26,20 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.KotlinGradleFragmentFactory.F
  *   - Setting up additional Gradle tasks
  *   - Setting up publication
  */
-class KotlinGradleFragmentFactory<T : KpmGradleFragment>(
+class KpmGradleFragmentFactory<T : KpmGradleFragment>(
     private val fragmentInstantiator: FragmentInstantiator<T>,
     private val fragmentConfigurator: FragmentConfigurator<T>
 ) : NamedDomainObjectFactory<T> {
 
     /**
-     * @see KotlinGradleFragmentFactory
+     * @see KpmGradleFragmentFactory
      */
     interface FragmentInstantiator<out T : KpmGradleFragment> {
         fun create(name: String): T
     }
 
     /**
-     * @see KotlinGradleFragmentFactory
+     * @see KpmGradleFragmentFactory
      */
     interface FragmentConfigurator<in T : KpmGradleFragment> {
         fun configure(fragment: T)

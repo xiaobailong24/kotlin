@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.plugin.sources.kpm.FragmentMappedKotlinSource
 import org.jetbrains.kotlin.gradle.utils.lowerCamelCaseName
 import java.io.File
 
-interface KotlinSourceDirectoriesConfigurator<in T : KpmGradleFragment>: KotlinGradleFragmentFactory.FragmentConfigurator<T>
+interface KotlinSourceDirectoriesConfigurator<in T : KpmGradleFragment>: KpmGradleFragmentFactory.FragmentConfigurator<T>
 
 object DefaultKotlinSourceDirectoriesConfigurator : KotlinSourceDirectoriesConfigurator<KpmGradleFragment> {
     override fun configure(fragment: KpmGradleFragment) {

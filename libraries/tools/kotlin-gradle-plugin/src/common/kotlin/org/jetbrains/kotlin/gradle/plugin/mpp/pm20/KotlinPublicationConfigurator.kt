@@ -5,7 +5,7 @@
 
 package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
-interface KotlinPublicationConfigurator<in T : KpmGradleVariant> : KotlinGradleFragmentFactory.FragmentConfigurator<T> {
+interface KotlinPublicationConfigurator<in T : KpmGradleVariant> : KpmGradleFragmentFactory.FragmentConfigurator<T> {
 
     object NoPublication : KotlinPublicationConfigurator<KpmGradleVariant> {
         override fun configure(fragment: KpmGradleVariant) = Unit
