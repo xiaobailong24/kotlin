@@ -12,7 +12,6 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationOutput
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultKotlinCompilationOutput
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.disambiguateName
-import org.jetbrains.kotlin.gradle.plugin.mpp.publishedConfigurationName
 import org.jetbrains.kotlin.gradle.utils.dashSeparatedName
 import org.jetbrains.kotlin.project.model.KotlinAttributeKey
 import org.jetbrains.kotlin.project.model.KotlinPlatformTypeAttribute
@@ -78,26 +77,3 @@ abstract class KpmGradleVariantWithRuntimeInternal(
 private fun defaultModuleSuffix(module: KpmGradleModule, variantName: String): String =
     dashSeparatedName(variantName, module.moduleClassifier)
 
-abstract class KpmGradlePublishedVariantWithRuntimeKpm(
-    containingModule: KpmGradleModule, fragmentName: String,
-    dependencyConfigurations: KpmFragmentDependencyConfigurations,
-    compileDependencyConfiguration: Configuration,
-    apiElementsConfiguration: Configuration,
-    runtimeDependencyConfiguration: Configuration,
-    runtimeElementsConfiguration: Configuration
-) : KpmGradleVariantWithRuntimeInternal(
-    containingModule = containingModule,
-    fragmentName = fragmentName,
-    dependencyConfigurations = dependencyConfigurations,
-    compileDependencyConfiguration = compileDependencyConfiguration,
-    apiElementsConfiguration = apiElementsConfiguration,
-    runtimeDependenciesConfiguration = runtimeDependencyConfiguration,
-    runtimeElementsConfiguration = runtimeElementsConfiguration
-), KpmSingleMavenPublishedModuleHolder by KpmDefaultSingleMavenPublishedModuleHolder(
-    containingModule, defaultModuleSuffix(containingModule, fragmentName)
-) {
-    override val gradleVariantNames: Set<String>
-        get() = listOf(apiElementsConfiguration.name, runtimeElementsConfiguration.name).flatMapTo(mutableSetOf()) {
-            listOf(it, publishedConfigurationName(it))
-        }
-}

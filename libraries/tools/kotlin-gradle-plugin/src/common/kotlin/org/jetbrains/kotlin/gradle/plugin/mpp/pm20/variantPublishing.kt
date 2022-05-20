@@ -71,7 +71,7 @@ fun VariantPublishingConfigurator.configureNativeVariantPublication(variant: Kpm
     configureSingleVariantPublishing(variant, variant, publishConfigurations)
 }
 
-fun VariantPublishingConfigurator.configureSingleVariantPublication(variant: KpmGradlePublishedVariantWithRuntimeKpm) {
+fun VariantPublishingConfigurator.configureSingleVariantPublication(variant: KpmGradlePublishedVariantWithRuntime) {
     val publishConfigurations = listOf(variant.apiElementsConfiguration, variant.runtimeElementsConfiguration)
     configureSingleVariantPublishing(variant, variant, publishConfigurations)
 }
