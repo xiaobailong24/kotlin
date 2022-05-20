@@ -40,8 +40,8 @@ data class KpmJvmVariantConfig(
     val sourceArchiveTaskConfigurator: KotlinSourceArchiveTaskConfigurator<KpmJvmVariant>
     = DefaultKotlinSourceArchiveTaskConfigurator,
 
-    val sourceDirectoriesConfigurator: KotlinSourceDirectoriesConfigurator<KpmJvmVariant>
-    = DefaultKotlinSourceDirectoriesConfigurator,
+    val sourceDirectoriesConfigurator: KpmSourceDirectoriesConfigurator<KpmJvmVariant>
+    = KpmDefaultSourceDirectoriesConfigurator,
 
     val publicationConfigurator: KotlinPublicationConfigurator<KpmJvmVariant>
     = KotlinPublicationConfigurator.SingleVariantPublication

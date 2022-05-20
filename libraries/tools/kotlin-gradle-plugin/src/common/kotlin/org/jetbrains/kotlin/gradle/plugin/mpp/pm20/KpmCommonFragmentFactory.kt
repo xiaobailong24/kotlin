@@ -34,8 +34,8 @@ class KpmCommonFragmentInstantiator(
 }
 
 class KpmCommonFragmentConfigurator(
-    private val sourceDirectoriesSetup: KotlinSourceDirectoriesConfigurator<KpmGradleFragmentInternal> =
-        DefaultKotlinSourceDirectoriesConfigurator
+    private val sourceDirectoriesSetup: KpmSourceDirectoriesConfigurator<KpmGradleFragmentInternal> =
+        KpmDefaultSourceDirectoriesConfigurator
 ) : KpmGradleFragmentFactory.FragmentConfigurator<KpmGradleFragmentInternal> {
     override fun configure(fragment: KpmGradleFragmentInternal) {
         sourceDirectoriesSetup.configure(fragment)

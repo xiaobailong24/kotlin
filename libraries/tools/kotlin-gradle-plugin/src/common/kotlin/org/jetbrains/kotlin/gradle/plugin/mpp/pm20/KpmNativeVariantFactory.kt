@@ -39,8 +39,8 @@ data class KpmNativeVariantConfig<T : KpmNativeVariantInternal>(
     val sourceArchiveTaskConfigurator: KotlinSourceArchiveTaskConfigurator<T> =
         DefaultKotlinSourceArchiveTaskConfigurator,
 
-    val sourceDirectoriesConfigurator: KotlinSourceDirectoriesConfigurator<T> =
-        DefaultKotlinSourceDirectoriesConfigurator,
+    val sourceDirectoriesConfigurator: KpmSourceDirectoriesConfigurator<T> =
+        KpmDefaultSourceDirectoriesConfigurator,
 
     val publicationConfigurator: KotlinPublicationConfigurator<KpmNativeVariantInternal> =
         KotlinPublicationConfigurator.NativeVariantPublication

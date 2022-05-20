@@ -151,7 +151,7 @@ class KotlinJvmVariantFactoryTest : AbstractKpmExtensionTest() {
     fun `test custom sourceDirectories configuration`() {
         val variant = KpmJvmVariantFactory(
             kotlin.main, KpmJvmVariantConfig(
-                sourceDirectoriesConfigurator = object : KotlinSourceDirectoriesConfigurator<KpmJvmVariant> {
+                sourceDirectoriesConfigurator = object : KpmSourceDirectoriesConfigurator<KpmJvmVariant> {
                     override fun configure(fragment: KpmJvmVariant) {
                         fragment.kotlinSourceRoots.setSrcDirs(listOf(project.file("src/abc/kotlin")))
                     }
