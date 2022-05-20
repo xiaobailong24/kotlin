@@ -5,20 +5,22 @@
 
 package org.jetbrains.kotlin.tooling.core
 
+import org.jetbrains.kotlin.tooling.core.Extras.Entry
+import org.jetbrains.kotlin.tooling.core.Extras.Key
 import java.io.Serializable
 
 @Suppress("unchecked_cast")
 internal class MutableExtrasImpl(
-    initialEntries: Iterable<Extras.Entry<*>> = emptyList()
+    initialEntries: Iterable<Entry<*>> = emptyList()
 ) : MutableExtras, AbstractExtras(), Serializable {
 
-    private val extras: MutableMap<Extras.Key<*>, Extras.Entry<*>> =
+    private val extras: MutableMap<Key<*>, Entry<*>> =
         initialEntries.associateByTo(mutableMapOf()) { it.key }
 
-    override val keys: Set<Extras.Key<*>>
+    override val keys: Set<Key<*>>
         get() = extras.keys
 
-    override val entries: Set<Extras.Entry<*>>
+    override val entries: Set<Entry<*>>
         get() = extras.values.toSet()
 
     override val size: Int
@@ -26,23 +28,23 @@ internal class MutableExtrasImpl(
 
     override fun isEmpty(): Boolean = extras.isEmpty()
 
-    override fun <T : Any> set(key: Extras.Key<T>, value: T): T? {
-        return put(Extras.Entry(key, value))
+    override fun <T : Any> set(key: Key<T>, value: T): T? {
+        return put(Entry(key, value))
     }
 
-    override fun <T : Any> put(entry: Extras.Entry<T>): T? {
+    override fun <T : Any> put(entry: Entry<T>): T? {
         return extras.put(entry.key, entry)?.let { it.value as T }
     }
 
-    override fun putAll(from: Iterable<Extras.Entry<*>>) {
+    override fun putAll(from: Iterable<Entry<*>>) {
         this.extras.putAll(from.associateBy { it.key })
     }
 
-    override fun <T : Any> get(key: Extras.Key<T>): T? {
+    override fun <T : Any> get(key: Key<T>): T? {
         return extras[key]?.let { it.value as T }
     }
 
-    override fun <T : Any> remove(key: Extras.Key<T>): T? {
+    override fun <T : Any> remove(key: Key<T>): T? {
         return extras.remove(key)?.let { it.value as T }
     }
 
@@ -57,21 +59,21 @@ internal class MutableExtrasImpl(
 
 @Suppress("unchecked_cast")
 internal class ImmutableExtrasImpl private constructor(
-    private val extras: Map<Extras.Key<*>, Extras.Entry<*>>
+    private val extras: Map<Key<*>, Entry<*>>
 ) : AbstractExtras(), Serializable {
-    constructor(extras: Iterable<Extras.Entry<*>>) : this(extras.associateBy { it.key })
+    constructor(extras: Iterable<Entry<*>>) : this(extras.associateBy { it.key })
 
-    constructor(extras: Array<out Extras.Entry<*>>) : this(extras.associateBy { it.key })
+    constructor(extras: Array<out Entry<*>>) : this(extras.associateBy { it.key })
 
-    override val keys: Set<Extras.Key<*>> = extras.keys
+    override val keys: Set<Key<*>> = extras.keys
 
     override fun isEmpty(): Boolean = extras.isEmpty()
 
     override val size: Int = extras.size
 
-    override val entries: Set<Extras.Entry<*>> = extras.values.toSet()
+    override val entries: Set<Entry<*>> = extras.values.toSet()
 
-    override fun <T : Any> get(key: Extras.Key<T>): T? {
+    override fun <T : Any> get(key: Key<T>): T? {
         return extras[key]?.let { it.value as T }
     }
 
@@ -82,7 +84,7 @@ internal class ImmutableExtrasImpl private constructor(
     /* Replace during serialization */
     private fun writeReplace(): Any = Surrogate(entries)
 
-    private class Surrogate(private val entries: Set<Extras.Entry<*>>) : Serializable {
+    private class Surrogate(private val entries: Set<Entry<*>>) : Serializable {
         fun readResolve(): Any = ImmutableExtrasImpl(entries)
 
         private companion object {
@@ -97,15 +99,15 @@ abstract class AbstractExtras : Extras {
 
     override fun isEmpty(): Boolean = keys.isEmpty()
 
-    override fun contains(key: Extras.Key<*>): Boolean = key in keys
+    override fun contains(key: Key<*>): Boolean = key in keys
 
-    override fun contains(element: Extras.Entry<*>): Boolean =
+    override fun contains(element: Entry<*>): Boolean =
         entries.contains(element)
 
-    override fun containsAll(elements: Collection<Extras.Entry<*>>): Boolean =
+    override fun containsAll(elements: Collection<Entry<*>>): Boolean =
         entries.containsAll(elements)
 
-    override fun iterator(): Iterator<Extras.Entry<out Any>> = entries.iterator()
+    override fun iterator(): Iterator<Entry<out Any>> = entries.iterator()
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
@@ -126,17 +128,17 @@ abstract class AbstractExtras : Extras {
 abstract class AbstractEmptyExtras : AbstractExtras() {
     final override val size: Int = 0
 
-    final override val keys: Set<Extras.Key<*>> = emptySet()
+    final override val keys: Set<Key<*>> = emptySet()
 
-    final override val entries: Set<Extras.Entry<*>> = emptySet()
+    final override val entries: Set<Entry<*>> = emptySet()
 
     final override fun isEmpty(): Boolean = true
 
-    final override fun <T : Any> get(key: Extras.Key<T>): T? = null
+    final override fun <T : Any> get(key: Key<T>): T? = null
 
-    override fun contains(key: Extras.Key<*>): Boolean = false
+    override fun contains(key: Key<*>): Boolean = false
 
-    override fun contains(element: Extras.Entry<out Any>): Boolean = false
+    override fun contains(element: Entry<out Any>): Boolean = false
 }
 
 internal object EmptyExtras : AbstractEmptyExtras(), Serializable {
