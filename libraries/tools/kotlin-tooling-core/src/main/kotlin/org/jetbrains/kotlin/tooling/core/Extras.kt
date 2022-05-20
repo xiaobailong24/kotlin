@@ -130,7 +130,6 @@ interface Extras : Collection<Extras.Entry<out Any>> {
     operator fun <T : Any> get(key: Key<T>): T?
     operator fun contains(key: Key<*>): Boolean = key in keys
     override fun iterator(): Iterator<Entry<out Any>> = entries.iterator()
-    fun isNotEmpty() = !isEmpty()
 }
 
 interface MutableExtras : Extras {
