@@ -51,7 +51,7 @@ class ProjectStructureMetadataModuleBuilder {
                 val fragment = fragment(sourceSetName)
                 dependencies.forEach { dependency ->
                     fragment.declaredModuleDependencies.add(
-                        KotlinModuleDependency(
+                        KpmModuleDependency(
                             KpmMavenModuleIdentifier(
                                 dependency.groupId.orEmpty(),
                                 dependency.moduleId,
@@ -210,7 +210,7 @@ class GradleProjectModuleBuilder(private val addInferredSourceSetVisibilityAsExp
             val variant = fragmentByName(compilation.defaultSourceSetName)
             compilation.associateWith.forEach { associate ->
                 val associateVariant = fragmentByName(associate.defaultSourceSetName)
-                variant.declaredModuleDependencies.add(KotlinModuleDependency(associateVariant.containingModule.moduleIdentifier))
+                variant.declaredModuleDependencies.add(KpmModuleDependency(associateVariant.containingModule.moduleIdentifier))
             }
         }
 
@@ -219,7 +219,7 @@ class GradleProjectModuleBuilder(private val addInferredSourceSetVisibilityAsExp
                 val fragment = fragmentByName(sourceSet.name)
                 getVisibleSourceSetsFromAssociateCompilations(project, sourceSet).forEach { dependency ->
                     val dependencyFragment = fragmentByName(dependency.name)
-                    fragment.declaredModuleDependencies.add(KotlinModuleDependency(dependencyFragment.containingModule.moduleIdentifier))
+                    fragment.declaredModuleDependencies.add(KpmModuleDependency(dependencyFragment.containingModule.moduleIdentifier))
                 }
             }
         }
@@ -238,8 +238,8 @@ class GradleProjectModuleBuilder(private val addInferredSourceSetVisibilityAsExp
 
 internal fun Dependency.toModuleDependency(
     project: Project
-): KotlinModuleDependency {
-    return KotlinModuleDependency(
+): KpmModuleDependency {
+    return KpmModuleDependency(
         when (this) {
             is ProjectDependency ->
                 KpmLocalModuleIdentifier(

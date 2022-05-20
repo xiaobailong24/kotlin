@@ -9,7 +9,7 @@ package org.jetbrains.kotlin.project.model
 // TODO think about state management: unresolved -> (known dependency graph?) ... -> completely resolved
 //      it seems to be important to learn whether or not the model is final
 interface ModuleDependencyResolver {
-    fun resolveDependency(requestingModule: KpmModule, moduleDependency: KotlinModuleDependency): KpmModule?
+    fun resolveDependency(requestingModule: KpmModule, moduleDependency: KpmModuleDependency): KpmModule?
 }
 
 interface KotlinDependencyGraphResolver {

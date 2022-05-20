@@ -21,7 +21,7 @@ interface KpmFragment {
     val kotlinSourceRoots: Iterable<File>
 
     // TODO: scopes
-    val declaredModuleDependencies: Iterable<KotlinModuleDependency>
+    val declaredModuleDependencies: Iterable<KpmModuleDependency>
 
     val declaredRefinesDependencies: Iterable<KpmFragment>
 
@@ -53,7 +53,7 @@ open class KpmBasicFragment(
 
     override val declaredRefinesDependencies: MutableSet<KpmBasicFragment> = mutableSetOf()
 
-    override val declaredModuleDependencies: MutableSet<KotlinModuleDependency> = mutableSetOf()
+    override val declaredModuleDependencies: MutableSet<KpmModuleDependency> = mutableSetOf()
 
     override var kotlinSourceRoots: Iterable<File> = emptyList()
 

@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.publishedConfigurationName
 import org.jetbrains.kotlin.gradle.plugin.sources.kpm.FragmentMappedKotlinSourceSet
 import org.jetbrains.kotlin.gradle.utils.filesProvider
 import org.jetbrains.kotlin.project.model.KotlinAttributeKey
-import org.jetbrains.kotlin.project.model.KotlinModuleDependency
+import org.jetbrains.kotlin.project.model.KpmModuleDependency
 
 internal open class LegacyMappedVariant(
     internal val compilation: KotlinCompilation<*>,
@@ -104,7 +104,7 @@ internal open class LegacyMappedVariant(
     override val declaredRefinesDependencies: Iterable<KpmGradleFragment>
         get() = fragmentForDefaultSourceSet.declaredRefinesDependencies
 
-    override val declaredModuleDependencies: Iterable<KotlinModuleDependency>
+    override val declaredModuleDependencies: Iterable<KpmModuleDependency>
         get() = fragmentForDefaultSourceSet.declaredModuleDependencies
 
     /** This configuration includes the dependencies from the refines-parents */

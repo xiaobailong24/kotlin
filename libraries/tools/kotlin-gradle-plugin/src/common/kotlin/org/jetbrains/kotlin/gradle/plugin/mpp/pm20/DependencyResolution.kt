@@ -20,12 +20,12 @@ import org.jetbrains.kotlin.project.model.KpmVariant
 import java.util.*
 
 class CachingModuleDependencyResolver(private val actualResolver: ModuleDependencyResolver) : ModuleDependencyResolver {
-    private val cacheByRequestingModule = WeakHashMap<KpmModule, MutableMap<KotlinModuleDependency, KpmModule?>>()
+    private val cacheByRequestingModule = WeakHashMap<KpmModule, MutableMap<KpmModuleDependency, KpmModule?>>()
 
     private fun cacheForRequestingModule(requestingModule: KpmModule) =
         cacheByRequestingModule.getOrPut(requestingModule) { mutableMapOf() }
 
-    override fun resolveDependency(requestingModule: KpmModule, moduleDependency: KotlinModuleDependency): KpmModule? =
+    override fun resolveDependency(requestingModule: KpmModule, moduleDependency: KpmModuleDependency): KpmModule? =
         cacheForRequestingModule(requestingModule).getOrPut(moduleDependency) {
             actualResolver.resolveDependency(requestingModule, moduleDependency)
         }
@@ -48,7 +48,7 @@ open class GradleComponentResultCachingResolver {
 
     fun resolveModuleDependencyAsComponentResult(
         requestingModule: KpmGradleModule,
-        moduleDependency: KotlinModuleDependency
+        moduleDependency: KpmModuleDependency
     ): ResolvedComponentResult? =
         getResultsForModule(requestingModule)[moduleDependency.moduleIdentifier]
 
@@ -68,7 +68,7 @@ class GradleModuleDependencyResolver(
     private val projectModuleBuilder: GradleProjectModuleBuilder
 ) : ModuleDependencyResolver {
 
-    override fun resolveDependency(requestingModule: KpmModule, moduleDependency: KotlinModuleDependency): KpmModule? {
+    override fun resolveDependency(requestingModule: KpmModule, moduleDependency: KpmModuleDependency): KpmModule? {
         require(requestingModule is KpmGradleModule)
         val project = requestingModule.project
 
@@ -189,13 +189,13 @@ internal fun ComponentSelector.toModuleIdentifiers(): Iterable<KpmModuleIdentifi
     }
 }
 
-internal fun ResolvedComponentResult.toModuleDependency(): KotlinModuleDependency = KotlinModuleDependency(toSingleModuleIdentifier())
-internal fun ComponentSelector.toModuleDependency(): KotlinModuleDependency {
+internal fun ResolvedComponentResult.toModuleDependency(): KpmModuleDependency = KpmModuleDependency(toSingleModuleIdentifier())
+internal fun ComponentSelector.toModuleDependency(): KpmModuleDependency {
     val moduleId = toModuleIdentifiers().single() // FIXME handle multiple
-    return KotlinModuleDependency(moduleId)
+    return KpmModuleDependency(moduleId)
 }
 
-internal fun ComponentIdentifier.matchesModuleDependency(moduleDependency: KotlinModuleDependency) =
+internal fun ComponentIdentifier.matchesModuleDependency(moduleDependency: KpmModuleDependency) =
     matchesModuleIdentifier(moduleDependency.moduleIdentifier)
 
 internal fun ComponentIdentifier.matchesModuleIdentifier(id: KpmModuleIdentifier): Boolean =

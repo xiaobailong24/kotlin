@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.gradle.plugin.sources.FragmentConsistencyChecker
 import org.jetbrains.kotlin.gradle.plugin.sources.FragmentConsistencyChecks
 import org.jetbrains.kotlin.gradle.utils.addExtendsFromRelation
 import org.jetbrains.kotlin.gradle.utils.runProjectConfigurationHealthCheckWhenEvaluated
-import org.jetbrains.kotlin.project.model.KotlinModuleDependency
+import org.jetbrains.kotlin.project.model.KpmModuleDependency
 import javax.inject.Inject
 
 open class KpmGradleFragmentInternal @Inject constructor(
@@ -90,7 +90,7 @@ open class KpmGradleFragmentInternal @Inject constructor(
     // TODO: separate the declared module dependencies and exported module dependencies? we need this to keep implementation dependencies
     //       out of the consumer's metadata compilations compile classpath; however, Native variants must expose implementation as API
     //       anyway, so for now all fragments follow that behavior
-    override val declaredModuleDependencies: Iterable<KotlinModuleDependency>
+    override val declaredModuleDependencies: Iterable<KpmModuleDependency>
         get() = listOf(apiConfiguration, implementationConfiguration).flatMapTo(mutableSetOf()) { exportConfiguration ->
             exportConfiguration.allDependencies.map { dependency -> dependency.toModuleDependency(project) }
         }

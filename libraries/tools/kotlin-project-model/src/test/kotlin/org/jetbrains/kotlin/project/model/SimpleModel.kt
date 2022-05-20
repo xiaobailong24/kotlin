@@ -30,7 +30,7 @@ fun KpmModuleIdentifier.equalsWithoutClassifier(other: KpmModuleIdentifier) = wh
 }
 
 fun KpmBasicFragment.depends(module: KpmBasicModule) {
-    this.declaredModuleDependencies += KotlinModuleDependency(module.moduleIdentifier)
+    this.declaredModuleDependencies += KpmModuleDependency(module.moduleIdentifier)
 }
 
 fun KpmBasicFragment.refinedBy(fragment: KpmBasicFragment) {
