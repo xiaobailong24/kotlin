@@ -62,7 +62,7 @@ interface KotlinVariantCompilationDataInternal<T : KotlinCommonOptions> : Kotlin
     private fun resolveFriendVariants(): Iterable<KpmGradleVariant> {
         val moduleResolver = KpmGradleModuleDependencyResolver.getForCurrentBuild(project)
         val variantResolver = GradleModuleVariantResolver.getForCurrentBuild(project)
-        val dependencyGraphResolver = GradleKotlinDependencyGraphResolver(moduleResolver)
+        val dependencyGraphResolver = KpmGradleDependencyGraphResolver(moduleResolver)
 
         val friendModules =
             ((dependencyGraphResolver.resolveDependencyGraph(owner.containingModule) as? GradleDependencyGraph)

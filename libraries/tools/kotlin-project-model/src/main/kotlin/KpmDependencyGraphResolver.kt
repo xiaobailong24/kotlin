@@ -5,7 +5,7 @@
 
 package org.jetbrains.kotlin.project.model
 
-interface KotlinDependencyGraphResolver {
+interface KpmDependencyGraphResolver {
     fun resolveDependencyGraph(requestingModule: KpmModule): DependencyGraphResolution
 }
 
