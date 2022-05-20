@@ -1,3 +1,3 @@
-function A() {
+function Base() {
     this.foo = "K"
 }
