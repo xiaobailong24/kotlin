@@ -22,15 +22,15 @@ data class GradleKpmNativeVariantConfig<T : GradleKpmNativeVariantInternal>(
     val dependenciesConfigurationFactory: GradleKpmFragmentDependencyConfigurationsFactory =
         GradleKpmDefaultFragmentDependencyConfigurationsFactory,
 
-    val compileDependencies: ConfigurationDefinition<T> =
-        DefaultKotlinCompileDependenciesDefinition + KotlinFragmentKonanTargetAttribute,
+    val compileDependencies: GradleKpmConfigurationSetup<T> =
+        DefaultKotlinCompileDependenciesDefinition + GradleKpmKonanTargetAttribute,
 
-    val apiElements: ConfigurationDefinition<T> =
+    val apiElements: GradleKpmConfigurationSetup<T> =
         DefaultKotlinApiElementsDefinition
-                + KotlinFragmentKonanTargetAttribute
-                + FragmentConfigurationRelation { extendsFrom(dependencies.transitiveImplementationConfiguration) },
+                + GradleKpmKonanTargetAttribute
+                + GradleKpmConfigurationRelationSetup { extendsFrom(dependencies.transitiveImplementationConfiguration) },
 
-    val hostSpecificMetadataElements: ConfigurationDefinition<T> =
+    val hostSpecificMetadataElements: GradleKpmConfigurationSetup<T> =
         DefaultKotlinHostSpecificMetadataElementsDefinition,
 
     val compileTaskConfigurator: GradleKpmCompileTaskConfigurator<T> =
@@ -55,21 +55,21 @@ class GradleKpmNativeVariantInstantiator<T : GradleKpmNativeVariantInternal>(
     override fun create(name: String): T {
         val names = FragmentNameDisambiguation(module, name)
         val dependencies = config.dependenciesConfigurationFactory.create(module, names)
-        val context = KotlinGradleFragmentConfigurationContextImpl(module, dependencies, names)
+        val context = GradleKpmFragmentConfigureContextImpl(module, dependencies, names)
 
         return variantConstructor.invoke(
             containingModule = module,
             fragmentName = name,
             dependencyConfigurations = dependencies,
             compileDependencyConfiguration = config.compileDependencies.provider.getConfiguration(context).also { configuration ->
-                config.compileDependencies.relations.setExtendsFrom(configuration, context)
+                config.compileDependencies.relations.setupExtendsFromRelations(configuration, context)
             },
             apiElementsConfiguration = config.apiElements.provider.getConfiguration(context).also { configuration ->
-                config.apiElements.relations.setExtendsFrom(configuration, context)
+                config.apiElements.relations.setupExtendsFromRelations(configuration, context)
             },
             hostSpecificMetadataElementsConfiguration =
             config.hostSpecificMetadataElements.provider.getConfiguration(context).also { configuration ->
-                config.hostSpecificMetadataElements.relations.setExtendsFrom(configuration, context)
+                config.hostSpecificMetadataElements.relations.setupExtendsFromRelations(configuration, context)
             }
         )
     }

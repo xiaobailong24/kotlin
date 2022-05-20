@@ -14,7 +14,7 @@ import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.internal.resolve.ModuleVersionResolveException
 import org.jetbrains.kotlin.gradle.kpm.idea.IdeaKotlinPlatformDependencyResolver.*
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.*
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.FragmentAttributes
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.GradleKpmConfigurationAttributesSetup
 
 /**
  * Resolves 'platform' binary dependencies for a given variant or fragment.
@@ -35,7 +35,7 @@ class IdeaKotlinPlatformDependencyResolver(
          * @param artifactViewAttributes: Additional attributes that will be used to create an [ArtifactView] for resolving the dependencies.
          */
         data class Variant(
-            internal val artifactViewAttributes: FragmentAttributes<GradleKpmFragment> = FragmentAttributes { }
+            internal val artifactViewAttributes: GradleKpmConfigurationAttributesSetup<GradleKpmFragment> = GradleKpmConfigurationAttributesSetup.None
         ) : ArtifactResolution()
 
         /**
@@ -46,8 +46,8 @@ class IdeaKotlinPlatformDependencyResolver(
          * resolving the dependencies
          */
         data class PlatformFragment(
-            internal val platformResolutionAttributes: FragmentAttributes<GradleKpmFragment>,
-            internal val artifactViewAttributes: FragmentAttributes<GradleKpmFragment> = FragmentAttributes { },
+            internal val platformResolutionAttributes: GradleKpmConfigurationAttributesSetup<GradleKpmFragment>,
+            internal val artifactViewAttributes: GradleKpmConfigurationAttributesSetup<GradleKpmFragment> = GradleKpmConfigurationAttributesSetup { },
         ) : ArtifactResolution()
     }
 

@@ -51,9 +51,9 @@ class GradleKpmFragmentFactory<T : GradleKpmFragment>(
 }
 
 internal fun <T : GradleKpmFragment> Configuration.configure(
-    definition: KotlinGradleFragmentConfigurationDefinition<T>, fragment: T
+    definition: GradleKpmConfigurationSetup<T>, fragment: T
 ) {
-    definition.attributes.setAttributes(attributes, fragment)
-    definition.artifacts.addArtifacts(outgoing, fragment)
+    definition.attributes.setupAttributes(attributes, fragment)
+    definition.artifacts.setupArtifacts(outgoing, fragment)
     definition.capabilities.setCapabilities(outgoing, fragment)
 }

@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.gradle.utils.dashSeparatedLowercaseName
 /**
  * Registers a [Jar] task with the variant's compilation outputs and attaches this artifact to the given configuration.
  */
-val KotlinFragmentCompilationOutputsJarArtifact = FragmentArtifacts<GradleKpmVariant> {
+val GradleKpmCompilationOutputsJarArtifact = GradleKpmConfigurationArtifactsSetup<GradleKpmVariant> {
     val jar = project.locateOrRegisterTask<Jar>(fragment.outputsJarTaskName) {
         it.from(fragment.compilationOutputs.allOutputs)
         it.archiveAppendix.set(dashSeparatedLowercaseName(fragment.name, fragment.containingModule.moduleClassifier))

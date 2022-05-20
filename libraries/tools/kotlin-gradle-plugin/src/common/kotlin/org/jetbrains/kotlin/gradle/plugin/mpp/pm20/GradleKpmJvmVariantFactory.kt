@@ -22,16 +22,16 @@ data class GradleKpmJvmVariantConfig(
     val dependenciesConfigurationFactory: GradleKpmFragmentDependencyConfigurationsFactory
     = GradleKpmDefaultFragmentDependencyConfigurationsFactory,
 
-    val compileDependencies: KotlinGradleFragmentConfigurationDefinition<GradleKpmJvmVariant>
+    val compileDependencies: GradleKpmConfigurationSetup<GradleKpmJvmVariant>
     = DefaultKotlinCompileDependenciesDefinition,
 
-    val runtimeDependencies: KotlinGradleFragmentConfigurationDefinition<GradleKpmJvmVariant>
+    val runtimeDependencies: GradleKpmConfigurationSetup<GradleKpmJvmVariant>
     = DefaultKotlinRuntimeDependenciesDefinition,
 
-    val apiElements: KotlinGradleFragmentConfigurationDefinition<GradleKpmJvmVariant>
-    = DefaultKotlinApiElementsDefinition + KotlinFragmentCompilationOutputsJarArtifact,
+    val apiElements: GradleKpmConfigurationSetup<GradleKpmJvmVariant>
+    = DefaultKotlinApiElementsDefinition + GradleKpmCompilationOutputsJarArtifact,
 
-    val runtimeElements: KotlinGradleFragmentConfigurationDefinition<GradleKpmJvmVariant>
+    val runtimeElements: GradleKpmConfigurationSetup<GradleKpmJvmVariant>
     = DefaultKotlinRuntimeElementsDefinition,
 
     val compileTaskConfigurator: GradleKpmCompileTaskConfigurator<GradleKpmJvmVariant>
@@ -54,7 +54,7 @@ class GradleKpmJvmVariantInstantiator internal constructor(
 
     override fun create(name: String): GradleKpmJvmVariant {
         val names = FragmentNameDisambiguationOmittingMain(module, name)
-        val context = KotlinGradleFragmentConfigurationContextImpl(
+        val context = GradleKpmFragmentConfigureContextImpl(
             module, config.dependenciesConfigurationFactory.create(module, names), names
         )
 
@@ -63,16 +63,16 @@ class GradleKpmJvmVariantInstantiator internal constructor(
             fragmentName = name,
             dependencyConfigurations = context.dependencies,
             compileDependenciesConfiguration = config.compileDependencies.provider.getConfiguration(context).also { configuration ->
-                config.compileDependencies.relations.setExtendsFrom(configuration, context)
+                config.compileDependencies.relations.setupExtendsFromRelations(configuration, context)
             },
             runtimeDependenciesConfiguration = config.runtimeDependencies.provider.getConfiguration(context).also { configuration ->
-                config.runtimeElements.relations.setExtendsFrom(configuration, context)
+                config.runtimeElements.relations.setupExtendsFromRelations(configuration, context)
             },
             apiElementsConfiguration = config.apiElements.provider.getConfiguration(context).also { configuration ->
-                config.apiElements.relations.setExtendsFrom(configuration, context)
+                config.apiElements.relations.setupExtendsFromRelations(configuration, context)
             },
             runtimeElementsConfiguration = config.runtimeElements.provider.getConfiguration(context).also { configuration ->
-                config.runtimeElements.relations.setExtendsFrom(configuration, context)
+                config.runtimeElements.relations.setupExtendsFromRelations(configuration, context)
             }
         )
     }

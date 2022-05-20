@@ -87,7 +87,7 @@ class KotlinJvmVariantFactoryTest : AbstractKpmExtensionTest() {
     fun `test custom configure compileDependenciesConfiguration`() {
         val variant = GradleKpmJvmVariantFactory(
             kotlin.main, GradleKpmJvmVariantConfig(
-                compileDependencies = DefaultKotlinCompileDependenciesDefinition + FragmentAttributes {
+                compileDependencies = DefaultKotlinCompileDependenciesDefinition + GradleKpmConfigurationAttributesSetup {
                     assertSame(fragment.compileDependenciesConfiguration.attributes, attributes)
                     attribute(testAttribute, "compileDependencies")
                 }
@@ -103,7 +103,7 @@ class KotlinJvmVariantFactoryTest : AbstractKpmExtensionTest() {
     fun `test custom configure runtimeDependenciesConfiguration`() {
         val variant = GradleKpmJvmVariantFactory(
             kotlin.main, GradleKpmJvmVariantConfig(
-                runtimeDependencies = DefaultKotlinRuntimeDependenciesDefinition + FragmentAttributes {
+                runtimeDependencies = DefaultKotlinRuntimeDependenciesDefinition + GradleKpmConfigurationAttributesSetup {
                     assertSame(fragment.runtimeDependenciesConfiguration.attributes, attributes)
                     attribute(testAttribute, "runtimeDependencies")
                 }
@@ -119,7 +119,7 @@ class KotlinJvmVariantFactoryTest : AbstractKpmExtensionTest() {
     fun `test custom configure apiElementsConfiguration`() {
         val variant = GradleKpmJvmVariantFactory(
             kotlin.main, GradleKpmJvmVariantConfig(
-                apiElements = DefaultKotlinApiElementsDefinition + FragmentAttributes {
+                apiElements = DefaultKotlinApiElementsDefinition + GradleKpmConfigurationAttributesSetup {
                     assertSame(fragment.apiElementsConfiguration.attributes, attributes)
                     attribute(testAttribute, "apiElements")
                 }
@@ -135,7 +135,7 @@ class KotlinJvmVariantFactoryTest : AbstractKpmExtensionTest() {
     fun `test custom configure runtimeElementsConfiguration`() {
         val variant = GradleKpmJvmVariantFactory(
             kotlin.main, GradleKpmJvmVariantConfig(
-                runtimeElements = DefaultKotlinRuntimeElementsDefinition + FragmentAttributes {
+                runtimeElements = DefaultKotlinRuntimeElementsDefinition + GradleKpmConfigurationAttributesSetup {
                     assertSame(fragment.runtimeElementsConfiguration.attributes, attributes)
                     attribute(testAttribute, "runtimeElements")
                 }
