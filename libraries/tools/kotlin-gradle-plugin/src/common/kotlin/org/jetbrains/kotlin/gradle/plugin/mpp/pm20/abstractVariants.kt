@@ -8,12 +8,9 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
-import org.gradle.api.publish.maven.MavenPublication
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationOutput
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.mpp.DefaultKotlinCompilationOutput
-import org.jetbrains.kotlin.gradle.plugin.mpp.MavenPublicationCoordinatesProvider
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.ComputedCapability
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.disambiguateName
 import org.jetbrains.kotlin.gradle.plugin.mpp.publishedConfigurationName
 import org.jetbrains.kotlin.gradle.utils.dashSeparatedName
@@ -47,33 +44,6 @@ abstract class KpmGradleVariantInternal(
         get() = defaultSourceArtifactTaskName
 
     override fun toString(): String = "variant $fragmentName in $containingModule"
-}
-
-class KpmDefaultKpmSingleMavenPublishedModuleHolder(
-    private var module: KpmGradleModule, override val defaultPublishedModuleSuffix: String?
-) : KpmSingleMavenPublishedModuleHolder {
-    private val project get() = module.project
-
-    private var assignedMavenPublication: MavenPublication? = null
-
-    private val publicationAssignedHandlers = mutableListOf<(MavenPublication) -> Unit>()
-
-    override fun assignMavenPublication(publication: MavenPublication) {
-        if (assignedMavenPublication != null) error("already assigned publication $publication")
-        assignedMavenPublication = publication
-        publicationAssignedHandlers.forEach { it(publication) }
-    }
-
-    override fun whenPublicationAssigned(handlePublication: (MavenPublication) -> Unit) {
-        assignedMavenPublication?.let(handlePublication) ?: publicationAssignedHandlers.add(handlePublication)
-    }
-
-    override val publishedMavenModuleCoordinates: PublishedModuleCoordinatesProvider = MavenPublicationCoordinatesProvider(
-        project,
-        { assignedMavenPublication },
-        defaultPublishedModuleSuffix,
-        capabilities = listOfNotNull(ComputedCapability.capabilityStringFromModule(module))
-    )
 }
 
 private fun kotlinPlatformTypeAttributeFromPlatform(platformType: KotlinPlatformType) = platformType.name
