@@ -19,8 +19,8 @@ fun KotlinJvmVariantFactory(
 )
 
 data class KotlinJvmVariantConfig(
-    val dependenciesConfigurationFactory: KotlinFragmentDependencyConfigurationsFactory
-    = DefaultKotlinFragmentDependencyConfigurationsFactory,
+    val dependenciesConfigurationFactory: KpmFragmentDependencyConfigurationsFactory
+    = KpmDefaultFragmentDependencyConfigurationsFactory,
 
     val compileDependencies: KotlinGradleFragmentConfigurationDefinition<KpmJvmVariant>
     = DefaultKotlinCompileDependenciesDefinition,

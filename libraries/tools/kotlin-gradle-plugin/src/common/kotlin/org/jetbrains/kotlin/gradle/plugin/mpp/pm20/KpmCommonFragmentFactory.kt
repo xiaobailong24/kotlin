@@ -24,8 +24,8 @@ fun KpmCommonFragmentFactory(
 
 class KpmCommonFragmentInstantiator(
     private val module: KpmGradleModule,
-    private val dependencyConfigurationsFactory: KotlinFragmentDependencyConfigurationsFactory =
-        DefaultKotlinFragmentDependencyConfigurationsFactory
+    private val dependencyConfigurationsFactory: KpmFragmentDependencyConfigurationsFactory =
+        KpmDefaultFragmentDependencyConfigurationsFactory
 ) : KpmGradleFragmentFactory.FragmentInstantiator<KpmGradleFragmentInternal> {
     override fun create(name: String): KpmGradleFragmentInternal {
         val names = FragmentNameDisambiguation(module, name)

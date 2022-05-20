@@ -7,11 +7,11 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.KotlinNameDisambiguation
 
-interface KotlinFragmentDependencyConfigurationsFactory {
+interface KpmFragmentDependencyConfigurationsFactory {
     fun create(module: KpmGradleModule, names: KotlinNameDisambiguation): KpmFragmentDependencyConfigurations
 }
 
-object DefaultKotlinFragmentDependencyConfigurationsFactory : KotlinFragmentDependencyConfigurationsFactory {
+object KpmDefaultFragmentDependencyConfigurationsFactory : KpmFragmentDependencyConfigurationsFactory {
 
     override fun create(module: KpmGradleModule, names: KotlinNameDisambiguation): KpmFragmentDependencyConfigurations {
         val configurations = module.project.configurations

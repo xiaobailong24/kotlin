@@ -19,8 +19,8 @@ fun <T : KpmNativeVariantInternal> KotlinNativeVariantFactory(
 )
 
 data class KotlinNativeVariantConfig<T : KpmNativeVariantInternal>(
-    val dependenciesConfigurationFactory: KotlinFragmentDependencyConfigurationsFactory =
-        DefaultKotlinFragmentDependencyConfigurationsFactory,
+    val dependenciesConfigurationFactory: KpmFragmentDependencyConfigurationsFactory =
+        KpmDefaultFragmentDependencyConfigurationsFactory,
 
     val compileDependencies: ConfigurationDefinition<T> =
         DefaultKotlinCompileDependenciesDefinition + KotlinFragmentKonanTargetAttribute,
