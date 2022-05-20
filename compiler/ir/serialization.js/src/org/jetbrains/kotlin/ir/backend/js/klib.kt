@@ -37,6 +37,7 @@ import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.declarations.impl.IrFileImpl
 import org.jetbrains.kotlin.ir.descriptors.IrDescriptorBasedFunctionFactory
 import org.jetbrains.kotlin.ir.linkage.IrDeserializer
+import org.jetbrains.kotlin.ir.linkage.IrProvider
 import org.jetbrains.kotlin.ir.symbols.IrSymbol
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.ir.visitors.acceptVoid
@@ -56,6 +57,8 @@ import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.psi2ir.Psi2IrConfiguration
 import org.jetbrains.kotlin.psi2ir.Psi2IrTranslator
 import org.jetbrains.kotlin.psi2ir.descriptors.IrBuiltInsOverDescriptors
+import org.jetbrains.kotlin.psi2ir.generators.DeclarationStubGeneratorForNotFoundClasses
+import org.jetbrains.kotlin.psi2ir.generators.DeclarationStubGeneratorImpl
 import org.jetbrains.kotlin.psi2ir.generators.GeneratorContext
 import org.jetbrains.kotlin.psi2ir.generators.TypeTranslatorImpl
 import org.jetbrains.kotlin.resolve.BindingContext
@@ -155,6 +158,12 @@ fun generateIrForKlibSerialization(
     val psi2Ir = Psi2IrTranslator(configuration.languageVersionSettings, Psi2IrConfiguration(errorPolicy.allowErrors, allowUnboundSymbols))
     val psi2IrContext = psi2Ir.createGeneratorContext(analysisResult.moduleDescriptor, analysisResult.bindingContext, symbolTable)
     val irBuiltIns = psi2IrContext.irBuiltIns
+    val stubGenerator = DeclarationStubGeneratorImpl(
+        psi2IrContext.moduleDescriptor,
+        symbolTable,
+        irBuiltIns,
+        DescriptorByIdSignatureFinderImpl(psi2IrContext.moduleDescriptor, JsManglerDesc)
+    )
 
     val feContext = psi2IrContext.run {
         JsIrLinker.JsFePluginContext(moduleDescriptor, symbolTable, typeTranslator, irBuiltIns)
@@ -170,7 +179,14 @@ fun generateIrForKlibSerialization(
 
     sortedDependencies.map { irLinker.deserializeOnlyHeaderModule(getDescriptorByLibrary(it), it) }
 
-    val moduleFragment = psi2IrContext.generateModuleFragmentWithPlugins(project, files, irLinker, messageLogger, expectDescriptorToSymbol)
+    val moduleFragment = psi2IrContext.generateModuleFragmentWithPlugins(
+        project,
+        files,
+        irLinker,
+        messageLogger,
+        expectDescriptorToSymbol,
+        stubGenerator
+    )
 
     if (verifySignatures) {
         moduleFragment.acceptVoid(ManglerChecker(JsManglerIr, Ir2DescriptorManglerAdapter(JsManglerDesc)))
@@ -514,7 +530,8 @@ fun GeneratorContext.generateModuleFragmentWithPlugins(
     files: List<KtFile>,
     irLinker: IrDeserializer,
     messageLogger: IrMessageLogger,
-    expectDescriptorToSymbol: MutableMap<DeclarationDescriptor, IrSymbol>? = null
+    expectDescriptorToSymbol: MutableMap<DeclarationDescriptor, IrSymbol>? = null,
+    stubGenerator: IrProvider? = null,
 ): IrModuleFragment {
     val psi2Ir = Psi2IrTranslator(languageVersionSettings, configuration)
 
@@ -540,7 +557,13 @@ fun GeneratorContext.generateModuleFragmentWithPlugins(
         }
     }
 
-    return psi2Ir.generateModuleFragment(this, files, listOf(irLinker), extensions, expectDescriptorToSymbol)
+    return psi2Ir.generateModuleFragment(
+        this,
+        files,
+        listOfNotNull(stubGenerator),
+        extensions,
+        expectDescriptorToSymbol
+    )
 }
 
 private fun createBuiltIns(storageManager: StorageManager) = object : KotlinBuiltIns(storageManager) {}
