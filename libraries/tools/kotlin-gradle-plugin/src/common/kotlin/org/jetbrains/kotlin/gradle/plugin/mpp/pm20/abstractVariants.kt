@@ -6,7 +6,6 @@
 package org.jetbrains.kotlin.gradle.plugin.mpp.pm20
 
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.FileCollection
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilationOutput
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
@@ -50,29 +49,6 @@ private fun kotlinPlatformTypeAttributeFromPlatform(platformType: KotlinPlatform
 // TODO: rewrite with the artifacts API
 internal val KpmGradleVariant.defaultSourceArtifactTaskName: String
     get() = disambiguateName("sourcesJar")
-
-abstract class KpmGradleVariantWithRuntimeInternal(
-    containingModule: KpmGradleModule,
-    fragmentName: String,
-    dependencyConfigurations: KpmFragmentDependencyConfigurations,
-    compileDependencyConfiguration: Configuration,
-    apiElementsConfiguration: Configuration,
-    final override val runtimeDependenciesConfiguration: Configuration,
-    final override val runtimeElementsConfiguration: Configuration
-) : KpmGradleVariantInternal(
-    containingModule = containingModule,
-    fragmentName = fragmentName,
-    dependencyConfigurations = dependencyConfigurations,
-    compileDependenciesConfiguration = compileDependencyConfiguration,
-    apiElementsConfiguration = apiElementsConfiguration
-), KpmGradleVariantWithRuntime {
-    // TODO deduplicate with KotlinCompilation?
-
-    override var runtimeDependencyFiles: FileCollection = project.files(runtimeDependenciesConfiguration)
-
-    override val runtimeFiles: ConfigurableFileCollection =
-        project.files(listOf({ compilationOutputs.allOutputs }, { runtimeDependencyFiles }))
-}
 
 private fun defaultModuleSuffix(module: KpmGradleModule, variantName: String): String =
     dashSeparatedName(variantName, module.moduleClassifier)
