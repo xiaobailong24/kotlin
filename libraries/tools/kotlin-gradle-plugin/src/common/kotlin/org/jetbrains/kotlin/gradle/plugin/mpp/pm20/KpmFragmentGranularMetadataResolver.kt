@@ -14,9 +14,9 @@ import org.jetbrains.kotlin.utils.addToStdlib.flattenTo
 import java.io.File
 import java.util.*
 
-internal class FragmentGranularMetadataResolver(
+internal class KpmFragmentGranularMetadataResolver(
     private val requestingFragment: KpmGradleFragment,
-    private val refinesParentResolvers: Lazy<Iterable<FragmentGranularMetadataResolver>>
+    private val refinesParentResolvers: Lazy<Iterable<KpmFragmentGranularMetadataResolver>>
 ) {
     val resolutions: Iterable<MetadataDependencyResolution> by lazy {
         doResolveMetadataDependencies()

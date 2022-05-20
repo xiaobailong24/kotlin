@@ -22,7 +22,7 @@ internal open class TransformKotlinGranularMetadataForFragment
     @field:Transient
     val fragment: KpmGradleFragment,
     //FIXME annotations
-    private val transformation: FragmentGranularMetadataResolver
+    private val transformation: KpmFragmentGranularMetadataResolver
 ) : DefaultTask() {
 
     @get:OutputDirectory

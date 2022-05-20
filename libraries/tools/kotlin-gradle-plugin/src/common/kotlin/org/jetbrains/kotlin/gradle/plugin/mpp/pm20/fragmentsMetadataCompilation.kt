@@ -260,7 +260,7 @@ private fun resolvedMetadataProviders(fragment: KpmGradleFragment) =
 private fun createExtractMetadataTask(
     project: Project,
     fragment: KpmGradleFragment,
-    transformation: FragmentGranularMetadataResolver
+    transformation: KpmFragmentGranularMetadataResolver
 ) {
     project.tasks.register(
         transformFragmentMetadataTaskName(fragment),
