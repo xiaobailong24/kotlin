@@ -125,23 +125,22 @@ abstract class AbstractExtras : Extras {
     }
 }
 
-abstract class AbstractEmptyExtras : AbstractExtras() {
-    final override val size: Int = 0
+internal object EmptyExtras : AbstractExtras(), Serializable {
 
-    final override val keys: Set<Key<*>> = emptySet()
+    override val size: Int = 0
 
-    final override val entries: Set<Entry<*>> = emptySet()
+    override val keys: Set<Key<*>> = emptySet()
 
-    final override fun isEmpty(): Boolean = true
+    override val entries: Set<Entry<*>> = emptySet()
 
-    final override fun <T : Any> get(key: Key<T>): T? = null
+    override fun isEmpty(): Boolean = true
+
+    override fun <T : Any> get(key: Key<T>): T? = null
 
     override fun contains(key: Key<*>): Boolean = false
 
     override fun contains(element: Entry<out Any>): Boolean = false
-}
 
-internal object EmptyExtras : AbstractEmptyExtras(), Serializable {
     @Suppress("unused") // Necessary for java.io.Serializable stability
     private const val serialVersionUID = 0L
 
