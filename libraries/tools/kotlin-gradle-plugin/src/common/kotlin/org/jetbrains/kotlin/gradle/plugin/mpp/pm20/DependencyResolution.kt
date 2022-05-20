@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.gradle.plugin.sources.DefaultLanguageSettingsBuilder
 import org.jetbrains.kotlin.gradle.utils.getOrPutRootProjectProperty
 import org.jetbrains.kotlin.project.model.*
 
-open class GradleComponentResultCachingResolver {
+open class KpmGradleComponentResultCachingResolver {
     private val cachedResultsByRequestingModule = mutableMapOf<KpmGradleModule, Map<KpmModuleIdentifier, ResolvedComponentResult>>()
 
     protected open fun configurationToResolve(requestingModule: KpmGradleModule): Configuration =
@@ -39,17 +39,17 @@ open class GradleComponentResultCachingResolver {
         getResultsForModule(requestingModule)[moduleDependency.moduleIdentifier]
 
     companion object {
-        fun getForCurrentBuild(project: Project): GradleComponentResultCachingResolver {
+        fun getForCurrentBuild(project: Project): KpmGradleComponentResultCachingResolver {
             val extraPropertyName = "org.jetbrains.kotlin.dependencyResolution.gradleComponentResolver.${project.getKotlinPluginVersion()}"
             return project.getOrPutRootProjectProperty(extraPropertyName) {
-                GradleComponentResultCachingResolver()
+                KpmGradleComponentResultCachingResolver()
             }
         }
     }
 }
 
 class KpmGradleModuleDependencyResolver(
-    private val gradleComponentResultResolver: GradleComponentResultCachingResolver,
+    private val gradleComponentResultResolver: KpmGradleComponentResultCachingResolver,
     private val projectStructureMetadataModuleBuilder: ProjectStructureMetadataModuleBuilder,
     private val projectModuleBuilder: GradleProjectModuleBuilder
 ) : KpmModuleDependencyResolver {
@@ -87,7 +87,7 @@ class KpmGradleModuleDependencyResolver(
         fun getForCurrentBuild(project: Project): KpmModuleDependencyResolver {
             val extraPropertyName = "org.jetbrains.kotlin.dependencyResolution.moduleResolver.${project.getKotlinPluginVersion()}"
             return project.getOrPutRootProjectProperty(extraPropertyName) {
-                val componentResultResolver = GradleComponentResultCachingResolver.getForCurrentBuild(project)
+                val componentResultResolver = KpmGradleComponentResultCachingResolver.getForCurrentBuild(project)
                 val metadataModuleBuilder = ProjectStructureMetadataModuleBuilder()
                 val projectModuleBuilder = GradleProjectModuleBuilder(true)
                 KpmCachingModuleDependencyResolver(
