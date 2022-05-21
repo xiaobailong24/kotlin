@@ -643,7 +643,9 @@ internal class BridgeLowering(val context: JvmBackendContext) : FileLoweringPass
 
                 val targetStructure = run {
                     val mfvcOrOriginal =
-                        this@BridgeLowering.context.inlineClassReplacements.originalFunctionForMethodReplacement[target] ?: target
+                        this@BridgeLowering.context.inlineClassReplacements.originalFunctionForMethodReplacement[target]
+                            ?: this@BridgeLowering.context.inlineClassReplacements.originalFunctionForStaticReplacement[target]
+                            ?: target
                     this@BridgeLowering.context.multiFieldValueClassReplacements
                         .bindingNewFunctionToParameterTemplateStructure[mfvcOrOriginal]
                         ?.also { structure ->
@@ -654,7 +656,9 @@ internal class BridgeLowering(val context: JvmBackendContext) : FileLoweringPass
 
                 val bridgeStructure = run {
                     val mfvcOrOriginal =
-                        this@BridgeLowering.context.inlineClassReplacements.originalFunctionForMethodReplacement[bridge] ?: bridge
+                        this@BridgeLowering.context.inlineClassReplacements.originalFunctionForMethodReplacement[bridge]
+                            ?: this@BridgeLowering.context.inlineClassReplacements.originalFunctionForStaticReplacement[bridge]
+                            ?: bridge
                     this@BridgeLowering.context.multiFieldValueClassReplacements
                         .bindingNewFunctionToParameterTemplateStructure[mfvcOrOriginal]
                         ?.also { structure ->
