@@ -2101,6 +2101,11 @@ sealed interface KaFirDiagnostic<PSI : PsiElement> : KaDiagnosticWithPsi<PSI> {
         val type: KaType
     }
 
+    interface ConflictingProjectionInCallableReferenceWarning : KaFirDiagnostic<KtTypeProjection> {
+        override val diagnosticClass get() = ConflictingProjectionInCallableReferenceWarning::class
+        val type: KaType
+    }
+
     interface RedundantProjection : KaFirDiagnostic<KtTypeProjection> {
         override val diagnosticClass get() = RedundantProjection::class
         val type: KaType
