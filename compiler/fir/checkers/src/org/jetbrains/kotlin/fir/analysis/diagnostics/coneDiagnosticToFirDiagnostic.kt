@@ -1059,7 +1059,7 @@ private fun FirSession.toDiagnosticContext(): DiagnosticBaseContext {
 }
 
 @OptIn(InternalDiagnosticFactoryMethod::class)
-private fun KtDiagnosticFactory0.createOn(
+internal fun KtDiagnosticFactory0.createOn(
     element: KtSourceElement?,
     session: FirSession,
 ): KtSimpleDiagnostic? {
@@ -1067,7 +1067,7 @@ private fun KtDiagnosticFactory0.createOn(
 }
 
 @OptIn(InternalDiagnosticFactoryMethod::class)
-private fun <A> KtDiagnosticFactory1<A>.createOn(
+internal fun <A> KtDiagnosticFactory1<A>.createOn(
     element: KtSourceElement?,
     a: A,
     session: FirSession,
