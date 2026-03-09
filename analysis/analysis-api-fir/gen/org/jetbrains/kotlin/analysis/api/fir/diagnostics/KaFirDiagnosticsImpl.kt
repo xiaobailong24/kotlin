@@ -2362,6 +2362,11 @@ internal class ContextClassOrConstructorImpl(
     token: KaLifetimeToken,
 ) : KaAbstractFirDiagnostic<KtElement>(firDiagnostic, token), KaFirDiagnostic.ContextClassOrConstructor
 
+internal class CoroutineContextAsContextParameterIsReservedImpl(
+    firDiagnostic: KtPsiDiagnostic,
+    token: KaLifetimeToken,
+) : KaAbstractFirDiagnostic<KtElement>(firDiagnostic, token), KaFirDiagnostic.CoroutineContextAsContextParameterIsReserved
+
 internal class RecursionInImplicitTypesImpl(
     firDiagnostic: KtPsiDiagnostic,
     token: KaLifetimeToken,
